@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+*.pyc
+checkpoints/*.pt
+README.md
+SETUP_LOG.txt
