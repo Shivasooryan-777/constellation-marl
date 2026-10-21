@@ -17,6 +17,8 @@ Civilian logistics framing only:
 
 from typing import List, Tuple, Set, Optional, Dict, Any
 import random
+import numpy as np
+
 
 
 # ==============================================================================
@@ -310,6 +312,7 @@ class DroneWorld:
         n_no_fly_zones: int = 3,
         include_held_out: bool = False,
         jammer_intensity: float = 0.0,
+        max_steps: int = 150,
     ) -> None:
         self.grid_size = grid_size
         self.n_drones = n_drones
@@ -320,6 +323,8 @@ class DroneWorld:
         self.include_held_out = include_held_out
         self.held_out_patterns: List[str] = list(self.HELD_OUT_PATTERNS)
         self.jammer_intensity = jammer_intensity
+        self.max_steps = max_steps
+        self.max_episode_steps = max_steps
 
         # Internal simulation time step, incremented each step() call
         self.t: int = 0
@@ -334,9 +339,11 @@ class DroneWorld:
         # Track completed and remaining delivery points (state tracking only, no rewards)
         self.delivered: Set[Tuple[int, int]] = set()
         self.remaining_deliveries: List[Tuple[int, int]] = list(self.delivery_points)
+        self.just_delivered: Set[Tuple[int, int]] = set()
 
         # Place all drones at the depot
         self.drones: List[Tuple[int, int]] = [self.depot for _ in range(self.n_drones)]
+        self.prev_drones: List[Tuple[int, int]] = list(self.drones)
 
         # Initialize moving no-fly zones
         self.no_fly_zones: List[NoFlyZone] = self._init_no_fly_zones()
@@ -478,6 +485,10 @@ class DroneWorld:
         if len(actions) != self.n_drones:
             raise ValueError(f"Expected {self.n_drones} actions, got {len(actions)}")
 
+        # Store positions prior to movement for transition tracking
+        self.prev_drones = list(self.drones)
+        self.just_delivered = set()
+
         status: List[Dict[str, Any]] = []
         for i in range(self.n_drones):
             action = actions[i]
@@ -507,6 +518,7 @@ class DroneWorld:
         for pos in self.drones:
             if pos in self.delivery_points and pos not in self.delivered:
                 self.delivered.add(pos)
+                self.just_delivered.add(pos)
         self.remaining_deliveries = [p for p in self.delivery_points if p not in self.delivered]
 
         # Check for no-fly zone collisions at the new time step
@@ -596,3 +608,81 @@ class DroneWorld:
             )
 
         return "\n".join(lines)
+
+    def get_observation(self, drone_id: int) -> np.ndarray:
+        """
+        Returns the local observation vector for drone_id as a NumPy float array.
+
+        Vector components (length 7, normalized 0-1 where applicable, ordered):
+        1-2. own (x, y), normalized by grid size
+        3-4. relative vector (dx, dy) to nearest undelivered delivery point, normalized by grid size
+        5. jam probability at the drone's own current position
+        6. fraction of deliveries remaining (remaining / total)
+        7. fraction of episode time remaining (based on current t vs max episode steps)
+
+        Local/per-agent only: does NOT include other drones' positions.
+        """
+        if drone_id < 0 or drone_id >= self.n_drones:
+            raise ValueError(f"Invalid drone_id {drone_id}. Must be in [0, {self.n_drones - 1}].")
+
+        curr_x, curr_y = self.drones[drone_id]
+
+        # 1-2. Own (x, y) normalized by grid size
+        norm_x = float(curr_x) / float(self.grid_size)
+        norm_y = float(curr_y) / float(self.grid_size)
+
+        # 3-4. Relative vector (dx, dy) to nearest undelivered delivery point, normalized by grid size
+        if self.remaining_deliveries:
+            target = min(
+                self.remaining_deliveries,
+                key=lambda p: (abs(curr_x - p[0]) + abs(curr_y - p[1]), p[0], p[1]),
+            )
+            dx = float(target[0] - curr_x) / float(self.grid_size)
+            dy = float(target[1] - curr_y) / float(self.grid_size)
+        else:
+            dx = 0.0
+            dy = 0.0
+
+        # 5. Jam probability at the drone's own current position
+        if self.jammer is not None:
+            jam_prob = float(self.jammer.jam_probability((curr_x, curr_y)))
+        else:
+            jam_prob = 0.0
+
+        # 6. Fraction of deliveries remaining (remaining / total)
+        total_deliveries = len(self.delivery_points)
+        deliveries_remaining = (
+            float(len(self.remaining_deliveries)) / float(total_deliveries)
+            if total_deliveries > 0
+            else 0.0
+        )
+
+        # 7. Fraction of episode time remaining (current t vs max episode steps)
+        max_steps = float(self.max_steps)
+        if max_steps > 0:
+            time_remaining = max(0.0, min(1.0, float(max_steps - self.t) / max_steps))
+        else:
+            time_remaining = 0.0
+
+        return np.array(
+            [norm_x, norm_y, dx, dy, jam_prob, deliveries_remaining, time_remaining],
+            dtype=np.float32,
+        )
+
+    def get_global_state(self) -> Dict[str, Any]:
+        """
+        Returns global world state for the centralized critic.
+
+        Contains:
+        - all drone positions
+        - all delivery point statuses (delivered/not)
+        - current timestep t
+        """
+        return {
+            "drones": list(self.drones),
+            "drone_positions": list(self.drones),
+            "delivery_statuses": {p: (p in self.delivered) for p in self.delivery_points},
+            "delivery_points": [(p, p in self.delivered) for p in self.delivery_points],
+            "t": self.t,
+        }
+
