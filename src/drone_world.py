@@ -1,5 +1,5 @@
 """
-drone_world.py - 2D drone delivery world state with moving no-fly zones for CONSTELLATION.
+drone_world.py - 2D drone delivery world state with moving no-fly zones and scripted jammer for CONSTELLATION.
 
 Civilian logistics framing only:
 - 2D grid
@@ -8,7 +8,8 @@ Civilian logistics framing only:
 - Drones initialized at the depot
 - Moving No-Fly Zones: deterministic, repeating paths as a pure function of integer time step t
 - Pattern pool with reservable held-out pattern for unseen testing
-- No drone movement logic yet, no collision/penalty logic yet, no jammer, no RL/torch usage.
+- Scripted Jammer: fixed at grid center, configurable intensity (0% to 70%), deterministic distance-based falloff
+- No drone movement logic yet, no collision/penalty logic yet, no RL/torch usage.
 """
 
 from typing import List, Tuple, Set, Optional
@@ -202,10 +203,48 @@ class NoFlyZone:
         return self._generate_horizontal_path()
 
 
+class Jammer:
+    """
+    Scripted communication jammer at a fixed grid location with deterministic distance-based falloff.
+
+    Civilian logistics framing: models ambient RF interference / communication degradation.
+    Stores position, intensity, and falloff_radius.
+    Calculates jam_probability(pos) = intensity * max(0, 1 - manhattan_distance(pos, jammer_pos) / falloff_radius),
+    clamped strictly within [0.0, intensity].
+    """
+
+    def __init__(
+        self,
+        position: Tuple[int, int],
+        intensity: float,
+        falloff_radius: float,
+    ) -> None:
+        self.position: Tuple[int, int] = position
+        self.intensity: float = float(intensity)
+        self.falloff_radius: float = float(falloff_radius)
+
+    def manhattan_distance(self, pos: Tuple[int, int]) -> int:
+        """Calculates Manhattan distance from the jammer to pos."""
+        return abs(pos[0] - self.position[0]) + abs(pos[1] - self.position[1])
+
+    def jam_probability(self, pos: Tuple[int, int]) -> float:
+        """
+        Calculates the effective communication jamming probability at pos.
+        Formula: intensity * max(0.0, 1.0 - manhattan_distance(pos, jammer_pos) / falloff_radius)
+        Clamped to [0.0, intensity].
+        """
+        dist = self.manhattan_distance(pos)
+        if self.falloff_radius <= 0.0:
+            raw_prob = self.intensity if dist == 0 else 0.0
+        else:
+            raw_prob = self.intensity * max(0.0, 1.0 - (dist / self.falloff_radius))
+        return max(0.0, min(float(self.intensity), float(raw_prob)))
+
+
 class DroneWorld:
     """
     Static world state representing a 2D delivery grid, depot, delivery points,
-    drones, and moving no-fly zones.
+    drones, moving no-fly zones, and scripted jammer.
     """
 
     AVAILABLE_PATTERNS: List[str] = ["horizontal", "vertical", "box_loop", "diagonal"]
@@ -220,6 +259,7 @@ class DroneWorld:
         min_delivery_distance: int = 12,
         n_no_fly_zones: int = 3,
         include_held_out: bool = False,
+        jammer_intensity: float = 0.0,
     ) -> None:
         self.grid_size = grid_size
         self.n_drones = n_drones
@@ -229,6 +269,7 @@ class DroneWorld:
         self.n_no_fly_zones = n_no_fly_zones
         self.include_held_out = include_held_out
         self.held_out_patterns: List[str] = list(self.HELD_OUT_PATTERNS)
+        self.jammer_intensity = jammer_intensity
 
         # Place depot at (0, 0)
         self.depot: Tuple[int, int] = (0, 0)
@@ -242,6 +283,18 @@ class DroneWorld:
 
         # Initialize moving no-fly zones
         self.no_fly_zones: List[NoFlyZone] = self._init_no_fly_zones()
+
+        # Initialize Jammer at grid center when intensity > 0.0
+        if self.jammer_intensity > 0.0:
+            center = (self.grid_size // 2, self.grid_size // 2)
+            falloff_radius = float(self.grid_size // 2)
+            self.jammer: Optional[Jammer] = Jammer(
+                position=center,
+                intensity=self.jammer_intensity,
+                falloff_radius=falloff_radius,
+            )
+        else:
+            self.jammer = None
 
     def _manhattan_distance(self, p1: Tuple[int, int], p2: Tuple[int, int]) -> int:
         return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
@@ -399,5 +452,17 @@ class DroneWorld:
                 else:
                     row.append(".")
             lines.append(sep.join(row))
+
+        if self.jammer is not None:
+            depot_prob = self.jammer.jam_probability(self.depot)
+            delivery_parts = [
+                f"{p}: {self.jammer.jam_probability(p):.2f}"
+                for p in self.delivery_points
+            ]
+            lines.append(
+                f"Jammer: pos={self.jammer.position}, intensity={self.jammer.intensity:.2f} | "
+                f"jam_prob(depot {self.depot})={depot_prob:.2f} | "
+                f"jam_prob(delivery)={', '.join(delivery_parts)}"
+            )
 
         return "\n".join(lines)
