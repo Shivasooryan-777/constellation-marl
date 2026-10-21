@@ -11,6 +11,7 @@ Civilian logistics framing only:
 - Pattern pool with reservable held-out pattern for unseen testing
 - Scripted Jammer: fixed at grid center, configurable intensity (0% to 70%), deterministic distance-based falloff
 - Discrete drone actions (stay, up, down, left, right) with boundary clamping and step() state transitions
+- Delivery-completion detection tracking remaining vs delivered points
 - No multi-drone collision rules, no reward shaping, no RL/torch usage yet.
 """
 
@@ -330,6 +331,10 @@ class DroneWorld:
         # Place delivery points using seeded rejection sampling
         self.delivery_points: List[Tuple[int, int]] = self._place_delivery_points()
 
+        # Track completed and remaining delivery points (state tracking only, no rewards)
+        self.delivered: Set[Tuple[int, int]] = set()
+        self.remaining_deliveries: List[Tuple[int, int]] = list(self.delivery_points)
+
         # Place all drones at the depot
         self.drones: List[Tuple[int, int]] = [self.depot for _ in range(self.n_drones)]
 
@@ -458,7 +463,10 @@ class DroneWorld:
             2. Clamp candidate position to grid boundaries [0, grid_size - 1].
             3. Update stored drone positions.
             4. Increment self.t by 1.
-            5. Check each drone's new position against active no-fly zones at the new self.t.
+            5. Check for delivery completions: if any drone occupies an undelivered delivery
+               point coordinate, add that coordinate to self.delivered and update
+               self.remaining_deliveries (state tracking only; no rewards).
+            6. Check each drone's new position against active no-fly zones at the new self.t.
                If a drone lands on an active no-fly zone cell, log a warning:
                "Warning: drone {i} entered no-fly zone (pattern {zone.pattern_id}) at {pos}, t={self.t}"
                (The move is not blocked or altered; penalties/rewards are future work).
@@ -494,6 +502,12 @@ class DroneWorld:
 
         # Advance internal simulation time step
         self.t += 1
+
+        # Check for delivery completions at the new drone positions (prior to zone collision warnings)
+        for pos in self.drones:
+            if pos in self.delivery_points and pos not in self.delivered:
+                self.delivered.add(pos)
+        self.remaining_deliveries = [p for p in self.delivery_points if p not in self.delivered]
 
         # Check for no-fly zone collisions at the new time step
         for i, pos in enumerate(self.drones):
