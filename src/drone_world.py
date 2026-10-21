@@ -1,5 +1,6 @@
 """
-drone_world.py - 2D drone delivery world state with moving no-fly zones and scripted jammer for CONSTELLATION.
+drone_world.py - 2D drone delivery world state with moving no-fly zones, scripted jammer,
+and discrete movement transitions for CONSTELLATION.
 
 Civilian logistics framing only:
 - 2D grid
@@ -9,11 +10,52 @@ Civilian logistics framing only:
 - Moving No-Fly Zones: deterministic, repeating paths as a pure function of integer time step t
 - Pattern pool with reservable held-out pattern for unseen testing
 - Scripted Jammer: fixed at grid center, configurable intensity (0% to 70%), deterministic distance-based falloff
-- No drone movement logic yet, no collision/penalty logic yet, no RL/torch usage.
+- Discrete drone actions (stay, up, down, left, right) with boundary clamping and step() state transitions
+- No multi-drone collision rules, no reward shaping, no RL/torch usage yet.
 """
 
-from typing import List, Tuple, Set, Optional
+from typing import List, Tuple, Set, Optional, Dict, Any
 import random
+
+
+# ==============================================================================
+# Action Definitions and Coordinate Conventions
+# ==============================================================================
+# Coordinate system:
+# Standard 2D grid convention:
+# - Origin (0, 0) is at top-left.
+# - x is the horizontal coordinate (column index), increasing to the right (East) [0, grid_size - 1].
+# - y is the vertical coordinate (row index), increasing downwards (South) [0, grid_size - 1].
+#
+# Discrete Actions:
+# - STAY (0): drone remains in place, delta = (0, 0)
+# - UP (1): moves north, decreasing y-coordinate, delta = (0, -1)
+# - DOWN (2): moves south, increasing y-coordinate, delta = (0, +1)
+# - LEFT (3): moves west, decreasing x-coordinate, delta = (-1, 0)
+# - RIGHT (4): moves east, increasing x-coordinate, delta = (+1, 0)
+# ==============================================================================
+
+ACTION_STAY = 0
+ACTION_UP = 1
+ACTION_DOWN = 2
+ACTION_LEFT = 3
+ACTION_RIGHT = 4
+
+# Short aliases
+STAY = ACTION_STAY
+UP = ACTION_UP
+DOWN = ACTION_DOWN
+LEFT = ACTION_LEFT
+RIGHT = ACTION_RIGHT
+
+ACTION_DELTAS: Dict[int, Tuple[int, int]] = {
+    ACTION_STAY: (0, 0),
+    ACTION_UP: (0, -1),
+    ACTION_DOWN: (0, 1),
+    ACTION_LEFT: (-1, 0),
+    ACTION_RIGHT: (1, 0),
+}
+
 
 
 class NoFlyZone:
@@ -250,6 +292,13 @@ class DroneWorld:
     AVAILABLE_PATTERNS: List[str] = ["horizontal", "vertical", "box_loop", "diagonal"]
     HELD_OUT_PATTERNS: List[str] = ["diagonal"]
 
+    # Action constants exposed on class for convenience
+    STAY: int = STAY
+    UP: int = UP
+    DOWN: int = DOWN
+    LEFT: int = LEFT
+    RIGHT: int = RIGHT
+
     def __init__(
         self,
         grid_size: int = 20,
@@ -270,6 +319,9 @@ class DroneWorld:
         self.include_held_out = include_held_out
         self.held_out_patterns: List[str] = list(self.HELD_OUT_PATTERNS)
         self.jammer_intensity = jammer_intensity
+
+        # Internal simulation time step, incremented each step() call
+        self.t: int = 0
 
         # Place depot at (0, 0)
         self.depot: Tuple[int, int] = (0, 0)
@@ -393,9 +445,71 @@ class DroneWorld:
 
         return zones
 
-    def render(self, t: int = 0, sep: str = "") -> str:
+    def step(self, actions: List[int]) -> List[Dict[str, Any]]:
+        """
+        Executes one discrete simulation step for all drones.
+
+        Args:
+            actions: List of length n_drones with integer actions
+                     (0=STAY, 1=UP, 2=DOWN, 3=LEFT, 4=RIGHT).
+
+        Process:
+            1. For each drone i, compute candidate position: (curr_x + dx, curr_y + dy).
+            2. Clamp candidate position to grid boundaries [0, grid_size - 1].
+            3. Update stored drone positions.
+            4. Increment self.t by 1.
+            5. Check each drone's new position against active no-fly zones at the new self.t.
+               If a drone lands on an active no-fly zone cell, log a warning:
+               "Warning: drone {i} entered no-fly zone (pattern {zone.pattern_id}) at {pos}, t={self.t}"
+               (The move is not blocked or altered; penalties/rewards are future work).
+
+        Returns:
+            A list of per-drone status dictionaries containing drone index, previous position,
+            action taken, and new position.
+        """
+        if len(actions) != self.n_drones:
+            raise ValueError(f"Expected {self.n_drones} actions, got {len(actions)}")
+
+        status: List[Dict[str, Any]] = []
+        for i in range(self.n_drones):
+            action = actions[i]
+            if action not in ACTION_DELTAS:
+                raise ValueError(f"Invalid action {action} for drone {i}. Must be 0..4.")
+
+            curr_x, curr_y = self.drones[i]
+            dx, dy = ACTION_DELTAS[action]
+
+            # Boundary clamping: ensure drones cannot leave the grid
+            new_x = max(0, min(self.grid_size - 1, curr_x + dx))
+            new_y = max(0, min(self.grid_size - 1, curr_y + dy))
+            new_pos = (new_x, new_y)
+
+            self.drones[i] = new_pos
+            status.append({
+                "drone_id": i,
+                "prev_pos": (curr_x, curr_y),
+                "action": action,
+                "pos": new_pos,
+            })
+
+        # Advance internal simulation time step
+        self.t += 1
+
+        # Check for no-fly zone collisions at the new time step
+        for i, pos in enumerate(self.drones):
+            for zone in self.no_fly_zones:
+                if zone.position_at(self.t) == pos:
+                    print(
+                        f"Warning: drone {i} entered no-fly zone (pattern {zone.pattern_id}) "
+                        f"at {pos}, t={self.t}"
+                    )
+
+        return status
+
+    def render(self, t: Optional[int] = None, sep: str = "") -> str:
         """
         Renders the 20x20 grid as an ASCII string at time step t.
+        If t is None, defaults to self.t (the current internal simulation time step).
 
         Symbols:
             D: Depot
@@ -407,6 +521,8 @@ class DroneWorld:
         If a zone cell coincides with a drone/depot/delivery cell at some t,
         X is displayed with priority, and a warning is logged to stdout.
         """
+        if t is None:
+            t = self.t
         delivery_set = set(self.delivery_points)
         active_drone_set = {d for d in self.drones if d != self.depot}
         drone_set = set(self.drones)
