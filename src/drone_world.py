@@ -313,6 +313,7 @@ class DroneWorld:
         include_held_out: bool = False,
         jammer_intensity: float = 0.0,
         max_steps: int = 150,
+        jam_rng: Optional[random.Random] = None,
     ) -> None:
         self.grid_size = grid_size
         self.n_drones = n_drones
@@ -325,6 +326,9 @@ class DroneWorld:
         self.jammer_intensity = jammer_intensity
         self.max_steps = max_steps
         self.max_episode_steps = max_steps
+
+        # Seeded random generator dedicated to jamming action-scrambling decisions
+        self.jam_rng: random.Random = jam_rng if jam_rng is not None else random.Random(seed)
 
         # Internal simulation time step, incremented each step() call
         self.t: int = 0
@@ -485,16 +489,34 @@ class DroneWorld:
         if len(actions) != self.n_drones:
             raise ValueError(f"Expected {self.n_drones} actions, got {len(actions)}")
 
+        for i in range(self.n_drones):
+            if actions[i] not in ACTION_DELTAS:
+                raise ValueError(f"Invalid action {actions[i]} for drone {i}. Must be 0..4.")
+
+        # 1. Action unreliability via jamming:
+        # For each drone, decide independently if chosen action is scrambled to STAY based on local jam_probability.
+        effective_actions: List[int] = list(actions)
+        if self.jammer is not None:
+            for i in range(self.n_drones):
+                curr_x, curr_y = self.drones[i]
+                jam_prob = self.jammer.jam_probability((curr_x, curr_y))
+                if self.jam_rng.random() < jam_prob:
+                    effective_actions[i] = ACTION_STAY
+
+        # Synchronize effective actions back into input list so external wrappers (e.g. MetricsTracker)
+        # observe actual executed actions rather than scrambled-out actions.
+        try:
+            actions[:] = effective_actions
+        except (TypeError, ValueError):
+            pass
+
         # Store positions prior to movement for transition tracking
         self.prev_drones = list(self.drones)
         self.just_delivered = set()
 
         status: List[Dict[str, Any]] = []
         for i in range(self.n_drones):
-            action = actions[i]
-            if action not in ACTION_DELTAS:
-                raise ValueError(f"Invalid action {action} for drone {i}. Must be 0..4.")
-
+            action = effective_actions[i]
             curr_x, curr_y = self.drones[i]
             dx, dy = ACTION_DELTAS[action]
 
