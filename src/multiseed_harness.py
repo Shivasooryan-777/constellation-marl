@@ -139,7 +139,7 @@ def run_single_seed(
             n_delivery_points: int = 3,
             max_steps: int = 250,
         ) -> DroneWorld:
-            return DroneWorld(
+            world = DroneWorld(
                 grid_size=grid_size,
                 n_drones=n_drones,
                 n_delivery_points=n_delivery_points,
@@ -148,6 +148,12 @@ def run_single_seed(
                 jammer_intensity=jammer_intensity,
                 max_steps=max_steps,
             )
+            actual_jammer_intensity = world.jammer.intensity if world.jammer is not None else 0.0
+            print(
+                f"[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity={world.jammer_intensity:.2f} | "
+                f"self.jammer.intensity={actual_jammer_intensity:.2f} (seed={seed})"
+            )
+            return world
 
         src.mappo_train.make_env = patched_make_env
         try:
