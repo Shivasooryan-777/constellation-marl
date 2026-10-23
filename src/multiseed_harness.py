@@ -74,6 +74,8 @@ def run_single_seed(
     window_size = condition.get("window_size", 20)
     checkpoint_freq = condition.get("checkpoint_freq", 20)
     time_limit_seconds = condition.get("time_limit_seconds", 3600.0)
+    jammer_intensity = condition.get("jammer_intensity", 0.0)
+    n_no_fly_zones = condition.get("n_no_fly_zones", 0)
 
     if checkpoint_dir is None:
         checkpoint_dir = os.path.join("checkpoints", f"multiseed_{algo}", f"seed_{seed}")
@@ -81,37 +83,91 @@ def run_single_seed(
     t_start = time.time()
 
     if algo == "ippo":
-        logs, agent, final_iter, success = train_ippo(
-            seed=seed,
-            grid_size=grid_size,
-            n_drones=n_drones,
-            n_delivery_points=n_delivery_points,
-            episode_max_steps=episode_max_steps,
-            rollout_world_steps=rollout_world_steps,
-            max_iterations=max_iterations,
-            target_success_rate=target_success_rate,
-            window_size=window_size,
-            checkpoint_dir=checkpoint_dir,
-            checkpoint_freq=checkpoint_freq,
-            log_csv_path=log_csv_path,
-            time_limit_seconds=time_limit_seconds,
-        )
+        import src.ippo_train
+        orig_make_env = src.ippo_train.make_env
+
+        def patched_make_env(
+            seed: int = 0,
+            grid_size: int = 20,
+            n_drones: int = 5,
+            n_delivery_points: int = 3,
+            max_steps: int = 250,
+        ) -> DroneWorld:
+            world = DroneWorld(
+                grid_size=grid_size,
+                n_drones=n_drones,
+                n_delivery_points=n_delivery_points,
+                seed=seed,
+                n_no_fly_zones=n_no_fly_zones,
+                jammer_intensity=jammer_intensity,
+                max_steps=max_steps,
+            )
+            actual_jammer_intensity = world.jammer.intensity if world.jammer is not None else 0.0
+            print(
+                f"[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity={world.jammer_intensity:.2f} | "
+                f"self.jammer.intensity={actual_jammer_intensity:.2f} (seed={seed})"
+            )
+            return world
+
+        src.ippo_train.make_env = patched_make_env
+        try:
+            logs, agent, final_iter, success = train_ippo(
+                seed=seed,
+                grid_size=grid_size,
+                n_drones=n_drones,
+                n_delivery_points=n_delivery_points,
+                episode_max_steps=episode_max_steps,
+                rollout_world_steps=rollout_world_steps,
+                max_iterations=max_iterations,
+                target_success_rate=target_success_rate,
+                window_size=window_size,
+                checkpoint_dir=checkpoint_dir,
+                checkpoint_freq=checkpoint_freq,
+                log_csv_path=log_csv_path,
+                time_limit_seconds=time_limit_seconds,
+            )
+        finally:
+            src.ippo_train.make_env = orig_make_env
     elif algo == "mappo":
-        logs, agent, final_iter, success = train_mappo(
-            seed=seed,
-            grid_size=grid_size,
-            n_drones=n_drones,
-            n_delivery_points=n_delivery_points,
-            episode_max_steps=episode_max_steps,
-            rollout_world_steps=rollout_world_steps,
-            max_iterations=max_iterations,
-            target_success_rate=target_success_rate,
-            window_size=window_size,
-            checkpoint_dir=checkpoint_dir,
-            checkpoint_freq=checkpoint_freq,
-            log_csv_path=log_csv_path,
-            time_limit_seconds=time_limit_seconds,
-        )
+        import src.mappo_train
+        orig_make_env = src.mappo_train.make_env
+
+        def patched_make_env(
+            seed: int = 0,
+            grid_size: int = 20,
+            n_drones: int = 5,
+            n_delivery_points: int = 3,
+            max_steps: int = 250,
+        ) -> DroneWorld:
+            return DroneWorld(
+                grid_size=grid_size,
+                n_drones=n_drones,
+                n_delivery_points=n_delivery_points,
+                seed=seed,
+                n_no_fly_zones=n_no_fly_zones,
+                jammer_intensity=jammer_intensity,
+                max_steps=max_steps,
+            )
+
+        src.mappo_train.make_env = patched_make_env
+        try:
+            logs, agent, final_iter, success = train_mappo(
+                seed=seed,
+                grid_size=grid_size,
+                n_drones=n_drones,
+                n_delivery_points=n_delivery_points,
+                episode_max_steps=episode_max_steps,
+                rollout_world_steps=rollout_world_steps,
+                max_iterations=max_iterations,
+                target_success_rate=target_success_rate,
+                window_size=window_size,
+                checkpoint_dir=checkpoint_dir,
+                checkpoint_freq=checkpoint_freq,
+                log_csv_path=log_csv_path,
+                time_limit_seconds=time_limit_seconds,
+            )
+        finally:
+            src.mappo_train.make_env = orig_make_env
     else:
         raise ValueError(f"Unsupported algorithm '{algorithm}'. Must be 'ippo' or 'mappo'.")
 
@@ -125,6 +181,7 @@ def run_single_seed(
 
     record: Dict[str, Any] = {
         "algorithm": algo,
+        "jammer_intensity": jammer_intensity,
         "seed": seed,
         "final_iteration": int(final_iter),
         "success_achieved": bool(success),
@@ -300,6 +357,7 @@ def write_multiseed_csv(
     # Derive column headers preserving clean order
     preferred_order = [
         "algorithm",
+        "jammer_intensity",
         "seed",
         "final_iteration",
         "success_achieved",
