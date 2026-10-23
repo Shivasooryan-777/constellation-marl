@@ -174,6 +174,10 @@ def evaluate_agent(
     if condition is None:
         condition = {}
 
+    # Enforce deterministic evaluation across PyTorch action sampling and environment
+    torch.manual_seed(seed)
+    np.random.seed(seed)
+
     algo = algorithm.lower().strip()
     grid_size = condition.get("grid_size", 20)
     n_drones = condition.get("n_drones", 5)
