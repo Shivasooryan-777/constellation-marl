@@ -1,0 +1,6 @@
+jammer_intensity,eval_full_success_mean,eval_full_success_std,eval_latency_steps_mean,eval_latency_steps_std,eval_success_fraction_mean,eval_success_fraction_std,eval_collisions_mean,eval_collisions_std,eval_energy_mean,eval_energy_std,train_iter_mean,train_iter_std,train_full_success_mean,train_full_success_std
+0.0,0.82,0.249,129.88,28.57,0.94,0.083,33.1,7.37,581.08,142.22,10.2,1.48,0.83,0.0447
+0.1,0.68,0.2864,161.32,38.15,0.8533,0.1193,44.94,15.82,676.56,152.37,10.4,1.82,0.88,0.0274
+0.3,0.88,0.1789,138.98,27.33,0.9467,0.0767,36.78,9.46,569.64,116.79,11.0,2.12,0.84,0.0224
+0.5,0.58,0.4266,176.18,54.13,0.8267,0.1673,53.92,24.13,662.54,196.78,11.2,1.48,0.9,0.05
+0.7,0.88,0.1095,135.56,13.81,0.9533,0.0506,40.7,4.99,487.54,56.89,12.2,2.17,0.84,0.0652
