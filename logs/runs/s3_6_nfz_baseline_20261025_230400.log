@@ -1,0 +1,1281 @@
+====================================================================================================
+S3.6 MINIMAL NO-FLY-ZONE TRAINING BASELINE + CONTROLLED SEEN-VS-HELD-OUT COMPARISON
+Dual-Stream TeeLogger Active: D:\PROJECTS\constellation\logs\runs\s3_6_nfz_baseline_20261025_230400.log
+====================================================================================================
+
+--------------------------------------------------------------------------------
+HARDWARE & RESOURCE MONITORING — PRE-RUN BASELINE
+--------------------------------------------------------------------------------
+Timestamp:             2026-10-25 23:04:00
+CPU Processor:         AMD64 Family 25 Model 68 Stepping 1, AuthenticAMD (AMD64)
+PyTorch Device:        CPU (Pure CPU execution)
+System RAM Total:      15.32 GB
+System RAM Used:       12.21 GB (79.0%)
+Process Resident RAM:  198.46 MB
+Thermals / Fan:        Nominal CPU temperature, normal operating range, zero throttling
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+STEP 1: VERIFYING EQUAL-DENSITY HELD-OUT WORLD ARCHITECTURE
+--------------------------------------------------------------------------------
+Standard DroneWorld(n_no_fly_zones=3):
+  Zone count:    3 zones
+  Pattern IDs:   ['horizontal', 'vertical', 'box_loop']
+  Start Coords:  [(4, 14), (14, 5), (12, 11)]
+HeldOutDroneWorld(n_no_fly_zones=3):
+  Zone count:    3 zones
+  Pattern IDs:   ['diagonal', 'diagonal', 'diagonal']
+  Start Coords:  [(4, 14), (14, 5), (12, 11)]
+Verification PASS: Exactly equal density (3 zones) achieved with zero edits to protected files!
+
+--------------------------------------------------------------------------------
+STEP 2: TRAINING IPPO & MAPPO (2 SEEDS EACH @ 0% JAMMING, N_NO_FLY_ZONES=3)
+--------------------------------------------------------------------------------
+
+>>> Training IPPO | Seed 0 | Jamming 0% | No-Fly Zones: 3 (Seen Pool) <<<
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+================================================================================
+CONSTELLATION — Session S2.3: IPPO Training on DroneWorld (CPU-only)
+================================================================================
+Environment: Grid 20x20 | Drones: 5 | Delivery Points: 3
+Jammer: 0% intensity | No-Fly Zones: None active | Episode cap: 250 steps
+Policy: Shared Actor/Critic (state_dim=7, action_dim=5, hidden=64)
+Rollout: 410 world-steps * 5 drones = 2050 samples/update
+Update: 4 epochs, minibatch 64, Adam lr=3e-4, GAE(gamma=0.99, lambda=0.95), no adv norm
+Early stop bar: Average full delivery success >= 80% over last 20 episodes
+Run safety limits: Max 150 iterations, 10-minute wall-clock cap
+================================================================================
+
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (5, 14), t=81
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (4, 14), t=88
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (5, 14), t=89
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (5, 14), t=111
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (6, 14), t=150
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (6, 14), t=154
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 6), t=231
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 6), t=233
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 7), t=234
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 8), t=243
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 8), t=245
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   1/150 | Avg Reward (last  1 eps):   71.00 | Success Rate:  0.67 (Full:  0.0%) | Collisions:  42.0 | PLoss: -0.9446 | VLoss: 2.9410 | Entropy: 1.5837 | Eps:   1 | Time:   2.9s
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 6), t=175
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 8), t=179
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 9), t=180
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 9), t=180
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (8, 14), t=100
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (7, 14), t=117
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (12, 11), t=128
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (12, 10), t=153
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (7, 14), t=163
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (4, 14), t=48
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (5, 14), t=49
+Iter   2/150 | Avg Reward (last  3 eps):   58.83 | Success Rate:  0.44 (Full:  0.0%) | Collisions:  40.7 | PLoss: -0.4985 | VLoss: 3.2503 | Entropy: 1.5471 | Eps:   3 | Time:   5.6s
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (12, 11), t=80
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (12, 11), t=88
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 9), t=52
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (14, 9), t=52
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (7, 14), t=53
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 8), t=99
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 8), t=101
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 8), t=107
+Iter   3/150 | Avg Reward (last  4 eps):   60.93 | Success Rate:  0.50 (Full:  0.0%) | Collisions:  35.5 | PLoss: +0.0488 | VLoss: 3.6090 | Entropy: 1.5695 | Eps:   4 | Time:   7.9s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (13, 9), t=59
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 10), t=69
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 7), t=74
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (14, 11), t=78
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (6, 14), t=98
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 7), t=26
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 8), t=29
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (13, 9), t=75
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 9), t=76
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (14, 9), t=76
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 8), t=77
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 7), t=78
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 7), t=86
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 7), t=90
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 7), t=118
+Iter   4/150 | Avg Reward (last  6 eps):   62.12 | Success Rate:  0.44 (Full:  0.0%) | Collisions:  38.8 | PLoss: -0.2865 | VLoss: 2.5940 | Entropy: 1.5651 | Eps:   6 | Time:  10.2s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 8), t=107
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (13, 11), t=207
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (12, 11), t=208
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 6), t=39
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 6), t=41
+Iter   5/150 | Avg Reward (last  8 eps):   59.82 | Success Rate:  0.46 (Full:  0.0%) | Collisions:  36.9 | PLoss: -0.1952 | VLoss: 5.6649 | Entropy: 1.5568 | Eps:   8 | Time:  12.2s
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 11), t=150
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 5), t=48
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (7, 14), t=59
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 6), t=65
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 7), t=66
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (8, 14), t=140
+Iter   6/150 | Avg Reward (last  9 eps):   58.61 | Success Rate:  0.48 (Full:  0.0%) | Collisions:  38.2 | PLoss: -0.0979 | VLoss: 7.0805 | Entropy: 1.5481 | Eps:   9 | Time:  14.1s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (12, 11), t=40
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (13, 9), t=51
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 9), t=52
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 9), t=52
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 10), t=53
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 11), t=62
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 10), t=69
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 11), t=70
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 11), t=70
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 7), t=90
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 8), t=91
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (7, 14), t=195
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (8, 14), t=196
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (7, 14), t=197
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (6, 14), t=198
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (6, 14), t=202
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (6, 14), t=46
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (12, 9), t=58
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (4, 14), t=64
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (5, 14), t=65
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (8, 14), t=68
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (7, 14), t=69
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (13, 9), t=75
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 9), t=76
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 9), t=76
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 8), t=77
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 7), t=78
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 6), t=79
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 7), t=86
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (14, 11), t=102
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   7/150 | Avg Reward (last 12 eps):   85.11 | Success Rate:  0.61 (Full: 25.0%) | Collisions:  40.0 | PLoss: -2.0698 | VLoss: 9.3300 | Entropy: 1.5115 | Eps:  12 | Time:  16.0s
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 5), t=48
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 7), t=58
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 8), t=61
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 6), t=65
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 6), t=65
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (6, 14), t=46
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (5, 14), t=49
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (6, 14), t=50
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (7, 14), t=51
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (8, 14), t=52
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (12, 11), t=56
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (8, 14), t=68
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (7, 14), t=69
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (8, 14), t=100
+Iter   8/150 | Avg Reward (last 15 eps):  100.92 | Success Rate:  0.69 (Full: 40.0%) | Collisions:  35.3 | PLoss: -2.0494 | VLoss: 8.7398 | Entropy: 1.4783 | Eps:  15 | Time:  17.8s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (4, 14), t=48
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (5, 14), t=49
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (5, 14), t=41
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (6, 14), t=62
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (7, 14), t=69
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (12, 11), t=72
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (12, 10), t=73
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (12, 9), t=74
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 10), t=77
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 11), t=78
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (14, 10), t=85
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 10), t=93
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 8), t=101
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 11), t=102
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (12, 9), t=106
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 11), t=110
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 10), t=125
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 10), t=125
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 10), t=149
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 11), t=150
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 8), t=163
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 9), t=164
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 9), t=164
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (5, 14), t=23
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (4, 14), t=24
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (8, 14), t=36
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (7, 14), t=59
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (8, 14), t=60
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (13, 11), t=111
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 10), t=117
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 11), t=118
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (12, 10), t=129
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (14, 10), t=141
+Iter   9/150 | Avg Reward (last 18 eps):  110.91 | Success Rate:  0.74 (Full: 50.0%) | Collisions:  35.3 | PLoss: -1.0189 | VLoss: 10.3702 | Entropy: 1.4271 | Eps:  18 | Time:  19.6s
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 8), t=147
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (6, 14), t=22
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 7), t=58
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (14, 10), t=85
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (8, 14), t=44
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (8, 14), t=52
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 9), t=60
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 9), t=60
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 8), t=61
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 7), t=74
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 8), t=75
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 8), t=77
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (13, 11), t=79
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (12, 9), t=82
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (13, 9), t=83
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 11), t=86
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (4, 14), t=24
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (5, 14), t=25
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (12, 10), t=33
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (12, 11), t=40
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (7, 14), t=59
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (7, 14), t=61
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (7, 14), t=61
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (14, 11), t=62
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (13, 11), t=63
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (13, 9), t=83
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 9), t=84
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 9), t=84
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 8), t=85
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 9), t=92
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 9), t=92
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 8), t=93
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 7), t=98
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 10), t=101
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 11), t=102
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 6), t=119
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 5), t=120
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 5), t=120
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (14, 10), t=125
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (14, 11), t=126
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (13, 11), t=127
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (5, 14), t=47
+Iter  10/150 | Avg Reward (last 20 eps):  125.06 | Success Rate:  0.82 (Full: 65.0%) | Collisions:  36.0 | PLoss: -1.2125 | VLoss: 8.4238 | Entropy: 1.3512 | Eps:  22 | Time:  21.5s
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (13, 11), t=71
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (13, 9), t=75
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (12, 9), t=90
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 7), t=34
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 6), t=39
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (14, 11), t=70
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (13, 11), t=111
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (4, 14), t=24
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (12, 9), t=50
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 7), t=58
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (7, 14), t=45
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (8, 14), t=52
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (7, 14), t=53
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (13, 11), t=55
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 7), t=70
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  11/150 | Avg Reward (last 20 eps):  156.54 | Success Rate:  0.98 (Full: 95.0%) | Collisions:  30.6 | PLoss: -2.2554 | VLoss: 13.4645 | Entropy: 1.2470 | Eps:  28 | Time:  23.1s
+
+SUCCESS BAR HIT: Full delivery success rate 95.0% >= 80% over last 20 episodes reached at iteration 11!
+  -> Solved model checkpoint saved to D:\PROJECTS\constellation\checkpoints\nfz_baseline\ippo\seed_0\ippo_iteration_11_solved.pt
+  -> [IPPO Seed 0] Solved: True | Final Iter: 11 | Train Full Success: 95.0% | Time: 25.5s
+
+>>> Training IPPO | Seed 1 | Jamming 0% | No-Fly Zones: 3 (Seen Pool) <<<
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+================================================================================
+CONSTELLATION — Session S2.3: IPPO Training on DroneWorld (CPU-only)
+================================================================================
+Environment: Grid 20x20 | Drones: 5 | Delivery Points: 3
+Jammer: 0% intensity | No-Fly Zones: None active | Episode cap: 250 steps
+Policy: Shared Actor/Critic (state_dim=7, action_dim=5, hidden=64)
+Rollout: 410 world-steps * 5 drones = 2050 samples/update
+Update: 4 epochs, minibatch 64, Adam lr=3e-4, GAE(gamma=0.99, lambda=0.95), no adv norm
+Early stop bar: Average full delivery success >= 80% over last 20 episodes
+Run safety limits: Max 150 iterations, 10-minute wall-clock cap
+================================================================================
+
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (14, 3), t=54
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (15, 6), t=59
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (18, 6), t=72
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (18, 6), t=112
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (15, 6), t=123
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (16, 2), t=155
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (16, 3), t=156
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (14, 2), t=175
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 3), t=190
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 2), t=191
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (16, 3), t=196
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (16, 1), t=218
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (16, 6), t=58
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 3), t=126
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (15, 6), t=141
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 2), t=151
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 2), t=159
+Iter   1/150 | Avg Reward (last  1 eps):   14.70 | Success Rate:  0.67 (Full:  0.0%) | Collisions:  28.0 | PLoss: -0.0569 | VLoss: 3.4585 | Entropy: 1.5997 | Eps:   1 | Time:   1.9s
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (16, 2), t=219
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (15, 3), t=221
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (15, 3), t=229
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (15, 6), t=237
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (16, 3), t=76
+Iter   2/150 | Avg Reward (last  3 eps):   51.40 | Success Rate:  0.78 (Full: 33.3%) | Collisions:  38.7 | PLoss: -0.9075 | VLoss: 8.9592 | Entropy: 1.5648 | Eps:   3 | Time:   3.4s
+Warning: drone 4 entered no-fly zone (pattern vertical) at (17, 15), t=116
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 12), t=79
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 13), t=82
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (16, 3), t=84
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 11), t=88
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 11), t=96
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 12), t=97
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 13), t=98
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 13), t=102
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 3), t=30
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 13), t=66
+Warning: drone 1 entered no-fly zone (pattern vertical) at (17, 14), t=69
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 13), t=70
+Warning: drone 4 entered no-fly zone (pattern vertical) at (17, 13), t=70
+Warning: drone 3 entered no-fly zone (pattern vertical) at (17, 15), t=84
+Iter   3/150 | Avg Reward (last  5 eps):   57.76 | Success Rate:  0.73 (Full: 40.0%) | Collisions:  34.2 | PLoss: -0.5300 | VLoss: 7.1969 | Entropy: 1.5514 | Eps:   5 | Time:   4.9s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   4/150 | Avg Reward (last  7 eps):   65.11 | Success Rate:  0.76 (Full: 42.9%) | Collisions:  42.0 | PLoss: -0.5346 | VLoss: 3.6737 | Entropy: 1.5549 | Eps:   7 | Time:   6.2s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   5/150 | Avg Reward (last 11 eps):   86.45 | Success Rate:  0.85 (Full: 63.6%) | Collisions:  31.5 | PLoss: -2.0345 | VLoss: 8.0017 | Entropy: 1.5047 | Eps:  11 | Time:   7.6s
+Warning: drone 3 entered no-fly zone (pattern vertical) at (17, 11), t=56
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   6/150 | Avg Reward (last 14 eps):   87.56 | Success Rate:  0.86 (Full: 64.3%) | Collisions:  31.1 | PLoss: -0.2489 | VLoss: 6.2997 | Entropy: 1.5133 | Eps:  14 | Time:   8.9s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   7/150 | Avg Reward (last 15 eps):   84.43 | Success Rate:  0.84 (Full: 60.0%) | Collisions:  33.9 | PLoss: +1.0341 | VLoss: 3.3779 | Entropy: 1.5276 | Eps:  15 | Time:  10.1s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Warning: drone 1 entered no-fly zone (pattern vertical) at (17, 13), t=78
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   8/150 | Avg Reward (last 17 eps):   80.84 | Success Rate:  0.82 (Full: 52.9%) | Collisions:  35.1 | PLoss: +0.1625 | VLoss: 6.2733 | Entropy: 1.5231 | Eps:  17 | Time:  11.4s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Warning: drone 1 entered no-fly zone (pattern vertical) at (17, 12), t=63
+Warning: drone 1 entered no-fly zone (pattern vertical) at (17, 11), t=64
+Warning: drone 1 entered no-fly zone (pattern vertical) at (17, 12), t=65
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   9/150 | Avg Reward (last 20 eps):   93.05 | Success Rate:  0.87 (Full: 65.0%) | Collisions:  32.2 | PLoss: -1.1630 | VLoss: 8.1907 | Entropy: 1.4566 | Eps:  21 | Time:  12.7s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 11), t=80
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Warning: drone 4 entered no-fly zone (pattern vertical) at (17, 14), t=77
+Iter  10/150 | Avg Reward (last 20 eps):  103.81 | Success Rate:  0.92 (Full: 75.0%) | Collisions:  29.8 | PLoss: -0.6409 | VLoss: 7.6750 | Entropy: 1.4384 | Eps:  25 | Time:  14.1s
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 15), t=92
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  11/150 | Avg Reward (last 20 eps):  107.46 | Success Rate:  0.93 (Full: 80.0%) | Collisions:  26.9 | PLoss: -0.7138 | VLoss: 8.1347 | Entropy: 1.4264 | Eps:  29 | Time:  15.3s
+
+SUCCESS BAR HIT: Full delivery success rate 80.0% >= 80% over last 20 episodes reached at iteration 11!
+  -> Solved model checkpoint saved to D:\PROJECTS\constellation\checkpoints\nfz_baseline\ippo\seed_1\ippo_iteration_11_solved.pt
+  -> [IPPO Seed 1] Solved: True | Final Iter: 11 | Train Full Success: 80.0% | Time: 15.3s
+
+>>> Training MAPPO | Seed 0 | Jamming 0% | No-Fly Zones: 3 (Seen Pool) <<<
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+================================================================================
+CONSTELLATION — Session S2.4: MAPPO Training on DroneWorld (CPU-only)
+================================================================================
+Environment: Grid 20x20 | Drones: 5 | Delivery Points: 3
+Jammer: 0% intensity | No-Fly Zones: None active | Episode cap: 250 steps
+Policy: Shared Actor (input_dim=7, action_dim=5, hidden=64)
+Critic: Centralized Critic (input_dim=14 from get_global_state(), hidden=64)
+Rollout: 410 world-steps * 5 drones = 2050 samples/update
+Update: 4 epochs, minibatch 64, Adam lr=3e-4, GAE(gamma=0.99, lambda=0.95), no adv norm
+Early stop bar: Average full delivery success >= 80% over last 20 episodes
+Run safety limits: Max 150 iterations, 10-minute wall-clock cap
+================================================================================
+
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (6, 14), t=62
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (12, 10), t=121
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (6, 14), t=126
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (5, 14), t=127
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 11), t=174
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (13, 11), t=175
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (6, 14), t=190
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (4, 14), t=200
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (6, 14), t=210
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (7, 14), t=213
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (4, 14), t=96
+Iter   1/150 | Avg Reward (last  1 eps):   70.60 | Success Rate:  0.67 (Full:  0.0%) | Collisions:  24.0 | PLoss: -1.0565 | VLoss: 3.8564 | Entropy: 1.5847 | Eps:   1 | Time:   1.2s
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (6, 14), t=178
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (12, 11), t=216
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (12, 11), t=224
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (12, 10), t=225
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (12, 9), t=226
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (4, 14), t=40
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (5, 14), t=41
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (5, 14), t=87
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (5, 14), t=87
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 10), t=141
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 11), t=142
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 7), t=210
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   2/150 | Avg Reward (last  3 eps):   82.20 | Success Rate:  0.67 (Full:  0.0%) | Collisions:  26.3 | PLoss: -0.9804 | VLoss: 6.0217 | Entropy: 1.5528 | Eps:   3 | Time:   2.4s
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 6), t=81
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 8), t=93
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (7, 14), t=115
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (8, 14), t=116
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (13, 9), t=59
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (8, 14), t=60
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (12, 10), t=65
+Iter   3/150 | Avg Reward (last  4 eps):   69.90 | Success Rate:  0.50 (Full:  0.0%) | Collisions:  34.8 | PLoss: +0.4568 | VLoss: 2.7390 | Entropy: 1.5667 | Eps:   4 | Time:   3.6s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 5), t=40
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (12, 9), t=58
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (12, 9), t=66
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (13, 9), t=67
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (13, 9), t=75
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 10), t=85
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 9), t=92
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 9), t=92
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 10), t=93
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (13, 9), t=99
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 5), t=120
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (12, 9), t=66
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 11), t=86
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (13, 11), t=87
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (13, 11), t=95
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (13, 11), t=103
+Iter   4/150 | Avg Reward (last  6 eps):   67.72 | Success Rate:  0.50 (Full:  0.0%) | Collisions:  40.5 | PLoss: -0.1706 | VLoss: 6.8435 | Entropy: 1.5414 | Eps:   6 | Time:   4.8s
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (13, 9), t=163
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 8), t=37
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (12, 9), t=42
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (13, 11), t=47
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 9), t=236
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (14, 9), t=236
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 7), t=246
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   5/150 | Avg Reward (last  8 eps):   75.09 | Success Rate:  0.54 (Full:  0.0%) | Collisions:  37.5 | PLoss: -0.7726 | VLoss: 3.1944 | Entropy: 1.5503 | Eps:   8 | Time:   5.9s
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (14, 10), t=53
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (12, 11), t=32
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 5), t=32
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 6), t=33
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 11), t=46
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (13, 11), t=47
+Iter   6/150 | Avg Reward (last  9 eps):   74.23 | Success Rate:  0.52 (Full:  0.0%) | Collisions:  36.8 | PLoss: +0.2787 | VLoss: 3.9755 | Entropy: 1.5611 | Eps:   9 | Time:   7.1s
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (7, 14), t=237
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (8, 14), t=52
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 7), t=58
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 7), t=70
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (6, 14), t=78
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (5, 14), t=79
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 11), t=86
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (12, 11), t=40
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (4, 14), t=40
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (13, 11), t=55
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (12, 11), t=80
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 6), t=23
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (13, 11), t=39
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (12, 9), t=42
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (14, 10), t=45
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (13, 11), t=47
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 9), t=52
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (14, 9), t=52
+Iter   7/150 | Avg Reward (last 13 eps):   99.13 | Success Rate:  0.64 (Full: 23.1%) | Collisions:  32.8 | PLoss: -2.0742 | VLoss: 9.1655 | Entropy: 1.4800 | Eps:  13 | Time:   8.4s
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 9), t=92
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (14, 9), t=92
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (14, 10), t=93
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (13, 9), t=99
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 7), t=114
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (6, 14), t=118
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 6), t=121
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 11), t=126
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (13, 11), t=127
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (12, 11), t=128
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 6), t=129
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 7), t=130
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 6), t=31
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (12, 10), t=33
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (12, 11), t=48
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 11), t=62
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (12, 10), t=41
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 6), t=41
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (5, 14), t=63
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (6, 14), t=70
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (8, 14), t=84
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 10), t=85
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (6, 14), t=90
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (13, 11), t=95
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 8), t=107
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 10), t=109
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 11), t=110
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 7), t=114
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (14, 10), t=149
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (12, 11), t=48
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 7), t=50
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (14, 10), t=53
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 5), t=24
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 6), t=25
+Iter   8/150 | Avg Reward (last 17 eps):  114.10 | Success Rate:  0.73 (Full: 41.2%) | Collisions:  30.3 | PLoss: -1.5841 | VLoss: 9.4725 | Entropy: 1.4531 | Eps:  17 | Time:   9.6s
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 5), t=96
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 6), t=97
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 8), t=101
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 6), t=103
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 7), t=106
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 9), t=108
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (14, 9), t=108
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (14, 10), t=109
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 11), t=110
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (12, 10), t=113
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (13, 9), t=115
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 8), t=117
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 7), t=118
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 6), t=119
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (13, 9), t=123
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (13, 9), t=131
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (5, 14), t=25
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (5, 14), t=31
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (12, 11), t=56
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (12, 9), t=66
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (7, 14), t=69
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (13, 9), t=91
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 8), t=93
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (12, 10), t=113
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 7), t=38
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (12, 11), t=32
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (7, 14), t=83
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (8, 14), t=84
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (12, 11), t=96
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 11), t=102
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   9/150 | Avg Reward (last 20 eps):  126.53 | Success Rate:  0.78 (Full: 55.0%) | Collisions:  29.6 | PLoss: -0.9197 | VLoss: 8.8939 | Entropy: 1.4283 | Eps:  21 | Time:  10.9s
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (12, 9), t=26
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (6, 14), t=26
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 6), t=31
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 6), t=33
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 9), t=84
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 9), t=84
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 10), t=85
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 11), t=86
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (4, 14), t=24
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (5, 14), t=25
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (13, 11), t=47
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (12, 9), t=58
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (13, 9), t=59
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (7, 14), t=59
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 9), t=60
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 9), t=60
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 8), t=61
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 8), t=67
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 8), t=69
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (13, 11), t=71
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (12, 10), t=73
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (12, 11), t=80
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (12, 10), t=81
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (12, 9), t=82
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (13, 9), t=83
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (5, 14), t=23
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (6, 14), t=34
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (7, 14), t=37
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (8, 14), t=52
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (7, 14), t=43
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (7, 14), t=53
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (7, 14), t=67
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (7, 14), t=75
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (5, 14), t=97
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (6, 14), t=98
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (7, 14), t=101
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (8, 14), t=124
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 11), t=126
+Iter  10/150 | Avg Reward (last 20 eps):  140.13 | Success Rate:  0.87 (Full: 70.0%) | Collisions:  27.2 | PLoss: -0.4373 | VLoss: 6.7501 | Entropy: 1.3999 | Eps:  24 | Time:  12.2s
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (13, 9), t=155
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 10), t=29
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 11), t=30
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (7, 14), t=35
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 6), t=23
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (12, 10), t=33
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (13, 11), t=39
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (12, 11), t=48
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 11), t=62
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 8), t=51
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 9), t=52
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 9), t=52
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (12, 9), t=74
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 8), t=77
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  11/150 | Avg Reward (last 20 eps):  164.02 | Success Rate:  1.00 (Full: 100.0%) | Collisions:  23.2 | PLoss: -1.3595 | VLoss: 13.5843 | Entropy: 1.2714 | Eps:  30 | Time:  13.5s
+
+SUCCESS BAR HIT: Full delivery success rate 100.0% >= 80% over last 20 episodes reached at iteration 11!
+  -> Solved model checkpoint saved to D:\PROJECTS\constellation\checkpoints\nfz_baseline\mappo\seed_0\mappo_iteration_11_solved.pt
+  -> [MAPPO Seed 0] Solved: True | Final Iter: 11 | Train Full Success: 100.0% | Time: 13.5s
+
+>>> Training MAPPO | Seed 1 | Jamming 0% | No-Fly Zones: 3 (Seen Pool) <<<
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+================================================================================
+CONSTELLATION — Session S2.4: MAPPO Training on DroneWorld (CPU-only)
+================================================================================
+Environment: Grid 20x20 | Drones: 5 | Delivery Points: 3
+Jammer: 0% intensity | No-Fly Zones: None active | Episode cap: 250 steps
+Policy: Shared Actor (input_dim=7, action_dim=5, hidden=64)
+Critic: Centralized Critic (input_dim=14 from get_global_state(), hidden=64)
+Rollout: 410 world-steps * 5 drones = 2050 samples/update
+Update: 4 epochs, minibatch 64, Adam lr=3e-4, GAE(gamma=0.99, lambda=0.95), no adv norm
+Early stop bar: Average full delivery success >= 80% over last 20 episodes
+Run safety limits: Max 150 iterations, 10-minute wall-clock cap
+================================================================================
+
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (15, 6), t=115
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (14, 6), t=148
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (15, 3), t=149
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 3), t=166
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 2), t=167
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 3), t=174
+Warning: drone 3 entered no-fly zone (pattern vertical) at (17, 13), t=194
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (14, 6), t=196
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 14), t=197
+Warning: drone 3 entered no-fly zone (pattern vertical) at (17, 14), t=203
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 11), t=224
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (18, 6), t=224
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (18, 6), t=232
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (17, 6), t=103
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (17, 6), t=105
+Iter   1/150 | Avg Reward (last  1 eps):   -0.10 | Success Rate:  0.67 (Full:  0.0%) | Collisions:  38.0 | PLoss: -0.2429 | VLoss: 3.9618 | Entropy: 1.5896 | Eps:   1 | Time:   1.2s
+Warning: drone 3 entered no-fly zone (pattern vertical) at (17, 15), t=236
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (15, 1), t=89
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (16, 6), t=102
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (16, 6), t=134
+Warning: drone 3 entered no-fly zone (pattern vertical) at (17, 13), t=150
+Warning: drone 3 entered no-fly zone (pattern vertical) at (17, 12), t=151
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (16, 1), t=154
+Warning: drone 3 entered no-fly zone (pattern vertical) at (17, 13), t=154
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (16, 2), t=163
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (16, 3), t=164
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (14, 6), t=180
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (15, 6), t=181
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (16, 6), t=190
+Warning: drone 2 entered no-fly zone (pattern vertical) at (17, 12), t=231
+Warning: drone 2 entered no-fly zone (pattern vertical) at (17, 11), t=232
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   2/150 | Avg Reward (last  3 eps):   27.27 | Success Rate:  0.56 (Full:  0.0%) | Collisions:  32.7 | PLoss: -0.3797 | VLoss: 5.4499 | Entropy: 1.5742 | Eps:   3 | Time:   2.5s
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (16, 2), t=75
+Warning: drone 1 entered no-fly zone (pattern vertical) at (17, 12), t=129
+Warning: drone 1 entered no-fly zone (pattern vertical) at (17, 13), t=130
+Warning: drone 1 entered no-fly zone (pattern vertical) at (17, 14), t=131
+Warning: drone 1 entered no-fly zone (pattern vertical) at (17, 13), t=138
+Warning: drone 1 entered no-fly zone (pattern vertical) at (17, 13), t=142
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 12), t=105
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 13), t=106
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 14), t=133
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   3/150 | Avg Reward (last  5 eps):   53.39 | Success Rate:  0.67 (Full: 20.0%) | Collisions:  31.8 | PLoss: -1.1800 | VLoss: 4.8347 | Entropy: 1.5516 | Eps:   5 | Time:   3.6s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 15), t=60
+Iter   4/150 | Avg Reward (last  7 eps):   62.53 | Success Rate:  0.71 (Full: 28.6%) | Collisions:  35.0 | PLoss: -1.0142 | VLoss: 7.4346 | Entropy: 1.4899 | Eps:   7 | Time:   4.8s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Warning: drone 2 entered no-fly zone (pattern vertical) at (17, 13), t=46
+Warning: drone 2 entered no-fly zone (pattern vertical) at (17, 13), t=50
+Iter   5/150 | Avg Reward (last  9 eps):   74.53 | Success Rate:  0.78 (Full: 44.4%) | Collisions:  35.8 | PLoss: -0.6959 | VLoss: 5.4352 | Entropy: 1.4994 | Eps:   9 | Time:   5.9s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   6/150 | Avg Reward (last 11 eps):   67.80 | Success Rate:  0.76 (Full: 36.4%) | Collisions:  42.0 | PLoss: +0.1245 | VLoss: 4.4590 | Entropy: 1.4997 | Eps:  11 | Time:   7.1s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   7/150 | Avg Reward (last 13 eps):   67.03 | Success Rate:  0.77 (Full: 38.5%) | Collisions:  43.5 | PLoss: +0.3276 | VLoss: 7.0035 | Entropy: 1.5249 | Eps:  13 | Time:   8.4s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   8/150 | Avg Reward (last 15 eps):   68.34 | Success Rate:  0.78 (Full: 40.0%) | Collisions:  45.6 | PLoss: +0.0798 | VLoss: 4.6777 | Entropy: 1.5072 | Eps:  15 | Time:   9.6s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   9/150 | Avg Reward (last 19 eps):   78.94 | Success Rate:  0.82 (Full: 52.6%) | Collisions:  43.0 | PLoss: -1.1306 | VLoss: 8.7732 | Entropy: 1.4459 | Eps:  19 | Time:  10.8s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Warning: drone 3 entered no-fly zone (pattern vertical) at (17, 13), t=50
+Warning: drone 3 entered no-fly zone (pattern vertical) at (17, 14), t=51
+Warning: drone 3 entered no-fly zone (pattern vertical) at (17, 14), t=53
+Warning: drone 3 entered no-fly zone (pattern vertical) at (17, 13), t=54
+Warning: drone 3 entered no-fly zone (pattern vertical) at (17, 12), t=57
+Warning: drone 3 entered no-fly zone (pattern vertical) at (17, 13), t=58
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  10/150 | Avg Reward (last 20 eps):   88.78 | Success Rate:  0.85 (Full: 60.0%) | Collisions:  41.6 | PLoss: -0.0666 | VLoss: 5.6580 | Entropy: 1.4482 | Eps:  22 | Time:  12.1s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  11/150 | Avg Reward (last 20 eps):   95.33 | Success Rate:  0.90 (Full: 70.0%) | Collisions:  41.6 | PLoss: -1.2391 | VLoss: 9.2917 | Entropy: 1.3774 | Eps:  26 | Time:  13.3s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  12/150 | Avg Reward (last 20 eps):  114.54 | Success Rate:  0.97 (Full: 90.0%) | Collisions:  29.2 | PLoss: -0.9333 | VLoss: 9.7586 | Entropy: 1.3172 | Eps:  32 | Time:  14.6s
+
+SUCCESS BAR HIT: Full delivery success rate 90.0% >= 80% over last 20 episodes reached at iteration 12!
+  -> Solved model checkpoint saved to D:\PROJECTS\constellation\checkpoints\nfz_baseline\mappo\seed_1\mappo_iteration_12_solved.pt
+  -> [MAPPO Seed 1] Solved: True | Final Iter: 12 | Train Full Success: 90.0% | Time: 14.6s
+
+All 4 training runs completed in 69.0s (1.15 min).
+
+====================================================================================================
+STEP 3 & 4: THREE-CONDITION EVALUATION (PER SEED & PER ALGORITHM)
+Condition (a): No NFZ (0 zones) | Condition (b): Seen Pool (3 zones) | Condition (c): Held-Out (3 diagonal)
+====================================================================================================
+
+Evaluating IPPO Seed 0 across 3 conditions (10 episodes each)...
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (12, 9), t=58
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (14, 10), t=61
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 7), t=62
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 8), t=67
+Warning: drone 3 entered no-fly zone (pattern vertical) at (17, 13), t=46
+Warning: drone 3 entered no-fly zone (pattern vertical) at (17, 12), t=47
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 14), t=53
+Warning: drone 2 entered no-fly zone (pattern vertical) at (11, 7), t=26
+Warning: drone 2 entered no-fly zone (pattern vertical) at (11, 8), t=29
+Warning: drone 3 entered no-fly zone (pattern vertical) at (11, 6), t=33
+Warning: drone 3 entered no-fly zone (pattern vertical) at (11, 7), t=34
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (5, 12), t=26
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (5, 12), t=26
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (5, 13), t=27
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (5, 13), t=35
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (16, 6), t=70
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (16, 6), t=74
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (17, 6), t=75
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (17, 6), t=77
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (16, 11), t=66
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (17, 0), t=22
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (15, 0), t=24
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (16, 1), t=25
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (16, 0), t=25
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (17, 1), t=26
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (17, 2), t=27
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (17, 3), t=28
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (17, 3), t=28
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (17, 2), t=43
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (8, 19), t=65
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (7, 19), t=72
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (6, 2), t=10
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (7, 2), t=11
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (7, 2), t=11
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (12, 6), t=24
+Warning: drone 2 entered no-fly zone (pattern vertical) at (12, 10), t=30
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 14), t=40
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 15), t=41
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (18, 9), t=52
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (6, 15), t=35
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (5, 14), t=42
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (15, 7), t=55
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (17, 9), t=61
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (7, 12), t=24
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (8, 13), t=31
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (2, 11), t=14
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (3, 12), t=21
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (3, 12), t=235
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (17, 2), t=22
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (6, 18), t=55
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (5, 17), t=58
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (7, 19), t=72
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (7, 19), t=72
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (6, 18), t=87
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (6, 18), t=89
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (4, 2), t=8
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (10, 9), t=26
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (12, 11), t=28
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (18, 2), t=47
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (18, 2), t=67
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (18, 18), t=68
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (19, 3), t=70
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (16, 16), t=78
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (16, 16), t=82
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (17, 17), t=93
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (14, 14), t=112
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (15, 15), t=121
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (15, 15), t=127
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (15, 15), t=129
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (15, 15), t=129
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (16, 16), t=130
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (15, 15), t=135
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (14, 14), t=152
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (16, 16), t=158
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (15, 15), t=161
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (17, 17), t=165
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (16, 16), t=166
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (16, 16), t=226
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (15, 15), t=231
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (15, 15), t=233
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (15, 15), t=239
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (14, 14), t=240
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (15, 15), t=241
+Evaluating IPPO Seed 1 across 3 conditions (10 episodes each)...
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (6, 5), t=17
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (7, 5), t=18
+Warning: drone 4 entered no-fly zone (pattern vertical) at (11, 7), t=23
+Warning: drone 0 entered no-fly zone (pattern vertical) at (11, 6), t=24
+Warning: drone 4 entered no-fly zone (pattern vertical) at (11, 6), t=24
+Warning: drone 4 entered no-fly zone (pattern vertical) at (11, 7), t=31
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (13, 13), t=50
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (14, 13), t=51
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (12, 13), t=57
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (13, 13), t=58
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (14, 13), t=59
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (14, 13), t=67
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 13), t=73
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (15, 14), t=83
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (14, 15), t=85
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (13, 15), t=86
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (14, 15), t=93
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (15, 15), t=100
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 15), t=101
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (13, 15), t=102
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (15, 15), t=148
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (13, 15), t=158
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (13, 14), t=159
+Warning: drone 0 entered no-fly zone (pattern vertical) at (19, 17), t=173
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 15), t=181
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (15, 15), t=196
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (6, 2), t=8
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (6, 4), t=14
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (14, 15), t=38
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (13, 15), t=39
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 7), t=51
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (16, 15), t=52
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 7), t=53
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (15, 15), t=53
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 8), t=60
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (14, 15), t=62
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 5), t=81
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 6), t=98
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 7), t=101
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 4), t=128
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 5), t=129
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 6), t=134
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 8), t=148
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 7), t=149
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 7), t=155
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 7), t=155
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 8), t=156
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 7), t=157
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 7), t=165
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 6), t=166
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 7), t=171
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 8), t=172
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 7), t=173
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 6), t=174
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 5), t=175
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 4), t=176
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 4), t=176
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 7), t=187
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 8), t=188
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 6), t=194
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 4), t=208
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 5), t=209
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 5), t=209
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 5), t=223
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 4), t=224
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 5), t=225
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 6), t=230
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 5), t=231
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 5), t=233
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 5), t=239
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 6), t=246
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (11, 9), t=51
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (11, 9), t=59
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (8, 11), t=63
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (8, 10), t=64
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (9, 10), t=65
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (10, 10), t=66
+Warning: drone 3 entered no-fly zone (pattern vertical) at (10, 6), t=69
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (9, 9), t=79
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (8, 10), t=80
+Warning: drone 1 entered no-fly zone (pattern vertical) at (10, 5), t=82
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (11, 9), t=85
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (10, 9), t=86
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (10, 11), t=99
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (2, 2), t=6
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (3, 1), t=7
+Warning: drone 0 entered no-fly zone (pattern vertical) at (10, 3), t=26
+Warning: drone 0 entered no-fly zone (pattern vertical) at (10, 4), t=29
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (15, 7), t=39
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (15, 8), t=46
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (16, 13), t=50
+Warning: drone 4 entered no-fly zone (pattern vertical) at (10, 5), t=108
+Warning: drone 2 entered no-fly zone (pattern vertical) at (10, 4), t=109
+Warning: drone 1 entered no-fly zone (pattern vertical) at (10, 3), t=146
+Warning: drone 1 entered no-fly zone (pattern vertical) at (10, 4), t=157
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (7, 13), t=67
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (10, 17), t=91
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (7, 17), t=104
+Warning: drone 1 entered no-fly zone (pattern vertical) at (9, 17), t=115
+Warning: drone 1 entered no-fly zone (pattern vertical) at (9, 17), t=117
+Warning: drone 2 entered no-fly zone (pattern vertical) at (9, 18), t=124
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (7, 17), t=128
+Warning: drone 2 entered no-fly zone (pattern vertical) at (9, 16), t=134
+Warning: drone 1 entered no-fly zone (pattern vertical) at (9, 15), t=143
+Warning: drone 1 entered no-fly zone (pattern vertical) at (9, 15), t=145
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (2, 18), t=126
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (1, 16), t=131
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (2, 16), t=132
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (2, 17), t=133
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (2, 18), t=134
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (13, 2), t=235
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (1, 8), t=17
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (2, 9), t=22
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (13, 8), t=26
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (11, 6), t=40
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (15, 17), t=52
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (12, 7), t=55
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (12, 7), t=55
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (15, 17), t=100
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (13, 15), t=106
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (13, 15), t=114
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (11, 13), t=136
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (9, 9), t=164
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (15, 10), t=172
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (13, 6), t=22
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (14, 14), t=57
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (15, 15), t=66
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (6, 2), t=8
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (10, 6), t=20
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (17, 7), t=43
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (15, 5), t=47
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (17, 7), t=51
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (17, 7), t=53
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (17, 7), t=53
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (16, 6), t=58
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (16, 6), t=130
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (16, 6), t=134
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (14, 4), t=160
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (16, 6), t=170
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (18, 8), t=172
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (15, 5), t=201
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (15, 5), t=201
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (16, 6), t=206
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (15, 5), t=209
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (16, 6), t=214
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (16, 6), t=222
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (16, 6), t=226
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (18, 8), t=228
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (17, 7), t=237
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (8, 9), t=24
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (9, 10), t=31
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (8, 10), t=32
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (9, 10), t=33
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (11, 12), t=51
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (13, 6), t=59
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (9, 10), t=63
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (10, 11), t=70
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (11, 13), t=205
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (4, 1), t=7
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (4, 6), t=20
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (15, 14), t=87
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (15, 14), t=89
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (15, 14), t=113
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (13, 4), t=125
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (14, 5), t=132
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (5, 14), t=55
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (8, 17), t=60
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (8, 16), t=61
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (9, 17), t=68
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (12, 18), t=70
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (12, 17), t=59
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (12, 17), t=61
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (11, 16), t=74
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (11, 16), t=78
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (11, 16), t=90
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (13, 3), t=17
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (16, 6), t=28
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (15, 5), t=29
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (14, 4), t=30
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (16, 6), t=44
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (15, 13), t=52
+Evaluating MAPPO Seed 0 across 3 conditions (10 episodes each)...
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (6, 19), t=56
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (7, 19), t=75
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (15, 6), t=31
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (0, 11), t=14
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (15, 2), t=23
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (16, 0), t=23
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (15, 0), t=24
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (16, 1), t=25
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (17, 1), t=26
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (17, 1), t=26
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (16, 3), t=29
+Warning: drone 2 entered no-fly zone (pattern vertical) at (17, 16), t=126
+Warning: drone 2 entered no-fly zone (pattern vertical) at (17, 17), t=127
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (15, 11), t=30
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (17, 11), t=44
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (8, 19), t=89
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (7, 19), t=96
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (5, 2), t=7
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (12, 6), t=24
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (13, 8), t=29
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 8), t=52
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 6), t=90
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 7), t=179
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 8), t=180
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (14, 7), t=219
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (14, 8), t=220
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (8, 7), t=16
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (9, 7), t=17
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 15), t=39
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 15), t=41
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 15), t=47
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (5, 15), t=25
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (6, 16), t=30
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (5, 15), t=33
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (6, 16), t=34
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (6, 16), t=38
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (7, 17), t=43
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (13, 12), t=65
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (13, 12), t=65
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (1, 10), t=15
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (1, 10), t=15
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (3, 12), t=21
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (4, 13), t=28
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (18, 3), t=37
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (17, 3), t=38
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (19, 5), t=44
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (19, 5), t=44
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (15, 10), t=43
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (15, 10), t=45
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (17, 11), t=46
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (16, 10), t=49
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (17, 11), t=50
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (17, 11), t=50
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (16, 10), t=57
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (18, 12), t=59
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (18, 12), t=61
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (16, 10), t=65
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (16, 11), t=66
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (16, 11), t=66
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (6, 18), t=95
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (5, 17), t=98
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (5, 17), t=102
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (6, 18), t=113
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (12, 6), t=24
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (13, 7), t=33
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (13, 7), t=39
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (13, 7), t=41
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (15, 11), t=51
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (8, 7), t=24
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (15, 15), t=41
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (18, 2), t=43
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (19, 3), t=46
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (16, 16), t=50
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (16, 16), t=58
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (16, 16), t=66
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (16, 16), t=66
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (16, 16), t=70
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (15, 15), t=79
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (15, 15), t=81
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (16, 16), t=82
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (16, 16), t=86
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (16, 16), t=86
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (14, 14), t=96
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (16, 16), t=102
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (16, 16), t=114
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (14, 14), t=120
+Evaluating MAPPO Seed 1 across 3 conditions (10 episodes each)...
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (0, 7), t=8
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (1, 7), t=9
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (3, 15), t=28
+Warning: drone 1 entered no-fly zone (pattern vertical) at (11, 9), t=21
+Warning: drone 3 entered no-fly zone (pattern vertical) at (11, 10), t=28
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (14, 13), t=51
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (14, 13), t=53
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (13, 13), t=54
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (5, 7), t=70
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (11, 4), t=16
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (6, 2), t=8
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (8, 3), t=11
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (8, 4), t=12
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (13, 15), t=41
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (15, 15), t=43
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (14, 15), t=46
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (14, 15), t=46
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (14, 15), t=46
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 8), t=92
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 5), t=111
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 5), t=113
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 6), t=122
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 6), t=130
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 7), t=131
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 5), t=135
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (8, 9), t=24
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (9, 9), t=25
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (10, 9), t=26
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (10, 9), t=30
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (10, 10), t=34
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (12, 9), t=36
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (11, 9), t=43
+Warning: drone 3 entered no-fly zone (pattern vertical) at (10, 3), t=14
+Warning: drone 3 entered no-fly zone (pattern vertical) at (10, 2), t=15
+Warning: drone 3 entered no-fly zone (pattern vertical) at (10, 3), t=18
+Warning: drone 2 entered no-fly zone (pattern vertical) at (10, 5), t=28
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (15, 7), t=39
+Warning: drone 4 entered no-fly zone (pattern vertical) at (10, 5), t=148
+Warning: drone 4 entered no-fly zone (pattern vertical) at (10, 5), t=156
+Warning: drone 4 entered no-fly zone (pattern vertical) at (10, 4), t=157
+Warning: drone 4 entered no-fly zone (pattern vertical) at (10, 3), t=158
+Warning: drone 4 entered no-fly zone (pattern vertical) at (10, 2), t=161
+Warning: drone 0 entered no-fly zone (pattern vertical) at (10, 3), t=162
+Warning: drone 4 entered no-fly zone (pattern vertical) at (10, 3), t=162
+Warning: drone 1 entered no-fly zone (pattern vertical) at (10, 3), t=170
+Warning: drone 1 entered no-fly zone (pattern vertical) at (10, 4), t=173
+Warning: drone 1 entered no-fly zone (pattern vertical) at (10, 3), t=178
+Warning: drone 4 entered no-fly zone (pattern vertical) at (10, 3), t=186
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (7, 13), t=74
+Warning: drone 2 entered no-fly zone (pattern vertical) at (10, 16), t=78
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (5, 15), t=78
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (5, 17), t=25
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (12, 7), t=23
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (14, 9), t=29
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (12, 7), t=49
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (12, 7), t=55
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (8, 8), t=67
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (7, 7), t=70
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (16, 16), t=59
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (16, 16), t=61
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (6, 2), t=8
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (6, 2), t=8
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (13, 16), t=65
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (12, 15), t=72
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (17, 7), t=107
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (17, 7), t=109
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (17, 7), t=131
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (14, 4), t=136
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (16, 6), t=138
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (16, 6), t=146
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (17, 7), t=157
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (10, 12), t=22
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (10, 12), t=26
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (11, 12), t=27
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (10, 11), t=30
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (13, 6), t=43
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (13, 6), t=45
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (12, 14), t=76
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (11, 4), t=113
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (14, 7), t=116
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (12, 5), t=118
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (13, 4), t=19
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (13, 4), t=21
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (17, 8), t=34
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (12, 3), t=90
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (13, 4), t=117
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (13, 4), t=125
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (13, 4), t=133
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (13, 4), t=141
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (14, 5), t=148
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (12, 3), t=150
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (5, 13), t=24
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (5, 14), t=25
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (11, 17), t=55
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (12, 18), t=56
+Warning: drone 0 entered no-fly zone (pattern diagonal) at (11, 17), t=61
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (7, 17), t=36
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (4, 8), t=18
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (14, 4), t=18
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (16, 14), t=61
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (16, 6), t=124
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (16, 6), t=140
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (15, 5), t=141
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (15, 5), t=157
+-----------------------------------------------------------------------------------------------------------------------------------------
+Algo   | Seed  | Condition                        | Full Success   | Multi Coll   | NFZ Coll     | Total Coll   | Latency    | Energy    
+-----------------------------------------------------------------------------------------------------------------------------------------
+IPPO   | 0     | No NFZ (0 zones)                 | 100.0% +/- 0.0% | 26.30        | 0.00         | 26.30        | 90.3       | 413.7     
+IPPO   | 0     | Seen Pool (3 zones)              | 100.0% +/- 0.0% | 26.90        | 3.80         | 30.70        | 85.2       | 392.9     
+IPPO   | 0     | Held-Out Only (3 diagonal zones) | 80.0% +/- 42.2% | 28.00        | 4.50         | 32.50        | 105.9      | 480.6     
+-----------------------------------------------------------------------------------------------------------------------------------------
+IPPO   | 1     | No NFZ (0 zones)                 | 60.0% +/- 51.6% | 36.60        | 0.00         | 36.60        | 171.0      | 760.5     
+IPPO   | 1     | Seen Pool (3 zones)              | 70.0% +/- 48.3% | 34.90        | 11.10        | 46.00        | 180.6      | 796.5     
+IPPO   | 1     | Held-Out Only (3 diagonal zones) | 60.0% +/- 51.6% | 34.70        | 7.00         | 41.70        | 178.5      | 784.0     
+-----------------------------------------------------------------------------------------------------------------------------------------
+MAPPO  | 0     | No NFZ (0 zones)                 | 100.0% +/- 0.0% | 27.30        | 0.00         | 27.30        | 99.9       | 460.1     
+MAPPO  | 0     | Seen Pool (3 zones)              | 80.0% +/- 42.2% | 41.10        | 3.10         | 44.20        | 117.9      | 539.5     
+MAPPO  | 0     | Held-Out Only (3 diagonal zones) | 90.0% +/- 31.6% | 32.10        | 5.50         | 37.60        | 104.1      | 476.4     
+-----------------------------------------------------------------------------------------------------------------------------------------
+MAPPO  | 1     | No NFZ (0 zones)                 | 100.0% +/- 0.0% | 39.40        | 0.00         | 39.40        | 113.9      | 528.6     
+MAPPO  | 1     | Seen Pool (3 zones)              | 100.0% +/- 0.0% | 29.40        | 5.10         | 34.50        | 105.1      | 488.1     
+MAPPO  | 1     | Held-Out Only (3 diagonal zones) | 100.0% +/- 0.0% | 28.80        | 5.30         | 34.10        | 112.9      | 524.0     
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+====================================================================================================
+STEP 5: COMPARATIVE ANALYSIS (SEEN vs HELD-OUT GENERALIZATION AUDIT)
+====================================================================================================
+
+[IPPO Seed 0] Seen (b) vs Held-Out (c) Delta:
+  Full Success: Seen=100.0%, Held-Out=80.0% (Delta: -20.0%)
+  NFZ Collisions: Seen=3.80, Held-Out=4.50 (Delta: +0.70)
+  Total Collisions: Seen=30.70, Held-Out=32.50 (Delta: +1.80)
+  Latency: Seen=85.2, Held-Out=105.9 steps
+  Energy: Seen=392.9, Held-Out=480.6
+
+[IPPO Seed 1] Seen (b) vs Held-Out (c) Delta:
+  Full Success: Seen=70.0%, Held-Out=60.0% (Delta: -10.0%)
+  NFZ Collisions: Seen=11.10, Held-Out=7.00 (Delta: -4.10)
+  Total Collisions: Seen=46.00, Held-Out=41.70 (Delta: -4.30)
+  Latency: Seen=180.6, Held-Out=178.5 steps
+  Energy: Seen=796.5, Held-Out=784.0
+
+[MAPPO Seed 0] Seen (b) vs Held-Out (c) Delta:
+  Full Success: Seen=80.0%, Held-Out=90.0% (Delta: +10.0%)
+  NFZ Collisions: Seen=3.10, Held-Out=5.50 (Delta: +2.40)
+  Total Collisions: Seen=44.20, Held-Out=37.60 (Delta: -6.60)
+  Latency: Seen=117.9, Held-Out=104.1 steps
+  Energy: Seen=539.5, Held-Out=476.4
+
+[MAPPO Seed 1] Seen (b) vs Held-Out (c) Delta:
+  Full Success: Seen=100.0%, Held-Out=100.0% (Delta: +0.0%)
+  NFZ Collisions: Seen=5.10, Held-Out=5.30 (Delta: +0.20)
+  Total Collisions: Seen=34.50, Held-Out=34.10 (Delta: -0.40)
+  Latency: Seen=105.1, Held-Out=112.9 steps
+  Energy: Seen=488.1, Held-Out=524.0
+
+--------------------------------------------------------------------------------
+HARDWARE & RESOURCE MONITORING — POST-RUN FINAL READINGS
+--------------------------------------------------------------------------------
+Timestamp:             2026-10-25 23:05:35
+Total Session Elapsed: 95.1s
+System RAM Total:      15.32 GB
+System RAM Used:       11.97 GB (78.0%) [Pre: 12.21 GB]
+Process Resident RAM:  291.39 MB (Delta: +92.93 MB)
+Thermals / Fan:        Nominal CPU temperature, normal operating range, zero throttling
+Log File Mirrored To:  D:\PROJECTS\constellation\logs\runs\s3_6_nfz_baseline_20261025_230400.log
+--------------------------------------------------------------------------------
+
