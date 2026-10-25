@@ -22,6 +22,7 @@ from src.drone_world import DroneWorld
 # Module-level reward constants
 STEP_PENALTY: float = -0.01
 DELIVERY_REWARD: float = 10.0
+OVERLAP_PENALTY: float = -0.1
 
 
 def compute_reward(
@@ -30,6 +31,8 @@ def compute_reward(
     drone_id: int,
     step_penalty: float = STEP_PENALTY,
     delivery_reward: float = DELIVERY_REWARD,
+    overlap_penalty: float = OVERLAP_PENALTY,
+    distance_shaping_enabled: bool = True,
 ) -> float:
     """
     Computes scalar reward for drone_id following a simulation step.
@@ -46,6 +49,8 @@ def compute_reward(
         drone_id: Integer index of the drone [0, world.n_drones - 1].
         step_penalty: Constant penalty added each step (default: -0.01).
         delivery_reward: Terminal bump awarded when this drone completes a delivery (default: 10.0).
+        overlap_penalty: Penalty added when multiple drones occupy the same cell (default: -0.1).
+        distance_shaping_enabled: Whether potential-based distance shaping is active (default: True).
 
     Returns:
         float: Computed scalar reward for drone_id.
@@ -87,11 +92,17 @@ def compute_reward(
         # No undelivered targets remain
         curr_dist = 0.0
 
-    distance_shaping = prev_dist - curr_dist
+    if distance_shaping_enabled:
+        distance_shaping = prev_dist - curr_dist
+    else:
+        distance_shaping = 0.0
 
     # Large terminal reward if this drone just completed a delivery
     terminal_reward = float(delivery_reward) if completed_delivery else 0.0
 
-    # Total reward: (Φ(s') - Φ(s)) + step_penalty + terminal_bump (strictly no collision penalty)
-    reward = distance_shaping + float(step_penalty) + terminal_reward
+    # Small negative penalty if >=2 drones occupy the same cell on this step
+    overlap_term = float(overlap_penalty) if sum(1 for p in world.drones if p == curr_pos) >= 2 else 0.0
+
+    # Total reward: (Φ(s') - Φ(s)) + step_penalty + terminal_bump + overlap_penalty
+    reward = distance_shaping + float(step_penalty) + terminal_reward + overlap_term
     return float(reward)

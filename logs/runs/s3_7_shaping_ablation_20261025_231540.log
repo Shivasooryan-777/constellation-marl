@@ -1,0 +1,716 @@
+====================================================================================================
+CONSTELLATION — SESSION S3.7: REWARD-SHAPING ON/OFF ABLATION
+Dual-Stream TeeLogger Active: D:\PROJECTS\constellation\logs\runs\s3_7_shaping_ablation_20261025_231540.log
+====================================================================================================
+
+--------------------------------------------------------------------------------
+HARDWARE & RESOURCE MONITORING — PRE-RUN BASELINE
+--------------------------------------------------------------------------------
+Timestamp:             2026-10-25 23:15:40
+CPU Processor:         AMD64 Family 25 Model 68 Stepping 1, AuthenticAMD (AMD64)
+PyTorch Device:        CPU (Pure CPU execution)
+System RAM Total:      15.32 GB
+System RAM Used:       10.40 GB (67.0%)
+Process Resident RAM:  198.43 MB
+Thermals / Fan:        Nominal CPU temperature, normal operating range, zero throttling
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+STEP 1 & 2: SCOPED EXCEPTION VERIFICATION & DEFAULT PRESERVATION SANITY CHECK
+--------------------------------------------------------------------------------
+Test Environment State:
+  Drone 0 pos:        (0, 0)
+  Nearest target:     (3, 19) (Current dist: 22.0)
+  Previous dist:      15.0
+  Distance shaping:   -7.0000 (15.0 - 22.0)
+  Step penalty:       -0.01
+  Overlap penalty:    -0.1 (5 drones at depot)
+
+Reward Calculations:
+  r_default (toggle omitted):            -7.110000
+  r_explicit_on (toggle=True):           -7.110000
+  r_explicit_off (toggle=False):         -0.110000
+  expected_on:                           -7.110000
+  expected_off:                          -0.110000
+
+SANITY CHECK PASS: Default call is 100% BIT-EXACT identical to shaping ON.
+Shaping OFF cleanly eliminates the distance term while preserving step & overlap penalties.
+
+--------------------------------------------------------------------------------
+STEP 3: TRAINING IPPO & MAPPO (2 SEEDS EACH, SHAPING ON vs OFF @ 0% JAMMING)
+--------------------------------------------------------------------------------
+
+================================================================================
+>>> STARTING TRAINING BATCH: DISTANCE SHAPING = ON <<<
+================================================================================
+
+Training IPPO | Seed 0 | Shaping ON...
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+================================================================================
+CONSTELLATION — Session S2.3: IPPO Training on DroneWorld (CPU-only)
+================================================================================
+Environment: Grid 20x20 | Drones: 5 | Delivery Points: 3
+Jammer: 0% intensity | No-Fly Zones: None active | Episode cap: 250 steps
+Policy: Shared Actor/Critic (state_dim=7, action_dim=5, hidden=64)
+Rollout: 410 world-steps * 5 drones = 2050 samples/update
+Update: 4 epochs, minibatch 64, Adam lr=3e-4, GAE(gamma=0.99, lambda=0.95), no adv norm
+Early stop bar: Average full delivery success >= 80% over last 20 episodes
+Run safety limits: Max 150 iterations, 10-minute wall-clock cap
+================================================================================
+
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   1/150 | Avg Reward (last  1 eps):   71.00 | Success Rate:  0.67 (Full:  0.0%) | Collisions:  31.0 | PLoss: -0.9446 | VLoss: 2.9410 | Entropy: 1.5837 | Eps:   1 | Time:   2.8s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   2/150 | Avg Reward (last  3 eps):   58.83 | Success Rate:  0.44 (Full:  0.0%) | Collisions:  34.0 | PLoss: -0.4985 | VLoss: 3.2503 | Entropy: 1.5471 | Eps:   3 | Time:   5.4s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   3/150 | Avg Reward (last  4 eps):   60.93 | Success Rate:  0.50 (Full:  0.0%) | Collisions:  29.5 | PLoss: +0.0488 | VLoss: 3.6090 | Entropy: 1.5695 | Eps:   4 | Time:   7.7s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   4/150 | Avg Reward (last  6 eps):   62.12 | Success Rate:  0.44 (Full:  0.0%) | Collisions:  33.0 | PLoss: -0.2865 | VLoss: 2.5940 | Entropy: 1.5651 | Eps:   6 | Time:  10.0s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   5/150 | Avg Reward (last  8 eps):   59.82 | Success Rate:  0.46 (Full:  0.0%) | Collisions:  30.9 | PLoss: -0.1952 | VLoss: 5.6649 | Entropy: 1.5568 | Eps:   8 | Time:  12.1s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   6/150 | Avg Reward (last  9 eps):   58.61 | Success Rate:  0.48 (Full:  0.0%) | Collisions:  32.6 | PLoss: -0.0979 | VLoss: 7.0805 | Entropy: 1.5481 | Eps:   9 | Time:  14.1s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   7/150 | Avg Reward (last 12 eps):   85.11 | Success Rate:  0.61 (Full: 25.0%) | Collisions:  32.8 | PLoss: -2.0698 | VLoss: 9.3300 | Entropy: 1.5115 | Eps:  12 | Time:  15.8s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   8/150 | Avg Reward (last 15 eps):  100.92 | Success Rate:  0.69 (Full: 40.0%) | Collisions:  29.2 | PLoss: -2.0494 | VLoss: 8.7398 | Entropy: 1.4783 | Eps:  15 | Time:  17.5s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   9/150 | Avg Reward (last 18 eps):  110.91 | Success Rate:  0.74 (Full: 50.0%) | Collisions:  28.4 | PLoss: -1.0189 | VLoss: 10.3702 | Entropy: 1.4271 | Eps:  18 | Time:  19.0s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  10/150 | Avg Reward (last 20 eps):  125.06 | Success Rate:  0.82 (Full: 65.0%) | Collisions:  28.1 | PLoss: -1.2125 | VLoss: 8.4238 | Entropy: 1.3512 | Eps:  22 | Time:  20.5s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  11/150 | Avg Reward (last 20 eps):  156.54 | Success Rate:  0.98 (Full: 95.0%) | Collisions:  23.6 | PLoss: -2.2554 | VLoss: 13.4645 | Entropy: 1.2470 | Eps:  28 | Time:  22.0s
+
+SUCCESS BAR HIT: Full delivery success rate 95.0% >= 80% over last 20 episodes reached at iteration 11!
+  -> Solved model checkpoint saved to D:\PROJECTS\constellation\checkpoints\shaping_ablation\on\ippo\seed_0\ippo_iteration_11_solved.pt
+  -> [IPPO Seed 0 Shaping ON] Solved: True | Final Iter: 11 | Train Full Success: 95.0% | Time: 24.4s
+
+Training IPPO | Seed 1 | Shaping ON...
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+================================================================================
+CONSTELLATION — Session S2.3: IPPO Training on DroneWorld (CPU-only)
+================================================================================
+Environment: Grid 20x20 | Drones: 5 | Delivery Points: 3
+Jammer: 0% intensity | No-Fly Zones: None active | Episode cap: 250 steps
+Policy: Shared Actor/Critic (state_dim=7, action_dim=5, hidden=64)
+Rollout: 410 world-steps * 5 drones = 2050 samples/update
+Update: 4 epochs, minibatch 64, Adam lr=3e-4, GAE(gamma=0.99, lambda=0.95), no adv norm
+Early stop bar: Average full delivery success >= 80% over last 20 episodes
+Run safety limits: Max 150 iterations, 10-minute wall-clock cap
+================================================================================
+
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   1/150 | Avg Reward (last  1 eps):   14.70 | Success Rate:  0.67 (Full:  0.0%) | Collisions:  16.0 | PLoss: -0.0569 | VLoss: 3.4585 | Entropy: 1.5997 | Eps:   1 | Time:   1.6s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   2/150 | Avg Reward (last  3 eps):   51.40 | Success Rate:  0.78 (Full: 33.3%) | Collisions:  31.7 | PLoss: -0.9075 | VLoss: 8.9592 | Entropy: 1.5648 | Eps:   3 | Time:   3.0s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   3/150 | Avg Reward (last  5 eps):   57.76 | Success Rate:  0.73 (Full: 40.0%) | Collisions:  28.0 | PLoss: -0.5300 | VLoss: 7.1969 | Entropy: 1.5514 | Eps:   5 | Time:   4.4s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   4/150 | Avg Reward (last  7 eps):   65.11 | Success Rate:  0.76 (Full: 42.9%) | Collisions:  36.7 | PLoss: -0.5346 | VLoss: 3.6737 | Entropy: 1.5549 | Eps:   7 | Time:   5.7s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   5/150 | Avg Reward (last 11 eps):   86.45 | Success Rate:  0.85 (Full: 63.6%) | Collisions:  28.2 | PLoss: -2.0345 | VLoss: 8.0017 | Entropy: 1.5047 | Eps:  11 | Time:   7.1s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   6/150 | Avg Reward (last 14 eps):   87.56 | Success Rate:  0.86 (Full: 64.3%) | Collisions:  28.4 | PLoss: -0.2489 | VLoss: 6.2997 | Entropy: 1.5133 | Eps:  14 | Time:   8.3s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   7/150 | Avg Reward (last 15 eps):   84.43 | Success Rate:  0.84 (Full: 60.0%) | Collisions:  31.3 | PLoss: +1.0341 | VLoss: 3.3779 | Entropy: 1.5276 | Eps:  15 | Time:   9.7s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   8/150 | Avg Reward (last 17 eps):   80.84 | Success Rate:  0.82 (Full: 52.9%) | Collisions:  32.8 | PLoss: +0.1625 | VLoss: 6.2733 | Entropy: 1.5231 | Eps:  17 | Time:  10.9s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   9/150 | Avg Reward (last 20 eps):   93.05 | Success Rate:  0.87 (Full: 65.0%) | Collisions:  30.8 | PLoss: -1.1630 | VLoss: 8.1907 | Entropy: 1.4566 | Eps:  21 | Time:  12.2s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  10/150 | Avg Reward (last 20 eps):  103.81 | Success Rate:  0.92 (Full: 75.0%) | Collisions:  29.2 | PLoss: -0.6409 | VLoss: 7.6750 | Entropy: 1.4384 | Eps:  25 | Time:  13.7s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  11/150 | Avg Reward (last 20 eps):  107.46 | Success Rate:  0.93 (Full: 80.0%) | Collisions:  26.5 | PLoss: -0.7138 | VLoss: 8.1347 | Entropy: 1.4264 | Eps:  29 | Time:  15.0s
+
+SUCCESS BAR HIT: Full delivery success rate 80.0% >= 80% over last 20 episodes reached at iteration 11!
+  -> Solved model checkpoint saved to D:\PROJECTS\constellation\checkpoints\shaping_ablation\on\ippo\seed_1\ippo_iteration_11_solved.pt
+  -> [IPPO Seed 1 Shaping ON] Solved: True | Final Iter: 11 | Train Full Success: 80.0% | Time: 15.0s
+
+Training MAPPO | Seed 0 | Shaping ON...
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+================================================================================
+CONSTELLATION — Session S2.4: MAPPO Training on DroneWorld (CPU-only)
+================================================================================
+Environment: Grid 20x20 | Drones: 5 | Delivery Points: 3
+Jammer: 0% intensity | No-Fly Zones: None active | Episode cap: 250 steps
+Policy: Shared Actor (input_dim=7, action_dim=5, hidden=64)
+Critic: Centralized Critic (input_dim=14 from get_global_state(), hidden=64)
+Rollout: 410 world-steps * 5 drones = 2050 samples/update
+Update: 4 epochs, minibatch 64, Adam lr=3e-4, GAE(gamma=0.99, lambda=0.95), no adv norm
+Early stop bar: Average full delivery success >= 80% over last 20 episodes
+Run safety limits: Max 150 iterations, 10-minute wall-clock cap
+================================================================================
+
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   1/150 | Avg Reward (last  1 eps):   70.60 | Success Rate:  0.67 (Full:  0.0%) | Collisions:  14.0 | PLoss: -1.0565 | VLoss: 3.8564 | Entropy: 1.5847 | Eps:   1 | Time:   1.2s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   2/150 | Avg Reward (last  3 eps):   82.20 | Success Rate:  0.67 (Full:  0.0%) | Collisions:  18.7 | PLoss: -0.9804 | VLoss: 6.0217 | Entropy: 1.5528 | Eps:   3 | Time:   2.6s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   3/150 | Avg Reward (last  4 eps):   69.90 | Success Rate:  0.50 (Full:  0.0%) | Collisions:  28.0 | PLoss: +0.4568 | VLoss: 2.7390 | Entropy: 1.5667 | Eps:   4 | Time:   3.7s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   4/150 | Avg Reward (last  6 eps):   67.72 | Success Rate:  0.50 (Full:  0.0%) | Collisions:  33.7 | PLoss: -0.1706 | VLoss: 6.8435 | Entropy: 1.5414 | Eps:   6 | Time:   5.0s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   5/150 | Avg Reward (last  8 eps):   75.09 | Success Rate:  0.54 (Full:  0.0%) | Collisions:  30.9 | PLoss: -0.7726 | VLoss: 3.1944 | Entropy: 1.5503 | Eps:   8 | Time:   6.1s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   6/150 | Avg Reward (last  9 eps):   74.23 | Success Rate:  0.52 (Full:  0.0%) | Collisions:  30.8 | PLoss: +0.2787 | VLoss: 3.9755 | Entropy: 1.5611 | Eps:   9 | Time:   7.3s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   7/150 | Avg Reward (last 13 eps):   99.13 | Success Rate:  0.64 (Full: 23.1%) | Collisions:  27.2 | PLoss: -2.0742 | VLoss: 9.1655 | Entropy: 1.4800 | Eps:  13 | Time:   8.4s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   8/150 | Avg Reward (last 17 eps):  114.10 | Success Rate:  0.73 (Full: 41.2%) | Collisions:  23.9 | PLoss: -1.5841 | VLoss: 9.4725 | Entropy: 1.4531 | Eps:  17 | Time:   9.5s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   9/150 | Avg Reward (last 20 eps):  126.53 | Success Rate:  0.78 (Full: 55.0%) | Collisions:  23.0 | PLoss: -0.9197 | VLoss: 8.8939 | Entropy: 1.4283 | Eps:  21 | Time:  10.7s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  10/150 | Avg Reward (last 20 eps):  140.13 | Success Rate:  0.87 (Full: 70.0%) | Collisions:  20.1 | PLoss: -0.4373 | VLoss: 6.7501 | Entropy: 1.3999 | Eps:  24 | Time:  11.8s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  11/150 | Avg Reward (last 20 eps):  164.02 | Success Rate:  1.00 (Full: 100.0%) | Collisions:  16.6 | PLoss: -1.3595 | VLoss: 13.5843 | Entropy: 1.2714 | Eps:  30 | Time:  12.9s
+
+SUCCESS BAR HIT: Full delivery success rate 100.0% >= 80% over last 20 episodes reached at iteration 11!
+  -> Solved model checkpoint saved to D:\PROJECTS\constellation\checkpoints\shaping_ablation\on\mappo\seed_0\mappo_iteration_11_solved.pt
+  -> [MAPPO Seed 0 Shaping ON] Solved: True | Final Iter: 11 | Train Full Success: 100.0% | Time: 13.0s
+
+Training MAPPO | Seed 1 | Shaping ON...
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+================================================================================
+CONSTELLATION — Session S2.4: MAPPO Training on DroneWorld (CPU-only)
+================================================================================
+Environment: Grid 20x20 | Drones: 5 | Delivery Points: 3
+Jammer: 0% intensity | No-Fly Zones: None active | Episode cap: 250 steps
+Policy: Shared Actor (input_dim=7, action_dim=5, hidden=64)
+Critic: Centralized Critic (input_dim=14 from get_global_state(), hidden=64)
+Rollout: 410 world-steps * 5 drones = 2050 samples/update
+Update: 4 epochs, minibatch 64, Adam lr=3e-4, GAE(gamma=0.99, lambda=0.95), no adv norm
+Early stop bar: Average full delivery success >= 80% over last 20 episodes
+Run safety limits: Max 150 iterations, 10-minute wall-clock cap
+================================================================================
+
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   1/150 | Avg Reward (last  1 eps):   -0.10 | Success Rate:  0.67 (Full:  0.0%) | Collisions:  25.0 | PLoss: -0.2429 | VLoss: 3.9618 | Entropy: 1.5896 | Eps:   1 | Time:   1.1s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   2/150 | Avg Reward (last  3 eps):   27.27 | Success Rate:  0.56 (Full:  0.0%) | Collisions:  22.7 | PLoss: -0.3797 | VLoss: 5.4499 | Entropy: 1.5742 | Eps:   3 | Time:   2.3s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   3/150 | Avg Reward (last  5 eps):   53.39 | Success Rate:  0.67 (Full: 20.0%) | Collisions:  24.0 | PLoss: -1.1800 | VLoss: 4.8347 | Entropy: 1.5516 | Eps:   5 | Time:   3.5s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   4/150 | Avg Reward (last  7 eps):   62.53 | Success Rate:  0.71 (Full: 28.6%) | Collisions:  29.4 | PLoss: -1.0142 | VLoss: 7.4346 | Entropy: 1.4899 | Eps:   7 | Time:   4.6s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   5/150 | Avg Reward (last  9 eps):   74.53 | Success Rate:  0.78 (Full: 44.4%) | Collisions:  31.3 | PLoss: -0.6959 | VLoss: 5.4352 | Entropy: 1.4994 | Eps:   9 | Time:   5.9s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   6/150 | Avg Reward (last 11 eps):   67.80 | Success Rate:  0.76 (Full: 36.4%) | Collisions:  38.2 | PLoss: +0.1245 | VLoss: 4.4590 | Entropy: 1.4997 | Eps:  11 | Time:   7.2s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   7/150 | Avg Reward (last 13 eps):   67.03 | Success Rate:  0.77 (Full: 38.5%) | Collisions:  40.2 | PLoss: +0.3276 | VLoss: 7.0035 | Entropy: 1.5249 | Eps:  13 | Time:   8.4s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   8/150 | Avg Reward (last 15 eps):   68.34 | Success Rate:  0.78 (Full: 40.0%) | Collisions:  42.8 | PLoss: +0.0798 | VLoss: 4.6777 | Entropy: 1.5072 | Eps:  15 | Time:   9.8s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   9/150 | Avg Reward (last 19 eps):   78.94 | Success Rate:  0.82 (Full: 52.6%) | Collisions:  40.8 | PLoss: -1.1306 | VLoss: 8.7732 | Entropy: 1.4459 | Eps:  19 | Time:  10.9s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  10/150 | Avg Reward (last 20 eps):   88.78 | Success Rate:  0.85 (Full: 60.0%) | Collisions:  40.0 | PLoss: -0.0666 | VLoss: 5.6580 | Entropy: 1.4482 | Eps:  22 | Time:  12.0s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  11/150 | Avg Reward (last 20 eps):   95.33 | Success Rate:  0.90 (Full: 70.0%) | Collisions:  41.2 | PLoss: -1.2391 | VLoss: 9.2917 | Entropy: 1.3774 | Eps:  26 | Time:  13.2s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  12/150 | Avg Reward (last 20 eps):  114.54 | Success Rate:  0.97 (Full: 90.0%) | Collisions:  28.9 | PLoss: -0.9333 | VLoss: 9.7586 | Entropy: 1.3172 | Eps:  32 | Time:  14.4s
+
+SUCCESS BAR HIT: Full delivery success rate 90.0% >= 80% over last 20 episodes reached at iteration 12!
+  -> Solved model checkpoint saved to D:\PROJECTS\constellation\checkpoints\shaping_ablation\on\mappo\seed_1\mappo_iteration_12_solved.pt
+  -> [MAPPO Seed 1 Shaping ON] Solved: True | Final Iter: 12 | Train Full Success: 90.0% | Time: 14.4s
+
+================================================================================
+>>> STARTING TRAINING BATCH: DISTANCE SHAPING = OFF <<<
+================================================================================
+
+Training IPPO | Seed 0 | Shaping OFF...
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+================================================================================
+CONSTELLATION — Session S2.3: IPPO Training on DroneWorld (CPU-only)
+================================================================================
+Environment: Grid 20x20 | Drones: 5 | Delivery Points: 3
+Jammer: 0% intensity | No-Fly Zones: None active | Episode cap: 250 steps
+Policy: Shared Actor/Critic (state_dim=7, action_dim=5, hidden=64)
+Rollout: 410 world-steps * 5 drones = 2050 samples/update
+Update: 4 epochs, minibatch 64, Adam lr=3e-4, GAE(gamma=0.99, lambda=0.95), no adv norm
+Early stop bar: Average full delivery success >= 80% over last 20 episodes
+Run safety limits: Max 150 iterations, 10-minute wall-clock cap
+================================================================================
+
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   1/150 | Avg Reward (last  1 eps):    1.00 | Success Rate:  0.67 (Full:  0.0%) | Collisions:  31.0 | PLoss: +0.0426 | VLoss: 0.3604 | Entropy: 1.5922 | Eps:   1 | Time:   1.2s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   2/150 | Avg Reward (last  3 eps):   -5.37 | Success Rate:  0.44 (Full:  0.0%) | Collisions:  30.0 | PLoss: -0.0359 | VLoss: 0.6541 | Entropy: 1.5632 | Eps:   3 | Time:   2.5s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   3/150 | Avg Reward (last  4 eps):   -3.22 | Success Rate:  0.50 (Full:  0.0%) | Collisions:  27.8 | PLoss: +0.0411 | VLoss: 0.4385 | Entropy: 1.5443 | Eps:   4 | Time:   3.7s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   4/150 | Avg Reward (last  6 eps):   -4.43 | Success Rate:  0.50 (Full:  0.0%) | Collisions:  33.7 | PLoss: +0.0804 | VLoss: 0.5240 | Entropy: 1.5236 | Eps:   6 | Time:   5.0s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   5/150 | Avg Reward (last  8 eps):   -7.44 | Success Rate:  0.46 (Full:  0.0%) | Collisions:  42.2 | PLoss: +0.3300 | VLoss: 0.1912 | Entropy: 1.4960 | Eps:   8 | Time:   6.2s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   6/150 | Avg Reward (last  9 eps):   -8.67 | Success Rate:  0.44 (Full:  0.0%) | Collisions:  46.0 | PLoss: +0.2261 | VLoss: 0.3372 | Entropy: 1.4810 | Eps:   9 | Time:   7.7s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   7/150 | Avg Reward (last 11 eps):   -9.10 | Success Rate:  0.42 (Full:  0.0%) | Collisions:  49.6 | PLoss: +0.1065 | VLoss: 0.4831 | Entropy: 1.4242 | Eps:  11 | Time:   8.9s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   8/150 | Avg Reward (last 13 eps):   -9.66 | Success Rate:  0.41 (Full:  0.0%) | Collisions:  53.2 | PLoss: +0.1155 | VLoss: 0.2845 | Entropy: 1.4193 | Eps:  13 | Time:  10.2s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   9/150 | Avg Reward (last 14 eps):  -10.86 | Success Rate:  0.40 (Full:  0.0%) | Collisions:  57.6 | PLoss: +0.3456 | VLoss: 0.2534 | Entropy: 1.4712 | Eps:  14 | Time:  11.4s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  10/150 | Avg Reward (last 16 eps):  -12.33 | Success Rate:  0.40 (Full:  0.0%) | Collisions:  62.6 | PLoss: +0.0847 | VLoss: 0.3417 | Entropy: 1.4391 | Eps:  16 | Time:  12.6s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  11/150 | Avg Reward (last 18 eps):  -12.31 | Success Rate:  0.39 (Full:  0.0%) | Collisions:  63.5 | PLoss: +0.0158 | VLoss: 0.2582 | Entropy: 1.4794 | Eps:  18 | Time:  13.9s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  12/150 | Avg Reward (last 19 eps):  -12.48 | Success Rate:  0.39 (Full:  0.0%) | Collisions:  63.5 | PLoss: +0.0564 | VLoss: 0.3147 | Entropy: 1.4193 | Eps:  19 | Time:  15.2s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  13/150 | Avg Reward (last 20 eps):  -14.18 | Success Rate:  0.37 (Full:  0.0%) | Collisions:  68.4 | PLoss: +0.2085 | VLoss: 0.3467 | Entropy: 1.3961 | Eps:  21 | Time:  16.4s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  14/150 | Avg Reward (last 20 eps):  -15.03 | Success Rate:  0.37 (Full:  0.0%) | Collisions:  72.2 | PLoss: +0.1197 | VLoss: 0.1666 | Entropy: 1.4343 | Eps:  22 | Time:  17.6s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  15/150 | Avg Reward (last 20 eps):  -16.53 | Success Rate:  0.37 (Full:  0.0%) | Collisions:  79.3 | PLoss: -0.0516 | VLoss: 0.5992 | Entropy: 1.3955 | Eps:  24 | Time:  18.8s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  16/150 | Avg Reward (last 20 eps):  -17.47 | Success Rate:  0.35 (Full:  0.0%) | Collisions:  81.2 | PLoss: -0.0025 | VLoss: 0.3330 | Entropy: 1.4022 | Eps:  26 | Time:  20.1s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  17/150 | Avg Reward (last 20 eps):  -17.78 | Success Rate:  0.35 (Full:  0.0%) | Collisions:  82.5 | PLoss: +0.0803 | VLoss: 0.1722 | Entropy: 1.4597 | Eps:  27 | Time:  21.4s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  18/150 | Avg Reward (last 20 eps):  -17.49 | Success Rate:  0.37 (Full:  0.0%) | Collisions:  83.1 | PLoss: -0.0765 | VLoss: 0.4995 | Entropy: 1.4210 | Eps:  29 | Time:  22.6s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  19/150 | Avg Reward (last 20 eps):  -15.55 | Success Rate:  0.43 (Full: 10.0%) | Collisions:  81.1 | PLoss: -0.5539 | VLoss: 1.1396 | Entropy: 1.4414 | Eps:  31 | Time:  23.8s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  20/150 | Avg Reward (last 20 eps):  -13.23 | Success Rate:  0.50 (Full: 20.0%) | Collisions:  78.1 | PLoss: -0.4149 | VLoss: 1.0335 | Entropy: 1.4241 | Eps:  33 | Time:  25.0s
+  -> Checkpoint saved to D:\PROJECTS\constellation\checkpoints\shaping_ablation\off\ippo\seed_0\ippo_iteration_20.pt
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  21/150 | Avg Reward (last 20 eps):  -10.13 | Success Rate:  0.55 (Full: 25.0%) | Collisions:  71.8 | PLoss: -0.2185 | VLoss: 1.2978 | Entropy: 1.4144 | Eps:  35 | Time:  26.3s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  22/150 | Avg Reward (last 20 eps):   -5.25 | Success Rate:  0.67 (Full: 40.0%) | Collisions:  68.9 | PLoss: -0.7480 | VLoss: 2.1993 | Entropy: 1.2333 | Eps:  39 | Time:  27.5s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  23/150 | Avg Reward (last 20 eps):    1.40 | Success Rate:  0.77 (Full: 55.0%) | Collisions:  57.4 | PLoss: -0.2758 | VLoss: 1.7400 | Entropy: 1.2244 | Eps:  42 | Time:  28.7s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  24/150 | Avg Reward (last 20 eps):    2.73 | Success Rate:  0.82 (Full: 60.0%) | Collisions:  59.3 | PLoss: -0.0104 | VLoss: 1.3475 | Entropy: 1.2160 | Eps:  45 | Time:  30.0s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  25/150 | Avg Reward (last 20 eps):    5.13 | Success Rate:  0.87 (Full: 65.0%) | Collisions:  61.4 | PLoss: +0.1952 | VLoss: 1.1214 | Entropy: 1.2918 | Eps:  47 | Time:  31.2s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  26/150 | Avg Reward (last 20 eps):    7.14 | Success Rate:  0.90 (Full: 70.0%) | Collisions:  60.4 | PLoss: -0.1624 | VLoss: 2.0270 | Entropy: 1.1649 | Eps:  51 | Time:  32.4s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  27/150 | Avg Reward (last 20 eps):   13.00 | Success Rate:  0.93 (Full: 80.0%) | Collisions:  54.2 | PLoss: -0.4984 | VLoss: 2.7275 | Entropy: 1.0535 | Eps:  56 | Time:  33.6s
+
+SUCCESS BAR HIT: Full delivery success rate 80.0% >= 80% over last 20 episodes reached at iteration 27!
+  -> Solved model checkpoint saved to D:\PROJECTS\constellation\checkpoints\shaping_ablation\off\ippo\seed_0\ippo_iteration_27_solved.pt
+  -> [IPPO Seed 0 Shaping OFF] Solved: True | Final Iter: 27 | Train Full Success: 80.0% | Time: 33.6s
+
+Training IPPO | Seed 1 | Shaping OFF...
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+================================================================================
+CONSTELLATION — Session S2.3: IPPO Training on DroneWorld (CPU-only)
+================================================================================
+Environment: Grid 20x20 | Drones: 5 | Delivery Points: 3
+Jammer: 0% intensity | No-Fly Zones: None active | Episode cap: 250 steps
+Policy: Shared Actor/Critic (state_dim=7, action_dim=5, hidden=64)
+Rollout: 410 world-steps * 5 drones = 2050 samples/update
+Update: 4 epochs, minibatch 64, Adam lr=3e-4, GAE(gamma=0.99, lambda=0.95), no adv norm
+Early stop bar: Average full delivery success >= 80% over last 20 episodes
+Run safety limits: Max 150 iterations, 10-minute wall-clock cap
+================================================================================
+
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   1/150 | Avg Reward (last  1 eps):    3.70 | Success Rate:  0.67 (Full:  0.0%) | Collisions:  16.0 | PLoss: +0.0318 | VLoss: 0.4186 | Entropy: 1.6032 | Eps:   1 | Time:   1.2s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   2/150 | Avg Reward (last  3 eps):    9.33 | Success Rate:  0.89 (Full: 66.7%) | Collisions:  22.7 | PLoss: -0.3071 | VLoss: 1.1269 | Entropy: 1.5853 | Eps:   3 | Time:   2.4s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   3/150 | Avg Reward (last  4 eps):    7.65 | Success Rate:  0.83 (Full: 50.0%) | Collisions:  23.0 | PLoss: +0.2069 | VLoss: 0.6272 | Entropy: 1.5647 | Eps:   4 | Time:   3.8s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   4/150 | Avg Reward (last  6 eps):   -0.50 | Success Rate:  0.67 (Full: 33.3%) | Collisions:  38.3 | PLoss: +0.1335 | VLoss: 0.6306 | Entropy: 1.5368 | Eps:   6 | Time:   5.0s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   5/150 | Avg Reward (last  8 eps):   -0.44 | Success Rate:  0.67 (Full: 25.0%) | Collisions:  38.2 | PLoss: +0.0856 | VLoss: 0.5696 | Entropy: 1.5669 | Eps:   8 | Time:   6.3s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   6/150 | Avg Reward (last  9 eps):   -0.19 | Success Rate:  0.67 (Full: 22.2%) | Collisions:  37.1 | PLoss: +0.1446 | VLoss: 0.4814 | Entropy: 1.5746 | Eps:   9 | Time:   7.6s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   7/150 | Avg Reward (last 11 eps):   -2.18 | Success Rate:  0.64 (Full: 18.2%) | Collisions:  42.6 | PLoss: +0.2090 | VLoss: 0.5234 | Entropy: 1.5315 | Eps:  11 | Time:   8.8s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   8/150 | Avg Reward (last 13 eps):   -1.63 | Success Rate:  0.64 (Full: 15.4%) | Collisions:  40.3 | PLoss: +0.0712 | VLoss: 0.3370 | Entropy: 1.5283 | Eps:  13 | Time:  10.0s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   9/150 | Avg Reward (last 15 eps):   -0.11 | Success Rate:  0.67 (Full: 20.0%) | Collisions:  38.9 | PLoss: -0.0005 | VLoss: 0.7703 | Entropy: 1.5165 | Eps:  15 | Time:  11.2s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  10/150 | Avg Reward (last 17 eps):    0.82 | Success Rate:  0.69 (Full: 23.5%) | Collisions:  37.6 | PLoss: -0.0484 | VLoss: 0.8723 | Entropy: 1.4988 | Eps:  17 | Time:  12.4s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  11/150 | Avg Reward (last 19 eps):    1.40 | Success Rate:  0.70 (Full: 26.3%) | Collisions:  38.1 | PLoss: +0.0088 | VLoss: 0.7521 | Entropy: 1.4827 | Eps:  19 | Time:  13.6s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  12/150 | Avg Reward (last 20 eps):    2.11 | Success Rate:  0.72 (Full: 30.0%) | Collisions:  37.6 | PLoss: -0.1038 | VLoss: 1.0918 | Entropy: 1.4381 | Eps:  21 | Time:  14.8s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  13/150 | Avg Reward (last 20 eps):    2.00 | Success Rate:  0.70 (Full: 25.0%) | Collisions:  37.5 | PLoss: +0.0928 | VLoss: 0.7500 | Entropy: 1.4338 | Eps:  23 | Time:  16.0s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  14/150 | Avg Reward (last 20 eps):    2.15 | Success Rate:  0.70 (Full: 25.0%) | Collisions:  36.8 | PLoss: +0.4068 | VLoss: 0.3702 | Entropy: 1.4965 | Eps:  25 | Time:  17.3s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  15/150 | Avg Reward (last 20 eps):    3.68 | Success Rate:  0.72 (Full: 30.0%) | Collisions:  34.2 | PLoss: +0.1782 | VLoss: 0.6857 | Entropy: 1.4398 | Eps:  27 | Time:  18.5s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  16/150 | Avg Reward (last 20 eps):    8.22 | Success Rate:  0.78 (Full: 45.0%) | Collisions:  28.3 | PLoss: -0.4685 | VLoss: 2.2353 | Entropy: 1.3962 | Eps:  31 | Time:  19.7s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  17/150 | Avg Reward (last 20 eps):   11.13 | Success Rate:  0.83 (Full: 60.0%) | Collisions:  26.5 | PLoss: -0.1423 | VLoss: 1.5884 | Entropy: 1.3705 | Eps:  35 | Time:  20.8s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  18/150 | Avg Reward (last 20 eps):   12.63 | Success Rate:  0.85 (Full: 65.0%) | Collisions:  27.1 | PLoss: -0.0988 | VLoss: 1.7509 | Entropy: 1.3374 | Eps:  38 | Time:  22.1s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  19/150 | Avg Reward (last 20 eps):   15.65 | Success Rate:  0.90 (Full: 80.0%) | Collisions:  25.0 | PLoss: -0.1594 | VLoss: 2.1336 | Entropy: 1.2785 | Eps:  43 | Time:  23.3s
+
+SUCCESS BAR HIT: Full delivery success rate 80.0% >= 80% over last 20 episodes reached at iteration 19!
+  -> Solved model checkpoint saved to D:\PROJECTS\constellation\checkpoints\shaping_ablation\off\ippo\seed_1\ippo_iteration_19_solved.pt
+  -> [IPPO Seed 1 Shaping OFF] Solved: True | Final Iter: 19 | Train Full Success: 80.0% | Time: 23.3s
+
+Training MAPPO | Seed 0 | Shaping OFF...
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+================================================================================
+CONSTELLATION — Session S2.4: MAPPO Training on DroneWorld (CPU-only)
+================================================================================
+Environment: Grid 20x20 | Drones: 5 | Delivery Points: 3
+Jammer: 0% intensity | No-Fly Zones: None active | Episode cap: 250 steps
+Policy: Shared Actor (input_dim=7, action_dim=5, hidden=64)
+Critic: Centralized Critic (input_dim=14 from get_global_state(), hidden=64)
+Rollout: 410 world-steps * 5 drones = 2050 samples/update
+Update: 4 epochs, minibatch 64, Adam lr=3e-4, GAE(gamma=0.99, lambda=0.95), no adv norm
+Early stop bar: Average full delivery success >= 80% over last 20 episodes
+Run safety limits: Max 150 iterations, 10-minute wall-clock cap
+================================================================================
+
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   1/150 | Avg Reward (last  1 eps):    4.60 | Success Rate:  0.67 (Full:  0.0%) | Collisions:  14.0 | PLoss: -0.0560 | VLoss: 0.5708 | Entropy: 1.5968 | Eps:   1 | Time:   1.1s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   2/150 | Avg Reward (last  3 eps):   -0.37 | Success Rate:  0.56 (Full:  0.0%) | Collisions:  21.3 | PLoss: +0.0013 | VLoss: 0.3629 | Entropy: 1.5743 | Eps:   3 | Time:   2.3s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   3/150 | Avg Reward (last  4 eps):   -0.02 | Success Rate:  0.58 (Full:  0.0%) | Collisions:  24.0 | PLoss: -0.0594 | VLoss: 0.6916 | Entropy: 1.5825 | Eps:   4 | Time:   3.4s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   4/150 | Avg Reward (last  6 eps):   -2.87 | Success Rate:  0.56 (Full:  0.0%) | Collisions:  33.8 | PLoss: +0.1602 | VLoss: 0.5367 | Entropy: 1.5505 | Eps:   6 | Time:   4.6s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   5/150 | Avg Reward (last  8 eps):   -4.20 | Success Rate:  0.54 (Full:  0.0%) | Collisions:  38.0 | PLoss: +0.0749 | VLoss: 0.3458 | Entropy: 1.5109 | Eps:   8 | Time:   5.7s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   6/150 | Avg Reward (last  9 eps):   -4.68 | Success Rate:  0.52 (Full:  0.0%) | Collisions:  37.0 | PLoss: +0.1799 | VLoss: 0.3672 | Entropy: 1.5404 | Eps:   9 | Time:   6.8s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   7/150 | Avg Reward (last 11 eps):   -4.44 | Success Rate:  0.55 (Full:  0.0%) | Collisions:  39.9 | PLoss: +0.0439 | VLoss: 0.5584 | Entropy: 1.5363 | Eps:  11 | Time:   8.0s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   8/150 | Avg Reward (last 13 eps):   -3.04 | Success Rate:  0.59 (Full:  7.7%) | Collisions:  40.6 | PLoss: -0.1933 | VLoss: 0.9038 | Entropy: 1.5478 | Eps:  13 | Time:   9.1s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter   9/150 | Avg Reward (last 14 eps):   -2.16 | Success Rate:  0.62 (Full: 14.3%) | Collisions:  40.6 | PLoss: +0.0488 | VLoss: 0.7485 | Entropy: 1.5510 | Eps:  14 | Time:  10.4s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  10/150 | Avg Reward (last 16 eps):   -1.06 | Success Rate:  0.65 (Full: 18.8%) | Collisions:  39.4 | PLoss: -0.1351 | VLoss: 0.8693 | Entropy: 1.5098 | Eps:  16 | Time:  11.5s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  11/150 | Avg Reward (last 19 eps):    2.16 | Success Rate:  0.70 (Full: 31.6%) | Collisions:  36.0 | PLoss: -0.4862 | VLoss: 1.5957 | Entropy: 1.4732 | Eps:  19 | Time:  12.7s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  12/150 | Avg Reward (last 20 eps):    4.15 | Success Rate:  0.73 (Full: 40.0%) | Collisions:  36.0 | PLoss: -0.4017 | VLoss: 1.3280 | Entropy: 1.4396 | Eps:  22 | Time:  13.8s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  13/150 | Avg Reward (last 20 eps):    6.82 | Success Rate:  0.78 (Full: 50.0%) | Collisions:  36.0 | PLoss: -0.0049 | VLoss: 1.1901 | Entropy: 1.4319 | Eps:  25 | Time:  14.9s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  14/150 | Avg Reward (last 20 eps):   10.76 | Success Rate:  0.87 (Full: 65.0%) | Collisions:  33.5 | PLoss: -0.3704 | VLoss: 1.8256 | Entropy: 1.3610 | Eps:  28 | Time:  16.0s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=0)
+Iter  15/150 | Avg Reward (last 20 eps):   15.64 | Success Rate:  0.95 (Full: 85.0%) | Collisions:  29.1 | PLoss: -0.2527 | VLoss: 2.1317 | Entropy: 1.2801 | Eps:  32 | Time:  17.2s
+
+SUCCESS BAR HIT: Full delivery success rate 85.0% >= 80% over last 20 episodes reached at iteration 15!
+  -> Solved model checkpoint saved to D:\PROJECTS\constellation\checkpoints\shaping_ablation\off\mappo\seed_0\mappo_iteration_15_solved.pt
+  -> [MAPPO Seed 0 Shaping OFF] Solved: True | Final Iter: 15 | Train Full Success: 85.0% | Time: 17.2s
+
+Training MAPPO | Seed 1 | Shaping OFF...
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+================================================================================
+CONSTELLATION — Session S2.4: MAPPO Training on DroneWorld (CPU-only)
+================================================================================
+Environment: Grid 20x20 | Drones: 5 | Delivery Points: 3
+Jammer: 0% intensity | No-Fly Zones: None active | Episode cap: 250 steps
+Policy: Shared Actor (input_dim=7, action_dim=5, hidden=64)
+Critic: Centralized Critic (input_dim=14 from get_global_state(), hidden=64)
+Rollout: 410 world-steps * 5 drones = 2050 samples/update
+Update: 4 epochs, minibatch 64, Adam lr=3e-4, GAE(gamma=0.99, lambda=0.95), no adv norm
+Early stop bar: Average full delivery success >= 80% over last 20 episodes
+Run safety limits: Max 150 iterations, 10-minute wall-clock cap
+================================================================================
+
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   1/150 | Avg Reward (last  1 eps):    1.90 | Success Rate:  0.67 (Full:  0.0%) | Collisions:  25.0 | PLoss: +0.0169 | VLoss: 0.4000 | Entropy: 1.5984 | Eps:   1 | Time:   1.1s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   2/150 | Avg Reward (last  3 eps):   -4.60 | Success Rate:  0.44 (Full:  0.0%) | Collisions:  25.3 | PLoss: +0.0032 | VLoss: 0.4762 | Entropy: 1.5995 | Eps:   3 | Time:   2.2s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   3/150 | Avg Reward (last  4 eps):   -2.92 | Success Rate:  0.50 (Full:  0.0%) | Collisions:  25.5 | PLoss: +0.0497 | VLoss: 0.3830 | Entropy: 1.5808 | Eps:   4 | Time:   3.5s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   4/150 | Avg Reward (last  6 eps):   -3.98 | Success Rate:  0.44 (Full:  0.0%) | Collisions:  22.8 | PLoss: +0.0052 | VLoss: 0.6146 | Entropy: 1.5620 | Eps:   6 | Time:   4.8s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   5/150 | Avg Reward (last  8 eps):   -2.52 | Success Rate:  0.54 (Full: 12.5%) | Collisions:  30.0 | PLoss: +0.0611 | VLoss: 0.7341 | Entropy: 1.5726 | Eps:   8 | Time:   6.1s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   6/150 | Avg Reward (last 10 eps):    1.92 | Success Rate:  0.63 (Full: 30.0%) | Collisions:  28.1 | PLoss: -0.2436 | VLoss: 1.3146 | Entropy: 1.5471 | Eps:  10 | Time:   7.3s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   7/150 | Avg Reward (last 13 eps):    5.25 | Success Rate:  0.69 (Full: 38.5%) | Collisions:  27.4 | PLoss: -0.1519 | VLoss: 1.3121 | Entropy: 1.5154 | Eps:  13 | Time:   8.6s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   8/150 | Avg Reward (last 15 eps):    4.77 | Success Rate:  0.71 (Full: 40.0%) | Collisions:  30.9 | PLoss: +0.1779 | VLoss: 0.5582 | Entropy: 1.5565 | Eps:  15 | Time:   9.9s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter   9/150 | Avg Reward (last 16 eps):    3.71 | Success Rate:  0.69 (Full: 37.5%) | Collisions:  31.9 | PLoss: +0.4477 | VLoss: 0.5314 | Entropy: 1.5726 | Eps:  16 | Time:  11.0s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  10/150 | Avg Reward (last 19 eps):    4.95 | Success Rate:  0.72 (Full: 42.1%) | Collisions:  31.3 | PLoss: -0.2532 | VLoss: 1.1920 | Entropy: 1.5271 | Eps:  19 | Time:  12.2s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  11/150 | Avg Reward (last 20 eps):    5.06 | Success Rate:  0.72 (Full: 45.0%) | Collisions:  31.8 | PLoss: +0.1844 | VLoss: 0.9329 | Entropy: 1.5137 | Eps:  21 | Time:  13.3s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  12/150 | Avg Reward (last 20 eps):    5.73 | Success Rate:  0.75 (Full: 45.0%) | Collisions:  33.5 | PLoss: +0.1444 | VLoss: 0.3303 | Entropy: 1.5377 | Eps:  23 | Time:  14.4s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  13/150 | Avg Reward (last 20 eps):    4.59 | Success Rate:  0.73 (Full: 45.0%) | Collisions:  36.7 | PLoss: +0.3160 | VLoss: 0.5632 | Entropy: 1.5562 | Eps:  24 | Time:  15.5s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  14/150 | Avg Reward (last 20 eps):    5.93 | Success Rate:  0.78 (Full: 50.0%) | Collisions:  38.0 | PLoss: +0.0528 | VLoss: 0.7013 | Entropy: 1.5408 | Eps:  26 | Time:  16.6s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  15/150 | Avg Reward (last 20 eps):    6.16 | Success Rate:  0.78 (Full: 50.0%) | Collisions:  36.9 | PLoss: -0.0173 | VLoss: 0.8712 | Entropy: 1.5420 | Eps:  28 | Time:  17.7s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  16/150 | Avg Reward (last 20 eps):    5.40 | Success Rate:  0.78 (Full: 50.0%) | Collisions:  39.0 | PLoss: +0.1384 | VLoss: 0.6832 | Entropy: 1.5568 | Eps:  29 | Time:  18.8s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  17/150 | Avg Reward (last 20 eps):    4.47 | Success Rate:  0.78 (Full: 50.0%) | Collisions:  40.0 | PLoss: +0.1077 | VLoss: 0.8175 | Entropy: 1.5294 | Eps:  31 | Time:  20.0s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  18/150 | Avg Reward (last 20 eps):    1.46 | Success Rate:  0.73 (Full: 40.0%) | Collisions:  44.2 | PLoss: +0.4662 | VLoss: 0.3923 | Entropy: 1.5500 | Eps:  33 | Time:  21.1s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  19/150 | Avg Reward (last 20 eps):    4.29 | Success Rate:  0.77 (Full: 45.0%) | Collisions:  39.5 | PLoss: -0.1097 | VLoss: 1.4230 | Entropy: 1.5081 | Eps:  36 | Time:  22.3s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  20/150 | Avg Reward (last 20 eps):    4.51 | Success Rate:  0.77 (Full: 45.0%) | Collisions:  39.5 | PLoss: +0.1600 | VLoss: 0.8581 | Entropy: 1.5402 | Eps:  38 | Time:  23.5s
+  -> Checkpoint saved to D:\PROJECTS\constellation\checkpoints\shaping_ablation\off\mappo\seed_1\mappo_iteration_20.pt
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  21/150 | Avg Reward (last 20 eps):    5.81 | Success Rate:  0.80 (Full: 50.0%) | Collisions:  38.5 | PLoss: -0.1666 | VLoss: 1.5484 | Entropy: 1.4877 | Eps:  41 | Time:  24.7s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  22/150 | Avg Reward (last 20 eps):    9.58 | Success Rate:  0.85 (Full: 60.0%) | Collisions:  32.9 | PLoss: +0.0366 | VLoss: 1.2543 | Entropy: 1.4647 | Eps:  44 | Time:  25.8s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  23/150 | Avg Reward (last 20 eps):   13.34 | Success Rate:  0.88 (Full: 70.0%) | Collisions:  28.9 | PLoss: -0.1198 | VLoss: 2.2390 | Entropy: 1.4110 | Eps:  48 | Time:  27.0s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.00 | self.jammer.intensity=0.00 (seed=1)
+Iter  24/150 | Avg Reward (last 20 eps):   20.93 | Success Rate:  0.97 (Full: 90.0%) | Collisions:  18.9 | PLoss: -0.2929 | VLoss: 2.6303 | Entropy: 1.3342 | Eps:  54 | Time:  28.4s
+
+SUCCESS BAR HIT: Full delivery success rate 90.0% >= 80% over last 20 episodes reached at iteration 24!
+  -> Solved model checkpoint saved to D:\PROJECTS\constellation\checkpoints\shaping_ablation\off\mappo\seed_1\mappo_iteration_24_solved.pt
+  -> [MAPPO Seed 1 Shaping OFF] Solved: True | Final Iter: 24 | Train Full Success: 90.0% | Time: 28.4s
+
+All 8 training runs complete in 169.4s (2.82 min).
+
+====================================================================================================
+STEP 4: EVALUATING CHECKPOINTS (10 EPISODES PER SEED VIA METRICSTRACKER)
+====================================================================================================
+
+Evaluating IPPO Seed 0 | Shaping ON (10 episodes)...
+Evaluating IPPO Seed 1 | Shaping ON (10 episodes)...
+Evaluating MAPPO Seed 0 | Shaping ON (10 episodes)...
+Evaluating MAPPO Seed 1 | Shaping ON (10 episodes)...
+Evaluating IPPO Seed 0 | Shaping OFF (10 episodes)...
+Evaluating IPPO Seed 1 | Shaping OFF (10 episodes)...
+Evaluating MAPPO Seed 0 | Shaping OFF (10 episodes)...
+Evaluating MAPPO Seed 1 | Shaping OFF (10 episodes)...
+
+==================================================================================================================================================
+REWARD-SHAPING ABLATION COMPARISON TABLE (SHAPING ON vs SHAPING OFF)
+==================================================================================================================================================
+-------------------------------------------------------------------------------------------------------------------------------
+Algo   | Seed  | Shaping  | Solved?  | Iter-to-Bar  | Train FullSucc  | Eval FullSucc  | Collisions   | Latency    | Energy    
+-------------------------------------------------------------------------------------------------------------------------------
+IPPO   | 0     | ON       | YES      | 11           | 95.0%           | 80.0%          | 36.60        | 133.6      | 605.6     
+IPPO   | 0     | OFF      | YES      | 27           | 80.0%           | 50.0%          | 64.40        | 156.7      | 750.8     
+-------------------------------------------------------------------------------------------------------------------------------
+IPPO   | 1     | ON       | YES      | 11           | 80.0%           | 60.0%          | 34.80        | 171.3      | 759.9     
+IPPO   | 1     | OFF      | YES      | 19           | 80.0%           | 70.0%          | 31.20        | 142.6      | 673.0     
+-------------------------------------------------------------------------------------------------------------------------------
+MAPPO  | 0     | ON       | YES      | 11           | 100.0%          | 90.0%          | 32.30        | 122.0      | 558.6     
+MAPPO  | 0     | OFF      | YES      | 15           | 85.0%           | 60.0%          | 47.80        | 167.6      | 758.6     
+-------------------------------------------------------------------------------------------------------------------------------
+MAPPO  | 1     | ON       | YES      | 12           | 90.0%           | 100.0%         | 33.30        | 113.8      | 530.0     
+MAPPO  | 1     | OFF      | YES      | 24           | 90.0%           | 40.0%          | 44.60        | 206.5      | 930.0     
+-------------------------------------------------------------------------------------------------------------------------------
+
+====================================================================================================
+STEP 5: COMPARATIVE ANALYSIS & VERDICT
+====================================================================================================
+
+[IPPO Seed 0] Shaping ON vs OFF:
+  Iterations:     ON=11 vs OFF=27 (Delta: +16 iters)
+  Eval Success:   ON=80.0% vs OFF=50.0% (Delta: -30.0%)
+  Collisions:     ON=36.6 vs OFF=64.4 (Delta: +27.8)
+  Latency:        ON=133.6 vs OFF=156.7 (Delta: +23.1 steps)
+
+[IPPO Seed 1] Shaping ON vs OFF:
+  Iterations:     ON=11 vs OFF=19 (Delta: +8 iters)
+  Eval Success:   ON=60.0% vs OFF=70.0% (Delta: +10.0%)
+  Collisions:     ON=34.8 vs OFF=31.2 (Delta: -3.6)
+  Latency:        ON=171.3 vs OFF=142.6 (Delta: -28.7 steps)
+
+[MAPPO Seed 0] Shaping ON vs OFF:
+  Iterations:     ON=11 vs OFF=15 (Delta: +4 iters)
+  Eval Success:   ON=90.0% vs OFF=60.0% (Delta: -30.0%)
+  Collisions:     ON=32.3 vs OFF=47.8 (Delta: +15.5)
+  Latency:        ON=122.0 vs OFF=167.6 (Delta: +45.6 steps)
+
+[MAPPO Seed 1] Shaping ON vs OFF:
+  Iterations:     ON=12 vs OFF=24 (Delta: +12 iters)
+  Eval Success:   ON=100.0% vs OFF=40.0% (Delta: -60.0%)
+  Collisions:     ON=33.3 vs OFF=44.6 (Delta: +11.3)
+  Latency:        ON=113.8 vs OFF=206.5 (Delta: +92.7 steps)
+
+--------------------------------------------------------------------------------
+HARDWARE & RESOURCE MONITORING — POST-RUN FINAL READINGS
+--------------------------------------------------------------------------------
+Timestamp:             2026-10-25 23:18:51
+Total Session Elapsed: 191.1s (3.18 min)
+System RAM Total:      15.32 GB
+System RAM Used:       10.43 GB (68.0%) [Pre: 10.40 GB]
+Process Resident RAM:  292.12 MB (Delta: +93.69 MB)
+Thermals / Fan:        Nominal CPU temperature, normal operating range, zero throttling
+Log File Mirrored To:  D:\PROJECTS\constellation\logs\runs\s3_7_shaping_ablation_20261025_231540.log
+--------------------------------------------------------------------------------
+
