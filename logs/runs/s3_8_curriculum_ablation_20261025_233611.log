@@ -1,0 +1,839 @@
+====================================================================================================
+CONSTELLATION — SESSION S3.8: CURRICULUM ON/OFF ABLATION (FINAL PLANNED ABLATION)
+Dual-Stream TeeLogger Active: D:\PROJECTS\constellation\logs\runs\s3_8_curriculum_ablation_20261025_233611.log
+====================================================================================================
+
+--------------------------------------------------------------------------------
+HARDWARE & RESOURCE MONITORING — PRE-RUN BASELINE
+--------------------------------------------------------------------------------
+Timestamp:             2026-10-25 23:36:11
+CPU Processor:         AMD64 Family 25 Model 68 Stepping 1, AuthenticAMD (AMD64)
+PyTorch Device:        CPU (Pure CPU execution)
+System RAM Total:      15.32 GB
+System RAM Used:       10.14 GB (66.0%)
+Process Resident RAM:  228.23 MB
+Thermals / Fan:        Nominal CPU temperature, zero throttling
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+EXPERIMENTAL PLAN & SPECIFICATION CONFIRMATION
+--------------------------------------------------------------------------------
+Target Jammer Level:   50% (0.50 intensity, NFZs strictly OFF)
+Curriculum Stages:     [0.0, 0.1, 0.3, 0.5] (warm-started sequentially)
+Curriculum Promotion:  Trailing 20 eps full success >= 70% for 5 consecutive iters (max 50 iters/stage)
+Direct Training:       From scratch directly at 50% jamming (stop bar: full success >= 80% over 20 eps)
+Scale:                 2 seeds ([0, 1]) x 2 algos (['ippo', 'mappo']) x 2 modes = 8 runs
+Evaluation:            10 episodes per checkpoint at 50% jamming via MetricsTracker
+--------------------------------------------------------------------------------
+
+====================================================================================================
+PART A: DIRECT TRAINING (CURRICULUM OFF) AT 50% JAMMING FROM SCRATCH
+====================================================================================================
+
+>>> Launching DIRECT Training: IPPO | Seed 0 | Jammer 50%...
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+================================================================================
+CONSTELLATION — Session S2.3: IPPO Training on DroneWorld (CPU-only)
+================================================================================
+Environment: Grid 20x20 | Drones: 5 | Delivery Points: 3
+Jammer: 0% intensity | No-Fly Zones: None active | Episode cap: 250 steps
+Policy: Shared Actor/Critic (state_dim=7, action_dim=5, hidden=64)
+Rollout: 410 world-steps * 5 drones = 2050 samples/update
+Update: 4 epochs, minibatch 64, Adam lr=3e-4, GAE(gamma=0.99, lambda=0.95), no adv norm
+Early stop bar: Average full delivery success >= 80% over last 20 episodes
+Run safety limits: Max 150 iterations, 60-minute wall-clock cap
+================================================================================
+
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter   1/150 | Avg Reward (last  1 eps):   65.00 | Success Rate:  0.33 (Full:  0.0%) | Collisions:  26.0 | PLoss: -0.8956 | VLoss: 1.9336 | Entropy: 1.5804 | Eps:   1 | Time:   2.8s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter   2/150 | Avg Reward (last  3 eps):   50.97 | Success Rate:  0.11 (Full:  0.0%) | Collisions:  33.3 | PLoss: -0.4341 | VLoss: 1.9822 | Entropy: 1.5593 | Eps:   3 | Time:   5.5s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter   3/150 | Avg Reward (last  4 eps):   54.43 | Success Rate:  0.25 (Full:  0.0%) | Collisions:  30.8 | PLoss: +0.0427 | VLoss: 3.5843 | Entropy: 1.5719 | Eps:   4 | Time:   8.0s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter   4/150 | Avg Reward (last  6 eps):   54.80 | Success Rate:  0.33 (Full:  0.0%) | Collisions:  29.3 | PLoss: -0.4072 | VLoss: 6.7209 | Entropy: 1.5424 | Eps:   6 | Time:  10.3s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter   5/150 | Avg Reward (last  8 eps):   68.76 | Success Rate:  0.42 (Full: 12.5%) | Collisions:  29.8 | PLoss: -1.1329 | VLoss: 7.5439 | Entropy: 1.5515 | Eps:   8 | Time:  12.6s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter   6/150 | Avg Reward (last  9 eps):   70.36 | Success Rate:  0.41 (Full: 11.1%) | Collisions:  30.9 | PLoss: -0.0638 | VLoss: 4.0311 | Entropy: 1.5626 | Eps:   9 | Time:  14.5s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter   7/150 | Avg Reward (last 12 eps):   94.73 | Success Rate:  0.56 (Full: 33.3%) | Collisions:  28.4 | PLoss: -2.1407 | VLoss: 13.1238 | Entropy: 1.4922 | Eps:  12 | Time:  16.3s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter   8/150 | Avg Reward (last 14 eps):  103.13 | Success Rate:  0.62 (Full: 42.9%) | Collisions:  28.6 | PLoss: -0.9673 | VLoss: 6.9096 | Entropy: 1.5002 | Eps:  14 | Time:  18.0s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter   9/150 | Avg Reward (last 17 eps):  111.90 | Success Rate:  0.69 (Full: 52.9%) | Collisions:  29.6 | PLoss: -1.2425 | VLoss: 6.8657 | Entropy: 1.4179 | Eps:  17 | Time:  19.6s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter  10/150 | Avg Reward (last 20 eps):  115.22 | Success Rate:  0.72 (Full: 55.0%) | Collisions:  30.6 | PLoss: -0.4325 | VLoss: 6.6017 | Entropy: 1.4305 | Eps:  20 | Time:  21.2s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter  11/150 | Avg Reward (last 20 eps):  136.41 | Success Rate:  0.87 (Full: 75.0%) | Collisions:  31.1 | PLoss: -1.3108 | VLoss: 10.5305 | Entropy: 1.2687 | Eps:  24 | Time:  22.8s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter  12/150 | Avg Reward (last 20 eps):  151.54 | Success Rate:  0.95 (Full: 90.0%) | Collisions:  34.0 | PLoss: -1.0553 | VLoss: 12.2843 | Entropy: 1.2445 | Eps:  28 | Time:  24.4s
+
+SUCCESS BAR HIT: Full delivery success rate 90.0% >= 80% over last 20 episodes reached at iteration 12!
+  -> Solved model checkpoint saved to D:\PROJECTS\constellation\checkpoints\curriculum_ablation\off\ippo\seed_0\ippo_iteration_12_solved.pt
+
+CSV log successfully written to D:\PROJECTS\constellation\logs\curriculum_ablation_off_ippo_seed_0.csv
+  -> [DIRECT IPPO Seed 0] Solved: True | Final Iter: 12 | Train Full Success: 90.0% | Time: 26.8s
+
+>>> Launching DIRECT Training: IPPO | Seed 1 | Jammer 50%...
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+================================================================================
+CONSTELLATION — Session S2.3: IPPO Training on DroneWorld (CPU-only)
+================================================================================
+Environment: Grid 20x20 | Drones: 5 | Delivery Points: 3
+Jammer: 0% intensity | No-Fly Zones: None active | Episode cap: 250 steps
+Policy: Shared Actor/Critic (state_dim=7, action_dim=5, hidden=64)
+Rollout: 410 world-steps * 5 drones = 2050 samples/update
+Update: 4 epochs, minibatch 64, Adam lr=3e-4, GAE(gamma=0.99, lambda=0.95), no adv norm
+Early stop bar: Average full delivery success >= 80% over last 20 episodes
+Run safety limits: Max 150 iterations, 60-minute wall-clock cap
+================================================================================
+
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter   1/150 | Avg Reward (last  1 eps):   18.50 | Success Rate:  0.00 (Full:  0.0%) | Collisions:  17.0 | PLoss: -0.1321 | VLoss: 1.7320 | Entropy: 1.5989 | Eps:   1 | Time:   1.5s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter   2/150 | Avg Reward (last  3 eps):   37.90 | Success Rate:  0.22 (Full:  0.0%) | Collisions:  27.7 | PLoss: -0.6230 | VLoss: 2.4656 | Entropy: 1.5736 | Eps:   3 | Time:   2.9s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter   3/150 | Avg Reward (last  4 eps):   34.75 | Success Rate:  0.33 (Full:  0.0%) | Collisions:  30.8 | PLoss: -0.1553 | VLoss: 3.9705 | Entropy: 1.5601 | Eps:   4 | Time:   4.3s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter   4/150 | Avg Reward (last  8 eps):   78.01 | Success Rate:  0.67 (Full: 50.0%) | Collisions:  24.8 | PLoss: -2.3041 | VLoss: 8.8997 | Entropy: 1.4778 | Eps:   8 | Time:   5.6s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter   5/150 | Avg Reward (last 11 eps):   90.15 | Success Rate:  0.76 (Full: 63.6%) | Collisions:  21.6 | PLoss: -1.4975 | VLoss: 6.5049 | Entropy: 1.4602 | Eps:  11 | Time:   7.1s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter   6/150 | Avg Reward (last 15 eps):   94.60 | Success Rate:  0.80 (Full: 66.7%) | Collisions:  22.1 | PLoss: -0.8887 | VLoss: 8.8850 | Entropy: 1.4178 | Eps:  15 | Time:   8.4s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter   7/150 | Avg Reward (last 17 eps):   97.99 | Success Rate:  0.82 (Full: 70.6%) | Collisions:  21.9 | PLoss: -0.1953 | VLoss: 6.9065 | Entropy: 1.4253 | Eps:  17 | Time:   9.7s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter   8/150 | Avg Reward (last 20 eps):  103.31 | Success Rate:  0.88 (Full: 75.0%) | Collisions:  26.8 | PLoss: -0.4140 | VLoss: 8.6465 | Entropy: 1.3843 | Eps:  21 | Time:  10.9s
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter   9/150 | Avg Reward (last 20 eps):  115.90 | Success Rate:  0.97 (Full: 90.0%) | Collisions:  24.8 | PLoss: -0.5090 | VLoss: 8.7601 | Entropy: 1.3569 | Eps:  25 | Time:  12.2s
+
+SUCCESS BAR HIT: Full delivery success rate 90.0% >= 80% over last 20 episodes reached at iteration 9!
+  -> Solved model checkpoint saved to D:\PROJECTS\constellation\checkpoints\curriculum_ablation\off\ippo\seed_1\ippo_iteration_9_solved.pt
+
+CSV log successfully written to D:\PROJECTS\constellation\logs\curriculum_ablation_off_ippo_seed_1.csv
+  -> [DIRECT IPPO Seed 1] Solved: True | Final Iter: 9 | Train Full Success: 90.0% | Time: 12.2s
+
+>>> Launching DIRECT Training: MAPPO | Seed 0 | Jammer 50%...
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+================================================================================
+CONSTELLATION — Session S2.4: MAPPO Training on DroneWorld (CPU-only)
+================================================================================
+Environment: Grid 20x20 | Drones: 5 | Delivery Points: 3
+Jammer: 0% intensity | No-Fly Zones: None active | Episode cap: 250 steps
+Policy: Shared Actor (input_dim=7, action_dim=5, hidden=64)
+Critic: Centralized Critic (input_dim=14 from get_global_state(), hidden=64)
+Rollout: 410 world-steps * 5 drones = 2050 samples/update
+Update: 4 epochs, minibatch 64, Adam lr=3e-4, GAE(gamma=0.99, lambda=0.95), no adv norm
+Early stop bar: Average full delivery success >= 80% over last 20 episodes
+Run safety limits: Max 150 iterations, 60-minute wall-clock cap
+================================================================================
+
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter   1/150 | Avg Reward (last  1 eps):   64.00 | Success Rate:  0.67 (Full:  0.0%) | Collisions:  22.0 | PLoss: -0.9650 | VLoss: 4.5666 | Entropy: 1.5802 | Eps:   1 | Time:   1.1s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter   2/150 | Avg Reward (last  3 eps):   60.27 | Success Rate:  0.56 (Full:  0.0%) | Collisions:  23.3 | PLoss: -0.7118 | VLoss: 4.0310 | Entropy: 1.5537 | Eps:   3 | Time:   2.3s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter   3/150 | Avg Reward (last  4 eps):   71.65 | Success Rate:  0.58 (Full:  0.0%) | Collisions:  25.8 | PLoss: -0.1220 | VLoss: 4.2504 | Entropy: 1.5497 | Eps:   4 | Time:   3.5s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter   4/150 | Avg Reward (last  6 eps):   70.47 | Success Rate:  0.50 (Full:  0.0%) | Collisions:  37.3 | PLoss: -0.5727 | VLoss: 3.8060 | Entropy: 1.4910 | Eps:   6 | Time:   4.7s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter   5/150 | Avg Reward (last  8 eps):   79.96 | Success Rate:  0.58 (Full: 12.5%) | Collisions:  39.9 | PLoss: -0.0529 | VLoss: 7.1426 | Entropy: 1.5150 | Eps:   8 | Time:   5.8s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter   6/150 | Avg Reward (last 10 eps):   76.16 | Success Rate:  0.60 (Full: 10.0%) | Collisions:  46.9 | PLoss: +0.1088 | VLoss: 7.4135 | Entropy: 1.5036 | Eps:  10 | Time:   7.0s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter   7/150 | Avg Reward (last 11 eps):   76.85 | Success Rate:  0.61 (Full:  9.1%) | Collisions:  49.0 | PLoss: +0.0830 | VLoss: 5.3394 | Entropy: 1.5464 | Eps:  11 | Time:   8.1s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter   8/150 | Avg Reward (last 14 eps):   88.60 | Success Rate:  0.64 (Full: 21.4%) | Collisions:  46.0 | PLoss: -1.3353 | VLoss: 7.5107 | Entropy: 1.4441 | Eps:  14 | Time:   9.2s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter   9/150 | Avg Reward (last 19 eps):  109.15 | Success Rate:  0.74 (Full: 42.1%) | Collisions:  38.3 | PLoss: -2.1379 | VLoss: 10.7404 | Entropy: 1.2922 | Eps:  19 | Time:  10.4s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter  10/150 | Avg Reward (last 20 eps):  129.15 | Success Rate:  0.83 (Full: 65.0%) | Collisions:  36.0 | PLoss: -1.5018 | VLoss: 11.1066 | Entropy: 1.2064 | Eps:  24 | Time:  11.5s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=0)
+Iter  11/150 | Avg Reward (last 20 eps):  149.29 | Success Rate:  0.93 (Full: 85.0%) | Collisions:  26.2 | PLoss: -1.3589 | VLoss: 11.5122 | Entropy: 1.1099 | Eps:  29 | Time:  12.8s
+
+SUCCESS BAR HIT: Full delivery success rate 85.0% >= 80% over last 20 episodes reached at iteration 11!
+  -> Solved model checkpoint saved to D:\PROJECTS\constellation\checkpoints\curriculum_ablation\off\mappo\seed_0\mappo_iteration_11_solved.pt
+
+CSV log successfully written to D:\PROJECTS\constellation\logs\curriculum_ablation_off_mappo_seed_0.csv
+  -> [DIRECT MAPPO Seed 0] Solved: True | Final Iter: 11 | Train Full Success: 85.0% | Time: 12.8s
+
+>>> Launching DIRECT Training: MAPPO | Seed 1 | Jammer 50%...
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+================================================================================
+CONSTELLATION — Session S2.4: MAPPO Training on DroneWorld (CPU-only)
+================================================================================
+Environment: Grid 20x20 | Drones: 5 | Delivery Points: 3
+Jammer: 0% intensity | No-Fly Zones: None active | Episode cap: 250 steps
+Policy: Shared Actor (input_dim=7, action_dim=5, hidden=64)
+Critic: Centralized Critic (input_dim=14 from get_global_state(), hidden=64)
+Rollout: 410 world-steps * 5 drones = 2050 samples/update
+Update: 4 epochs, minibatch 64, Adam lr=3e-4, GAE(gamma=0.99, lambda=0.95), no adv norm
+Early stop bar: Average full delivery success >= 80% over last 20 episodes
+Run safety limits: Max 150 iterations, 60-minute wall-clock cap
+================================================================================
+
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter   1/150 | Avg Reward (last  1 eps):   23.30 | Success Rate:  0.33 (Full:  0.0%) | Collisions:  23.0 | PLoss: -0.4614 | VLoss: 3.2234 | Entropy: 1.5862 | Eps:   1 | Time:   1.1s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter   2/150 | Avg Reward (last  3 eps):   19.93 | Success Rate:  0.56 (Full:  0.0%) | Collisions:  21.0 | PLoss: +0.0386 | VLoss: 6.1520 | Entropy: 1.5726 | Eps:   3 | Time:   2.3s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter   3/150 | Avg Reward (last  5 eps):   45.36 | Success Rate:  0.67 (Full: 20.0%) | Collisions:  25.2 | PLoss: -1.0765 | VLoss: 4.7566 | Entropy: 1.5553 | Eps:   5 | Time:   3.4s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter   4/150 | Avg Reward (last  6 eps):   50.53 | Success Rate:  0.67 (Full: 16.7%) | Collisions:  30.0 | PLoss: -0.1456 | VLoss: 2.5807 | Entropy: 1.5594 | Eps:   6 | Time:   4.6s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter   5/150 | Avg Reward (last  8 eps):   57.66 | Success Rate:  0.67 (Full: 25.0%) | Collisions:  33.8 | PLoss: -0.5155 | VLoss: 4.8469 | Entropy: 1.5307 | Eps:   8 | Time:   5.7s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter   6/150 | Avg Reward (last 10 eps):   63.62 | Success Rate:  0.70 (Full: 30.0%) | Collisions:  37.8 | PLoss: -0.8003 | VLoss: 5.6600 | Entropy: 1.5228 | Eps:  10 | Time:   6.8s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter   7/150 | Avg Reward (last 13 eps):   69.04 | Success Rate:  0.74 (Full: 38.5%) | Collisions:  40.4 | PLoss: -0.0791 | VLoss: 6.8939 | Entropy: 1.5252 | Eps:  13 | Time:   8.0s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter   8/150 | Avg Reward (last 15 eps):   76.09 | Success Rate:  0.78 (Full: 46.7%) | Collisions:  37.7 | PLoss: -0.2235 | VLoss: 4.9122 | Entropy: 1.5328 | Eps:  15 | Time:   9.2s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter   9/150 | Avg Reward (last 17 eps):   72.32 | Success Rate:  0.76 (Full: 41.2%) | Collisions:  40.9 | PLoss: +0.3174 | VLoss: 4.1102 | Entropy: 1.5326 | Eps:  17 | Time:  10.5s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter  10/150 | Avg Reward (last 20 eps):   84.64 | Success Rate:  0.83 (Full: 55.0%) | Collisions:  38.0 | PLoss: -1.2746 | VLoss: 7.6927 | Entropy: 1.4524 | Eps:  21 | Time:  11.7s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter  11/150 | Avg Reward (last 20 eps):  103.99 | Success Rate:  0.90 (Full: 75.0%) | Collisions:  34.3 | PLoss: -1.3190 | VLoss: 11.9746 | Entropy: 1.3407 | Eps:  26 | Time:  12.9s
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+[TRAINING ROLLOUT ENV PROOF - MAPPO] DroneWorld.__init__ received jammer_intensity=0.50 | self.jammer.intensity=0.50 (seed=1)
+Iter  12/150 | Avg Reward (last 20 eps):  110.80 | Success Rate:  0.95 (Full: 85.0%) | Collisions:  30.0 | PLoss: -0.0151 | VLoss: 7.1066 | Entropy: 1.3812 | Eps:  30 | Time:  14.0s
+
+SUCCESS BAR HIT: Full delivery success rate 85.0% >= 80% over last 20 episodes reached at iteration 12!
+  -> Solved model checkpoint saved to D:\PROJECTS\constellation\checkpoints\curriculum_ablation\off\mappo\seed_1\mappo_iteration_12_solved.pt
+
+CSV log successfully written to D:\PROJECTS\constellation\logs\curriculum_ablation_off_mappo_seed_1.csv
+  -> [DIRECT MAPPO Seed 1] Solved: True | Final Iter: 12 | Train Full Success: 85.0% | Time: 14.1s
+
+====================================================================================================
+PART B: CURRICULUM TRAINING (CURRICULUM ON) STAGED THROUGH [0.0, 0.1, 0.3, 0.5]
+====================================================================================================
+
+>>> Launching CURRICULUM Training: IPPO | Seed 0 | Stages [0.0, 0.1, 0.3, 0.5]...
+
+--- [IPPO] Starting Curriculum Stage 1/4: Jammer 0.0 ---
+[IPPO Stage 1 (Jammer 0.0)] Iter  1/50 (Tot   1) | Reward:   71.00 | Success:  0.67 (Full:  0.0%) | Streak: 0/5 | Eps:   1 | Time:   1.2s
+[IPPO Stage 1 (Jammer 0.0)] Iter  2/50 (Tot   2) | Reward:   58.83 | Success:  0.44 (Full:  0.0%) | Streak: 0/5 | Eps:   3 | Time:   2.5s
+[IPPO Stage 1 (Jammer 0.0)] Iter  3/50 (Tot   3) | Reward:   60.93 | Success:  0.50 (Full:  0.0%) | Streak: 0/5 | Eps:   4 | Time:   3.7s
+[IPPO Stage 1 (Jammer 0.0)] Iter  4/50 (Tot   4) | Reward:   62.12 | Success:  0.44 (Full:  0.0%) | Streak: 0/5 | Eps:   6 | Time:   4.9s
+[IPPO Stage 1 (Jammer 0.0)] Iter  5/50 (Tot   5) | Reward:   59.82 | Success:  0.46 (Full:  0.0%) | Streak: 0/5 | Eps:   8 | Time:   6.1s
+[IPPO Stage 1 (Jammer 0.0)] Iter  6/50 (Tot   6) | Reward:   58.61 | Success:  0.48 (Full:  0.0%) | Streak: 0/5 | Eps:   9 | Time:   7.4s
+[IPPO Stage 1 (Jammer 0.0)] Iter  7/50 (Tot   7) | Reward:   85.11 | Success:  0.61 (Full: 25.0%) | Streak: 0/5 | Eps:  12 | Time:   8.6s
+[IPPO Stage 1 (Jammer 0.0)] Iter  8/50 (Tot   8) | Reward:  100.92 | Success:  0.69 (Full: 40.0%) | Streak: 0/5 | Eps:  15 | Time:   9.8s
+[IPPO Stage 1 (Jammer 0.0)] Iter  9/50 (Tot   9) | Reward:  110.91 | Success:  0.74 (Full: 50.0%) | Streak: 0/5 | Eps:  18 | Time:  11.0s
+[IPPO Stage 1 (Jammer 0.0)] Iter 10/50 (Tot  10) | Reward:  125.06 | Success:  0.82 (Full: 65.0%) | Streak: 0/5 | Eps:  22 | Time:  12.2s
+[IPPO Stage 1 (Jammer 0.0)] Iter 11/50 (Tot  11) | Reward:  156.54 | Success:  0.98 (Full: 95.0%) | Streak: 1/5 | Eps:  28 | Time:  13.5s
+[IPPO Stage 1 (Jammer 0.0)] Iter 12/50 (Tot  12) | Reward:  161.10 | Success:  1.00 (Full: 100.0%) | Streak: 2/5 | Eps:  33 | Time:  14.6s
+[IPPO Stage 1 (Jammer 0.0)] Iter 13/50 (Tot  13) | Reward:  161.91 | Success:  1.00 (Full: 100.0%) | Streak: 3/5 | Eps:  39 | Time:  16.0s
+[IPPO Stage 1 (Jammer 0.0)] Iter 14/50 (Tot  14) | Reward:  160.15 | Success:  1.00 (Full: 100.0%) | Streak: 4/5 | Eps:  46 | Time:  17.2s
+[IPPO Stage 1 (Jammer 0.0)] Iter 15/50 (Tot  15) | Reward:  159.31 | Success:  1.00 (Full: 100.0%) | Streak: 5/5 | Eps:  53 | Time:  18.4s
+>>> [IPPO] STABILITY ACHIEVED in Stage 1 (Jammer 0.0)!
+[IPPO WARM-START] Loading checkpoint from Stage 1: D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\ippo\seed_0\stage_0.0_stable.pt
+
+--- [IPPO] Starting Curriculum Stage 2/4: Jammer 0.1 ---
+[IPPO Stage 2 (Jammer 0.1)] Iter  1/50 (Tot  16) | Reward:  159.56 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Eps:   7 | Time:   1.2s
+[IPPO Stage 2 (Jammer 0.1)] Iter  2/50 (Tot  17) | Reward:  164.44 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Eps:  12 | Time:   2.5s
+[IPPO Stage 2 (Jammer 0.1)] Iter  3/50 (Tot  18) | Reward:  162.43 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Eps:  19 | Time:   3.7s
+[IPPO Stage 2 (Jammer 0.1)] Iter  4/50 (Tot  19) | Reward:  160.65 | Success:  1.00 (Full: 100.0%) | Streak: 1/5 | Eps:  24 | Time:   4.9s
+[IPPO Stage 2 (Jammer 0.1)] Iter  5/50 (Tot  20) | Reward:  161.55 | Success:  1.00 (Full: 100.0%) | Streak: 2/5 | Eps:  31 | Time:   6.1s
+[IPPO Stage 2 (Jammer 0.1)] Iter  6/50 (Tot  21) | Reward:  167.84 | Success:  1.00 (Full: 100.0%) | Streak: 3/5 | Eps:  38 | Time:   7.3s
+[IPPO Stage 2 (Jammer 0.1)] Iter  7/50 (Tot  22) | Reward:  185.65 | Success:  1.00 (Full: 100.0%) | Streak: 4/5 | Eps:  46 | Time:   8.5s
+[IPPO Stage 2 (Jammer 0.1)] Iter  8/50 (Tot  23) | Reward:  185.42 | Success:  1.00 (Full: 100.0%) | Streak: 5/5 | Eps:  50 | Time:   9.7s
+>>> [IPPO] STABILITY ACHIEVED in Stage 2 (Jammer 0.1)!
+[IPPO WARM-START] Loading checkpoint from Stage 2: D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\ippo\seed_0\stage_0.1_stable.pt
+
+--- [IPPO] Starting Curriculum Stage 3/4: Jammer 0.3 ---
+[IPPO Stage 3 (Jammer 0.3)] Iter  1/50 (Tot  24) | Reward:  192.31 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Eps:   7 | Time:   1.2s
+[IPPO Stage 3 (Jammer 0.3)] Iter  2/50 (Tot  25) | Reward:  182.47 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Eps:  15 | Time:   2.5s
+[IPPO Stage 3 (Jammer 0.3)] Iter  3/50 (Tot  26) | Reward:  187.54 | Success:  1.00 (Full: 100.0%) | Streak: 1/5 | Eps:  23 | Time:   3.8s
+[IPPO Stage 3 (Jammer 0.3)] Iter  4/50 (Tot  27) | Reward:  191.15 | Success:  1.00 (Full: 100.0%) | Streak: 2/5 | Eps:  28 | Time:   5.1s
+[IPPO Stage 3 (Jammer 0.3)] Iter  5/50 (Tot  28) | Reward:  200.50 | Success:  0.98 (Full: 95.0%) | Streak: 3/5 | Eps:  35 | Time:   6.4s
+[IPPO Stage 3 (Jammer 0.3)] Iter  6/50 (Tot  29) | Reward:  197.51 | Success:  0.98 (Full: 95.0%) | Streak: 4/5 | Eps:  42 | Time:   7.8s
+[IPPO Stage 3 (Jammer 0.3)] Iter  7/50 (Tot  30) | Reward:  206.98 | Success:  1.00 (Full: 100.0%) | Streak: 5/5 | Eps:  50 | Time:   9.2s
+>>> [IPPO] STABILITY ACHIEVED in Stage 3 (Jammer 0.3)!
+[IPPO WARM-START] Loading checkpoint from Stage 3: D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\ippo\seed_0\stage_0.3_stable.pt
+
+--- [IPPO] Starting Curriculum Stage 4/4: Jammer 0.5 ---
+[IPPO Stage 4 (Jammer 0.5)] Iter  1/50 (Tot  31) | Reward:  200.60 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Eps:   7 | Time:   1.4s
+[IPPO Stage 4 (Jammer 0.5)] Iter  2/50 (Tot  32) | Reward:  202.34 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Eps:  15 | Time:   2.7s
+[IPPO Stage 4 (Jammer 0.5)] Iter  3/50 (Tot  33) | Reward:  201.97 | Success:  1.00 (Full: 100.0%) | Streak: 1/5 | Eps:  23 | Time:   4.0s
+[IPPO Stage 4 (Jammer 0.5)] Iter  4/50 (Tot  34) | Reward:  201.02 | Success:  1.00 (Full: 100.0%) | Streak: 2/5 | Eps:  31 | Time:   5.3s
+[IPPO Stage 4 (Jammer 0.5)] Iter  5/50 (Tot  35) | Reward:  211.14 | Success:  1.00 (Full: 100.0%) | Streak: 3/5 | Eps:  39 | Time:   6.6s
+[IPPO Stage 4 (Jammer 0.5)] Iter  6/50 (Tot  36) | Reward:  214.08 | Success:  1.00 (Full: 100.0%) | Streak: 4/5 | Eps:  46 | Time:   7.9s
+[IPPO Stage 4 (Jammer 0.5)] Iter  7/50 (Tot  37) | Reward:  224.27 | Success:  1.00 (Full: 100.0%) | Streak: 5/5 | Eps:  54 | Time:   9.1s
+>>> [IPPO] STABILITY ACHIEVED in Stage 4 (Jammer 0.5)!
+  -> [CURRICULUM IPPO Seed 0] Stages Completed: 4/4 | Status: STABLE | Total Iters: 37 (S1:15 + S2:8 + S3:7 + S4:7) | Final Stage Train Full Success: 100.0% | Total Time: 46.5s
+
+>>> Launching CURRICULUM Training: IPPO | Seed 1 | Stages [0.0, 0.1, 0.3, 0.5]...
+
+--- [IPPO] Starting Curriculum Stage 1/4: Jammer 0.0 ---
+[IPPO Stage 1 (Jammer 0.0)] Iter  1/50 (Tot   1) | Reward:   14.70 | Success:  0.67 (Full:  0.0%) | Streak: 0/5 | Eps:   1 | Time:   1.3s
+[IPPO Stage 1 (Jammer 0.0)] Iter  2/50 (Tot   2) | Reward:   51.40 | Success:  0.78 (Full: 33.3%) | Streak: 0/5 | Eps:   3 | Time:   2.6s
+[IPPO Stage 1 (Jammer 0.0)] Iter  3/50 (Tot   3) | Reward:   57.76 | Success:  0.73 (Full: 40.0%) | Streak: 0/5 | Eps:   5 | Time:   3.8s
+[IPPO Stage 1 (Jammer 0.0)] Iter  4/50 (Tot   4) | Reward:   65.11 | Success:  0.76 (Full: 42.9%) | Streak: 0/5 | Eps:   7 | Time:   5.1s
+[IPPO Stage 1 (Jammer 0.0)] Iter  5/50 (Tot   5) | Reward:   86.45 | Success:  0.85 (Full: 63.6%) | Streak: 0/5 | Eps:  11 | Time:   6.4s
+[IPPO Stage 1 (Jammer 0.0)] Iter  6/50 (Tot   6) | Reward:   87.56 | Success:  0.86 (Full: 64.3%) | Streak: 0/5 | Eps:  14 | Time:   7.6s
+[IPPO Stage 1 (Jammer 0.0)] Iter  7/50 (Tot   7) | Reward:   84.43 | Success:  0.84 (Full: 60.0%) | Streak: 0/5 | Eps:  15 | Time:   8.9s
+[IPPO Stage 1 (Jammer 0.0)] Iter  8/50 (Tot   8) | Reward:   80.84 | Success:  0.82 (Full: 52.9%) | Streak: 0/5 | Eps:  17 | Time:  10.2s
+[IPPO Stage 1 (Jammer 0.0)] Iter  9/50 (Tot   9) | Reward:   93.05 | Success:  0.87 (Full: 65.0%) | Streak: 0/5 | Eps:  21 | Time:  11.6s
+[IPPO Stage 1 (Jammer 0.0)] Iter 10/50 (Tot  10) | Reward:  103.81 | Success:  0.92 (Full: 75.0%) | Streak: 1/5 | Eps:  25 | Time:  12.9s
+[IPPO Stage 1 (Jammer 0.0)] Iter 11/50 (Tot  11) | Reward:  107.46 | Success:  0.93 (Full: 80.0%) | Streak: 2/5 | Eps:  29 | Time:  14.2s
+[IPPO Stage 1 (Jammer 0.0)] Iter 12/50 (Tot  12) | Reward:  107.59 | Success:  0.93 (Full: 80.0%) | Streak: 3/5 | Eps:  33 | Time:  15.4s
+[IPPO Stage 1 (Jammer 0.0)] Iter 13/50 (Tot  13) | Reward:  124.46 | Success:  1.00 (Full: 100.0%) | Streak: 4/5 | Eps:  39 | Time:  16.7s
+[IPPO Stage 1 (Jammer 0.0)] Iter 14/50 (Tot  14) | Reward:  127.10 | Success:  1.00 (Full: 100.0%) | Streak: 5/5 | Eps:  46 | Time:  18.0s
+>>> [IPPO] STABILITY ACHIEVED in Stage 1 (Jammer 0.0)!
+[IPPO WARM-START] Loading checkpoint from Stage 1: D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\ippo\seed_1\stage_0.0_stable.pt
+
+--- [IPPO] Starting Curriculum Stage 2/4: Jammer 0.1 ---
+[IPPO Stage 2 (Jammer 0.1)] Iter  1/50 (Tot  15) | Reward:  129.59 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Eps:   7 | Time:   1.3s
+[IPPO Stage 2 (Jammer 0.1)] Iter  2/50 (Tot  16) | Reward:  132.01 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Eps:  16 | Time:   2.7s
+[IPPO Stage 2 (Jammer 0.1)] Iter  3/50 (Tot  17) | Reward:  134.60 | Success:  1.00 (Full: 100.0%) | Streak: 1/5 | Eps:  24 | Time:   4.0s
+[IPPO Stage 2 (Jammer 0.1)] Iter  4/50 (Tot  18) | Reward:  132.55 | Success:  1.00 (Full: 100.0%) | Streak: 2/5 | Eps:  33 | Time:   5.3s
+[IPPO Stage 2 (Jammer 0.1)] Iter  5/50 (Tot  19) | Reward:  130.56 | Success:  1.00 (Full: 100.0%) | Streak: 3/5 | Eps:  40 | Time:   6.5s
+[IPPO Stage 2 (Jammer 0.1)] Iter  6/50 (Tot  20) | Reward:  132.64 | Success:  1.00 (Full: 100.0%) | Streak: 4/5 | Eps:  51 | Time:   7.8s
+[IPPO Stage 2 (Jammer 0.1)] Iter  7/50 (Tot  21) | Reward:  136.37 | Success:  1.00 (Full: 100.0%) | Streak: 5/5 | Eps:  61 | Time:   9.1s
+>>> [IPPO] STABILITY ACHIEVED in Stage 2 (Jammer 0.1)!
+[IPPO WARM-START] Loading checkpoint from Stage 2: D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\ippo\seed_1\stage_0.1_stable.pt
+
+--- [IPPO] Starting Curriculum Stage 3/4: Jammer 0.3 ---
+[IPPO Stage 3 (Jammer 0.3)] Iter  1/50 (Tot  22) | Reward:  138.48 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Eps:   9 | Time:   1.3s
+[IPPO Stage 3 (Jammer 0.3)] Iter  2/50 (Tot  23) | Reward:  139.51 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Eps:  19 | Time:   2.6s
+[IPPO Stage 3 (Jammer 0.3)] Iter  3/50 (Tot  24) | Reward:  141.22 | Success:  1.00 (Full: 100.0%) | Streak: 1/5 | Eps:  30 | Time:   3.9s
+[IPPO Stage 3 (Jammer 0.3)] Iter  4/50 (Tot  25) | Reward:  134.04 | Success:  1.00 (Full: 100.0%) | Streak: 2/5 | Eps:  41 | Time:   5.2s
+[IPPO Stage 3 (Jammer 0.3)] Iter  5/50 (Tot  26) | Reward:  140.20 | Success:  1.00 (Full: 100.0%) | Streak: 3/5 | Eps:  53 | Time:   6.5s
+[IPPO Stage 3 (Jammer 0.3)] Iter  6/50 (Tot  27) | Reward:  146.28 | Success:  1.00 (Full: 100.0%) | Streak: 4/5 | Eps:  64 | Time:   7.9s
+[IPPO Stage 3 (Jammer 0.3)] Iter  7/50 (Tot  28) | Reward:  145.87 | Success:  1.00 (Full: 100.0%) | Streak: 5/5 | Eps:  74 | Time:   9.6s
+>>> [IPPO] STABILITY ACHIEVED in Stage 3 (Jammer 0.3)!
+[IPPO WARM-START] Loading checkpoint from Stage 3: D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\ippo\seed_1\stage_0.3_stable.pt
+
+--- [IPPO] Starting Curriculum Stage 4/4: Jammer 0.5 ---
+[IPPO Stage 4 (Jammer 0.5)] Iter  1/50 (Tot  29) | Reward:  150.83 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Eps:  10 | Time:   1.4s
+[IPPO Stage 4 (Jammer 0.5)] Iter  2/50 (Tot  30) | Reward:  142.71 | Success:  1.00 (Full: 100.0%) | Streak: 1/5 | Eps:  21 | Time:   2.7s
+[IPPO Stage 4 (Jammer 0.5)] Iter  3/50 (Tot  31) | Reward:  142.06 | Success:  1.00 (Full: 100.0%) | Streak: 2/5 | Eps:  32 | Time:   4.1s
+[IPPO Stage 4 (Jammer 0.5)] Iter  4/50 (Tot  32) | Reward:  153.84 | Success:  1.00 (Full: 100.0%) | Streak: 3/5 | Eps:  43 | Time:   5.3s
+[IPPO Stage 4 (Jammer 0.5)] Iter  5/50 (Tot  33) | Reward:  157.62 | Success:  1.00 (Full: 100.0%) | Streak: 4/5 | Eps:  53 | Time:   6.8s
+[IPPO Stage 4 (Jammer 0.5)] Iter  6/50 (Tot  34) | Reward:  151.48 | Success:  1.00 (Full: 100.0%) | Streak: 5/5 | Eps:  64 | Time:   8.0s
+>>> [IPPO] STABILITY ACHIEVED in Stage 4 (Jammer 0.5)!
+  -> [CURRICULUM IPPO Seed 1] Stages Completed: 4/4 | Status: STABLE | Total Iters: 34 (S1:14 + S2:7 + S3:7 + S4:6) | Final Stage Train Full Success: 100.0% | Total Time: 44.8s
+
+>>> Launching CURRICULUM Training: MAPPO | Seed 0 | Stages [0.0, 0.1, 0.3, 0.5]...
+================================================================================
+CONSTELLATION — Session S2.5: MAPPO Curriculum Training over Jamming Intensity
+================================================================================
+Hardware Mode:        CPU-only (CUDA disabled)
+Curriculum Stages:    [0.0, 0.1, 0.3, 0.5] (Jammer intensities)
+No-Fly Zones:         OFF throughout (n_no_fly_zones=0)
+Environment:          Grid 20x20 | Drones: 5 | Delivery Points: 3
+Rollout per update:   410 steps * 5 drones = 2050 samples
+Stability Criterion:  Full-delivery success rate >= 70% maintained for 5 consecutive iterations
+Rolling Window:       Trailing 20 completed episodes
+Stage Cap:            50 iterations OR 20.0 minutes wall-clock
+Total Session Cap:    90.0 minutes wall-clock hard stop
+================================================================================
+
+--------------------------------------------------------------------------------
+HARDWARE BASELINE — PRE-RUN READINGS
+--------------------------------------------------------------------------------
+System RAM Total:     15.32 GB
+System RAM Used:      10.39 GB (67.0%)
+Process Resident RAM: 320.41 MB
+Start Timestamp:      2026-10-25 23:38:48
+--------------------------------------------------------------------------------
+
+[WARM-START] Stage 1 initialized fresh from untrained network (seed=0).
+
+================================================================================
+STARTING CURRICULUM STAGE 1/4: Jammer Intensity = 0.0
+================================================================================
+Warm start mode:       Fresh untrained initialization
+Stability target:      Full success >= 70% for 5 consecutive iterations (window=20)
+Stage limits:          Max 50 iterations OR 20.0 min wall-clock
+================================================================================
+
+Stage 1 (Jammer 0.0) | Iter  1/50 (Tot   1) | Reward:   70.60 | Success:  0.67 (Full:  0.0%) | Streak: 0/5 | Collisions: 14.0 | PLoss: -1.0565 | VLoss: 3.8564 | Entropy: 1.5847 | Eps:   1 | Time:   1.2s
+Stage 1 (Jammer 0.0) | Iter  2/50 (Tot   2) | Reward:   82.20 | Success:  0.67 (Full:  0.0%) | Streak: 0/5 | Collisions: 18.7 | PLoss: -0.9804 | VLoss: 6.0217 | Entropy: 1.5528 | Eps:   3 | Time:   2.5s
+Stage 1 (Jammer 0.0) | Iter  3/50 (Tot   3) | Reward:   69.90 | Success:  0.50 (Full:  0.0%) | Streak: 0/5 | Collisions: 28.0 | PLoss: +0.4568 | VLoss: 2.7390 | Entropy: 1.5667 | Eps:   4 | Time:   3.7s
+Stage 1 (Jammer 0.0) | Iter  4/50 (Tot   4) | Reward:   67.72 | Success:  0.50 (Full:  0.0%) | Streak: 0/5 | Collisions: 33.7 | PLoss: -0.1706 | VLoss: 6.8435 | Entropy: 1.5414 | Eps:   6 | Time:   4.9s
+Stage 1 (Jammer 0.0) | Iter  5/50 (Tot   5) | Reward:   75.09 | Success:  0.54 (Full:  0.0%) | Streak: 0/5 | Collisions: 30.9 | PLoss: -0.7726 | VLoss: 3.1944 | Entropy: 1.5503 | Eps:   8 | Time:   6.2s
+Stage 1 (Jammer 0.0) | Iter  6/50 (Tot   6) | Reward:   74.23 | Success:  0.52 (Full:  0.0%) | Streak: 0/5 | Collisions: 30.8 | PLoss: +0.2787 | VLoss: 3.9755 | Entropy: 1.5611 | Eps:   9 | Time:   7.4s
+Stage 1 (Jammer 0.0) | Iter  7/50 (Tot   7) | Reward:   99.13 | Success:  0.64 (Full: 23.1%) | Streak: 0/5 | Collisions: 27.2 | PLoss: -2.0742 | VLoss: 9.1655 | Entropy: 1.4800 | Eps:  13 | Time:   8.6s
+Stage 1 (Jammer 0.0) | Iter  8/50 (Tot   8) | Reward:  114.10 | Success:  0.73 (Full: 41.2%) | Streak: 0/5 | Collisions: 23.9 | PLoss: -1.5841 | VLoss: 9.4725 | Entropy: 1.4531 | Eps:  17 | Time:   9.8s
+Stage 1 (Jammer 0.0) | Iter  9/50 (Tot   9) | Reward:  126.53 | Success:  0.78 (Full: 55.0%) | Streak: 0/5 | Collisions: 23.0 | PLoss: -0.9197 | VLoss: 8.8939 | Entropy: 1.4283 | Eps:  21 | Time:  10.9s
+Stage 1 (Jammer 0.0) | Iter 10/50 (Tot  10) | Reward:  140.13 | Success:  0.87 (Full: 70.0%) | Streak: 1/5 | Collisions: 20.1 | PLoss: -0.4373 | VLoss: 6.7501 | Entropy: 1.3999 | Eps:  24 | Time:  12.3s
+Stage 1 (Jammer 0.0) | Iter 11/50 (Tot  11) | Reward:  164.02 | Success:  1.00 (Full: 100.0%) | Streak: 2/5 | Collisions: 16.6 | PLoss: -1.3595 | VLoss: 13.5843 | Entropy: 1.2714 | Eps:  30 | Time:  13.4s
+Stage 1 (Jammer 0.0) | Iter 12/50 (Tot  12) | Reward:  163.26 | Success:  1.00 (Full: 100.0%) | Streak: 3/5 | Collisions: 18.2 | PLoss: -0.4556 | VLoss: 14.9921 | Entropy: 1.1912 | Eps:  35 | Time:  14.7s
+Stage 1 (Jammer 0.0) | Iter 13/50 (Tot  13) | Reward:  163.47 | Success:  1.00 (Full: 100.0%) | Streak: 4/5 | Collisions: 20.0 | PLoss: -0.2874 | VLoss: 12.6025 | Entropy: 1.0985 | Eps:  41 | Time:  15.9s
+Stage 1 (Jammer 0.0) | Iter 14/50 (Tot  14) | Reward:  163.87 | Success:  1.00 (Full: 100.0%) | Streak: 5/5 | Collisions: 24.7 | PLoss: -0.0116 | VLoss: 14.6648 | Entropy: 1.0041 | Eps:  47 | Time:  17.1s
+
+>>> STABILITY ACHIEVED in Stage 1 (Jammer 0.0)! Full success >= 70% maintained for 5 consecutive iterations.
+
+================================================================================
+CURRICULUM STAGE COMPLETE: Stage 1/4 (Jammer Intensity 0.0) — STABLE
+Status:            STABLE (Maintained >= 70% full success for 5 consecutive iterations)
+Iterations Used:   14/50
+Final Success:     100.0% full delivery
+Stage Duration:    17.1s (0.29 min)
+Checkpoint Saved:  D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\mappo\seed_0\stage_0.0_stable.pt
+Next Action:       Advancing to Stage 2
+================================================================================
+
+--------------------------------------------------------------------------------
+HARDWARE & RESOURCE MONITORING — POST-STAGE 1 READINGS
+--------------------------------------------------------------------------------
+Stage Duration:        17.1s
+Cumulative Session:    0.29 min
+System RAM Total:      15.32 GB
+System RAM Used:       10.45 GB (68.0%)
+Process Resident RAM:  321.14 MB (Delta from baseline: +0.73 MB)
+Hardware Assessment:   CPU execution nominal, no thermal throttling detected
+--------------------------------------------------------------------------------
+
+[WARM-START] Stage 2 loading checkpoint from Stage 1: D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\mappo\seed_0\stage_0.0_stable.pt
+================================================================================
+STARTING CURRICULUM STAGE 2/4: Jammer Intensity = 0.1
+================================================================================
+Warm start mode:       Warm-started from Stage 1 checkpoint
+Stability target:      Full success >= 70% for 5 consecutive iterations (window=20)
+Stage limits:          Max 50 iterations OR 20.0 min wall-clock
+================================================================================
+
+Stage 2 (Jammer 0.1) | Iter  1/50 (Tot  15) | Reward:  166.87 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Collisions: 33.5 | PLoss: -0.6292 | VLoss: 18.0491 | Entropy: 0.9316 | Eps:   6 | Time:   1.2s
+Stage 2 (Jammer 0.1) | Iter  2/50 (Tot  16) | Reward:  164.40 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Collisions: 32.7 | PLoss: -0.0877 | VLoss: 14.3910 | Entropy: 0.8778 | Eps:  13 | Time:   2.4s
+Stage 2 (Jammer 0.1) | Iter  3/50 (Tot  17) | Reward:  161.05 | Success:  1.00 (Full: 100.0%) | Streak: 1/5 | Collisions: 32.5 | PLoss: -0.0615 | VLoss: 14.6549 | Entropy: 0.8164 | Eps:  21 | Time:   3.6s
+Stage 2 (Jammer 0.1) | Iter  4/50 (Tot  18) | Reward:  163.47 | Success:  1.00 (Full: 100.0%) | Streak: 2/5 | Collisions: 34.9 | PLoss: -0.0954 | VLoss: 15.6604 | Entropy: 0.9049 | Eps:  26 | Time:   4.9s
+Stage 2 (Jammer 0.1) | Iter  5/50 (Tot  19) | Reward:  162.96 | Success:  1.00 (Full: 100.0%) | Streak: 3/5 | Collisions: 43.7 | PLoss: -0.2111 | VLoss: 14.2876 | Entropy: 0.8759 | Eps:  33 | Time:   6.1s
+Stage 2 (Jammer 0.1) | Iter  6/50 (Tot  20) | Reward:  165.61 | Success:  1.00 (Full: 100.0%) | Streak: 4/5 | Collisions: 46.4 | PLoss: -0.2224 | VLoss: 16.2132 | Entropy: 0.7029 | Eps:  40 | Time:   7.2s
+Stage 2 (Jammer 0.1) | Iter  7/50 (Tot  21) | Reward:  170.45 | Success:  1.00 (Full: 100.0%) | Streak: 5/5 | Collisions: 40.4 | PLoss: -0.5818 | VLoss: 19.3545 | Entropy: 0.6655 | Eps:  48 | Time:   8.4s
+
+>>> STABILITY ACHIEVED in Stage 2 (Jammer 0.1)! Full success >= 70% maintained for 5 consecutive iterations.
+
+================================================================================
+CURRICULUM STAGE COMPLETE: Stage 2/4 (Jammer Intensity 0.1) — STABLE
+Status:            STABLE (Maintained >= 70% full success for 5 consecutive iterations)
+Iterations Used:   7/50
+Final Success:     100.0% full delivery
+Stage Duration:    8.4s (0.14 min)
+Checkpoint Saved:  D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\mappo\seed_0\stage_0.1_stable.pt
+Next Action:       Advancing to Stage 3
+================================================================================
+
+--------------------------------------------------------------------------------
+HARDWARE & RESOURCE MONITORING — POST-STAGE 2 READINGS
+--------------------------------------------------------------------------------
+Stage Duration:        8.4s
+Cumulative Session:    0.43 min
+System RAM Total:      15.32 GB
+System RAM Used:       10.45 GB (68.0%)
+Process Resident RAM:  321.09 MB (Delta from baseline: +0.68 MB)
+Hardware Assessment:   CPU execution nominal, no thermal throttling detected
+--------------------------------------------------------------------------------
+
+[WARM-START] Stage 3 loading checkpoint from Stage 2: D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\mappo\seed_0\stage_0.1_stable.pt
+================================================================================
+STARTING CURRICULUM STAGE 3/4: Jammer Intensity = 0.3
+================================================================================
+Warm start mode:       Warm-started from Stage 2 checkpoint
+Stability target:      Full success >= 70% for 5 consecutive iterations (window=20)
+Stage limits:          Max 50 iterations OR 20.0 min wall-clock
+================================================================================
+
+Stage 3 (Jammer 0.3) | Iter  1/50 (Tot  22) | Reward:  183.52 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Collisions: 40.0 | PLoss: -0.9621 | VLoss: 21.5308 | Entropy: 0.5954 | Eps:   7 | Time:   1.2s
+Stage 3 (Jammer 0.3) | Iter  2/50 (Tot  23) | Reward:  171.39 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Collisions: 39.0 | PLoss: +0.6220 | VLoss: 17.1815 | Entropy: 0.5881 | Eps:  15 | Time:   2.5s
+Stage 3 (Jammer 0.3) | Iter  3/50 (Tot  24) | Reward:  165.81 | Success:  0.98 (Full: 94.7%) | Streak: 0/5 | Collisions: 45.5 | PLoss: +0.2668 | VLoss: 9.1744 | Entropy: 0.9872 | Eps:  19 | Time:   3.7s
+Stage 3 (Jammer 0.3) | Iter  4/50 (Tot  25) | Reward:  170.96 | Success:  0.98 (Full: 95.0%) | Streak: 1/5 | Collisions: 46.5 | PLoss: -0.6029 | VLoss: 13.7327 | Entropy: 0.8240 | Eps:  24 | Time:   4.8s
+Stage 3 (Jammer 0.3) | Iter  5/50 (Tot  26) | Reward:  160.90 | Success:  0.95 (Full: 85.0%) | Streak: 2/5 | Collisions: 58.6 | PLoss: +0.2997 | VLoss: 8.0255 | Entropy: 1.0754 | Eps:  28 | Time:   6.0s
+Stage 3 (Jammer 0.3) | Iter  6/50 (Tot  27) | Reward:  168.63 | Success:  0.95 (Full: 85.0%) | Streak: 3/5 | Collisions: 61.4 | PLoss: -0.9111 | VLoss: 19.7528 | Entropy: 0.5409 | Eps:  35 | Time:   7.2s
+Stage 3 (Jammer 0.3) | Iter  7/50 (Tot  28) | Reward:  173.07 | Success:  0.97 (Full: 90.0%) | Streak: 4/5 | Collisions: 55.0 | PLoss: -0.5081 | VLoss: 21.5090 | Entropy: 0.5425 | Eps:  43 | Time:   8.4s
+Stage 3 (Jammer 0.3) | Iter  8/50 (Tot  29) | Reward:  180.33 | Success:  1.00 (Full: 100.0%) | Streak: 5/5 | Collisions: 45.9 | PLoss: +0.2218 | VLoss: 17.8416 | Entropy: 0.6751 | Eps:  50 | Time:   9.6s
+
+>>> STABILITY ACHIEVED in Stage 3 (Jammer 0.3)! Full success >= 70% maintained for 5 consecutive iterations.
+
+================================================================================
+CURRICULUM STAGE COMPLETE: Stage 3/4 (Jammer Intensity 0.3) — STABLE
+Status:            STABLE (Maintained >= 70% full success for 5 consecutive iterations)
+Iterations Used:   8/50
+Final Success:     100.0% full delivery
+Stage Duration:    9.6s (0.16 min)
+Checkpoint Saved:  D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\mappo\seed_0\stage_0.3_stable.pt
+Next Action:       Advancing to Stage 4
+================================================================================
+
+--------------------------------------------------------------------------------
+HARDWARE & RESOURCE MONITORING — POST-STAGE 3 READINGS
+--------------------------------------------------------------------------------
+Stage Duration:        9.6s
+Cumulative Session:    0.59 min
+System RAM Total:      15.32 GB
+System RAM Used:       10.44 GB (68.0%)
+Process Resident RAM:  321.04 MB (Delta from baseline: +0.62 MB)
+Hardware Assessment:   CPU execution nominal, no thermal throttling detected
+--------------------------------------------------------------------------------
+
+[WARM-START] Stage 4 loading checkpoint from Stage 3: D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\mappo\seed_0\stage_0.3_stable.pt
+================================================================================
+STARTING CURRICULUM STAGE 4/4: Jammer Intensity = 0.5
+================================================================================
+Warm start mode:       Warm-started from Stage 3 checkpoint
+Stability target:      Full success >= 70% for 5 consecutive iterations (window=20)
+Stage limits:          Max 50 iterations OR 20.0 min wall-clock
+================================================================================
+
+Stage 4 (Jammer 0.5) | Iter  1/50 (Tot  30) | Reward:  181.65 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Collisions: 46.7 | PLoss: -0.0183 | VLoss: 18.4418 | Entropy: 0.5536 | Eps:   7 | Time:   1.4s
+Stage 4 (Jammer 0.5) | Iter  2/50 (Tot  31) | Reward:  190.18 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Collisions: 46.9 | PLoss: -0.7842 | VLoss: 23.0126 | Entropy: 0.5353 | Eps:  14 | Time:   2.7s
+Stage 4 (Jammer 0.5) | Iter  3/50 (Tot  32) | Reward:  192.62 | Success:  1.00 (Full: 100.0%) | Streak: 1/5 | Collisions: 47.0 | PLoss: -0.4756 | VLoss: 20.8191 | Entropy: 0.5176 | Eps:  22 | Time:   3.9s
+Stage 4 (Jammer 0.5) | Iter  4/50 (Tot  33) | Reward:  196.58 | Success:  1.00 (Full: 100.0%) | Streak: 2/5 | Collisions: 48.1 | PLoss: -0.0703 | VLoss: 24.0843 | Entropy: 0.5096 | Eps:  30 | Time:   5.2s
+Stage 4 (Jammer 0.5) | Iter  5/50 (Tot  34) | Reward:  198.98 | Success:  1.00 (Full: 100.0%) | Streak: 3/5 | Collisions: 48.6 | PLoss: -0.6087 | VLoss: 23.6487 | Entropy: 0.5031 | Eps:  38 | Time:   6.4s
+Stage 4 (Jammer 0.5) | Iter  6/50 (Tot  35) | Reward:  202.73 | Success:  1.00 (Full: 100.0%) | Streak: 4/5 | Collisions: 48.0 | PLoss: +0.1593 | VLoss: 22.7386 | Entropy: 0.4758 | Eps:  46 | Time:   7.6s
+Stage 4 (Jammer 0.5) | Iter  7/50 (Tot  36) | Reward:  205.15 | Success:  1.00 (Full: 100.0%) | Streak: 5/5 | Collisions: 44.8 | PLoss: -0.2429 | VLoss: 21.1547 | Entropy: 0.4636 | Eps:  53 | Time:   8.9s
+
+>>> STABILITY ACHIEVED in Stage 4 (Jammer 0.5)! Full success >= 70% maintained for 5 consecutive iterations.
+
+================================================================================
+CURRICULUM STAGE COMPLETE: Stage 4/4 (Jammer Intensity 0.5) — STABLE
+Status:            STABLE (Maintained >= 70% full success for 5 consecutive iterations)
+Iterations Used:   7/50
+Final Success:     100.0% full delivery
+Stage Duration:    8.9s (0.15 min)
+Checkpoint Saved:  D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\mappo\seed_0\stage_0.5_stable.pt
+Next Action:       All 5 stages completed successfully!
+================================================================================
+
+--------------------------------------------------------------------------------
+HARDWARE & RESOURCE MONITORING — POST-STAGE 4 READINGS
+--------------------------------------------------------------------------------
+Stage Duration:        8.9s
+Cumulative Session:    0.73 min
+System RAM Total:      15.32 GB
+System RAM Used:       10.50 GB (68.0%)
+Process Resident RAM:  321.18 MB (Delta from baseline: +0.77 MB)
+Hardware Assessment:   CPU execution nominal, no thermal throttling detected
+--------------------------------------------------------------------------------
+
+Curriculum CSV log successfully written to D:\PROJECTS\constellation\logs\curriculum_ablation_on_mappo_seed_0.csv
+  -> [CURRICULUM MAPPO Seed 0] Stages Completed: 4/4 | Status: STABLE | Total Iters: 36 (S1:14 + S2:7 + S3:8 + S4:7) | Final Stage Train Full Success: 100.0% | Total Time: 44.1s
+
+>>> Launching CURRICULUM Training: MAPPO | Seed 1 | Stages [0.0, 0.1, 0.3, 0.5]...
+================================================================================
+CONSTELLATION — Session S2.5: MAPPO Curriculum Training over Jamming Intensity
+================================================================================
+Hardware Mode:        CPU-only (CUDA disabled)
+Curriculum Stages:    [0.0, 0.1, 0.3, 0.5] (Jammer intensities)
+No-Fly Zones:         OFF throughout (n_no_fly_zones=0)
+Environment:          Grid 20x20 | Drones: 5 | Delivery Points: 3
+Rollout per update:   410 steps * 5 drones = 2050 samples
+Stability Criterion:  Full-delivery success rate >= 70% maintained for 5 consecutive iterations
+Rolling Window:       Trailing 20 completed episodes
+Stage Cap:            50 iterations OR 20.0 minutes wall-clock
+Total Session Cap:    90.0 minutes wall-clock hard stop
+================================================================================
+
+--------------------------------------------------------------------------------
+HARDWARE BASELINE — PRE-RUN READINGS
+--------------------------------------------------------------------------------
+System RAM Total:     15.32 GB
+System RAM Used:      10.50 GB (68.0%)
+Process Resident RAM: 321.07 MB
+Start Timestamp:      2026-10-25 23:39:32
+--------------------------------------------------------------------------------
+
+[WARM-START] Stage 1 initialized fresh from untrained network (seed=0).
+
+================================================================================
+STARTING CURRICULUM STAGE 1/4: Jammer Intensity = 0.0
+================================================================================
+Warm start mode:       Fresh untrained initialization
+Stability target:      Full success >= 70% for 5 consecutive iterations (window=20)
+Stage limits:          Max 50 iterations OR 20.0 min wall-clock
+================================================================================
+
+Stage 1 (Jammer 0.0) | Iter  1/50 (Tot   1) | Reward:   -0.10 | Success:  0.67 (Full:  0.0%) | Streak: 0/5 | Collisions: 25.0 | PLoss: -0.2429 | VLoss: 3.9618 | Entropy: 1.5896 | Eps:   1 | Time:   1.3s
+Stage 1 (Jammer 0.0) | Iter  2/50 (Tot   2) | Reward:   27.27 | Success:  0.56 (Full:  0.0%) | Streak: 0/5 | Collisions: 22.7 | PLoss: -0.3797 | VLoss: 5.4499 | Entropy: 1.5742 | Eps:   3 | Time:   2.5s
+Stage 1 (Jammer 0.0) | Iter  3/50 (Tot   3) | Reward:   53.39 | Success:  0.67 (Full: 20.0%) | Streak: 0/5 | Collisions: 24.0 | PLoss: -1.1800 | VLoss: 4.8347 | Entropy: 1.5516 | Eps:   5 | Time:   3.6s
+Stage 1 (Jammer 0.0) | Iter  4/50 (Tot   4) | Reward:   62.53 | Success:  0.71 (Full: 28.6%) | Streak: 0/5 | Collisions: 29.4 | PLoss: -1.0142 | VLoss: 7.4346 | Entropy: 1.4899 | Eps:   7 | Time:   4.8s
+Stage 1 (Jammer 0.0) | Iter  5/50 (Tot   5) | Reward:   74.53 | Success:  0.78 (Full: 44.4%) | Streak: 0/5 | Collisions: 31.3 | PLoss: -0.6959 | VLoss: 5.4352 | Entropy: 1.4994 | Eps:   9 | Time:   6.0s
+Stage 1 (Jammer 0.0) | Iter  6/50 (Tot   6) | Reward:   67.80 | Success:  0.76 (Full: 36.4%) | Streak: 0/5 | Collisions: 38.2 | PLoss: +0.1245 | VLoss: 4.4590 | Entropy: 1.4997 | Eps:  11 | Time:   7.2s
+Stage 1 (Jammer 0.0) | Iter  7/50 (Tot   7) | Reward:   67.03 | Success:  0.77 (Full: 38.5%) | Streak: 0/5 | Collisions: 40.2 | PLoss: +0.3276 | VLoss: 7.0035 | Entropy: 1.5249 | Eps:  13 | Time:   8.3s
+Stage 1 (Jammer 0.0) | Iter  8/50 (Tot   8) | Reward:   68.34 | Success:  0.78 (Full: 40.0%) | Streak: 0/5 | Collisions: 42.8 | PLoss: +0.0798 | VLoss: 4.6777 | Entropy: 1.5072 | Eps:  15 | Time:   9.5s
+Stage 1 (Jammer 0.0) | Iter  9/50 (Tot   9) | Reward:   78.94 | Success:  0.82 (Full: 52.6%) | Streak: 0/5 | Collisions: 40.8 | PLoss: -1.1306 | VLoss: 8.7732 | Entropy: 1.4459 | Eps:  19 | Time:  10.7s
+Stage 1 (Jammer 0.0) | Iter 10/50 (Tot  10) | Reward:   88.78 | Success:  0.85 (Full: 60.0%) | Streak: 0/5 | Collisions: 40.0 | PLoss: -0.0666 | VLoss: 5.6580 | Entropy: 1.4482 | Eps:  22 | Time:  11.8s
+Stage 1 (Jammer 0.0) | Iter 11/50 (Tot  11) | Reward:   95.33 | Success:  0.90 (Full: 70.0%) | Streak: 1/5 | Collisions: 41.2 | PLoss: -1.2391 | VLoss: 9.2917 | Entropy: 1.3774 | Eps:  26 | Time:  13.1s
+Stage 1 (Jammer 0.0) | Iter 12/50 (Tot  12) | Reward:  114.54 | Success:  0.97 (Full: 90.0%) | Streak: 2/5 | Collisions: 28.9 | PLoss: -0.9333 | VLoss: 9.7586 | Entropy: 1.3172 | Eps:  32 | Time:  14.2s
+Stage 1 (Jammer 0.0) | Iter 13/50 (Tot  13) | Reward:  120.38 | Success:  0.98 (Full: 95.0%) | Streak: 3/5 | Collisions: 22.4 | PLoss: -0.3335 | VLoss: 10.5071 | Entropy: 1.2901 | Eps:  37 | Time:  15.4s
+Stage 1 (Jammer 0.0) | Iter 14/50 (Tot  14) | Reward:  123.85 | Success:  1.00 (Full: 100.0%) | Streak: 4/5 | Collisions: 22.6 | PLoss: -0.9133 | VLoss: 12.9811 | Entropy: 1.1951 | Eps:  44 | Time:  16.6s
+Stage 1 (Jammer 0.0) | Iter 15/50 (Tot  15) | Reward:  124.95 | Success:  1.00 (Full: 100.0%) | Streak: 5/5 | Collisions: 24.4 | PLoss: -0.2257 | VLoss: 16.3486 | Entropy: 1.1306 | Eps:  52 | Time:  17.7s
+
+>>> STABILITY ACHIEVED in Stage 1 (Jammer 0.0)! Full success >= 70% maintained for 5 consecutive iterations.
+
+================================================================================
+CURRICULUM STAGE COMPLETE: Stage 1/4 (Jammer Intensity 0.0) — STABLE
+Status:            STABLE (Maintained >= 70% full success for 5 consecutive iterations)
+Iterations Used:   15/50
+Final Success:     100.0% full delivery
+Stage Duration:    17.7s (0.30 min)
+Checkpoint Saved:  D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\mappo\seed_1\stage_0.0_stable.pt
+Next Action:       Advancing to Stage 2
+================================================================================
+
+--------------------------------------------------------------------------------
+HARDWARE & RESOURCE MONITORING — POST-STAGE 1 READINGS
+--------------------------------------------------------------------------------
+Stage Duration:        17.7s
+Cumulative Session:    0.30 min
+System RAM Total:      15.32 GB
+System RAM Used:       10.44 GB (68.0%)
+Process Resident RAM:  321.22 MB (Delta from baseline: +0.15 MB)
+Hardware Assessment:   CPU execution nominal, no thermal throttling detected
+--------------------------------------------------------------------------------
+
+[WARM-START] Stage 2 loading checkpoint from Stage 1: D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\mappo\seed_1\stage_0.0_stable.pt
+================================================================================
+STARTING CURRICULUM STAGE 2/4: Jammer Intensity = 0.1
+================================================================================
+Warm start mode:       Warm-started from Stage 1 checkpoint
+Stability target:      Full success >= 70% for 5 consecutive iterations (window=20)
+Stage limits:          Max 50 iterations OR 20.0 min wall-clock
+================================================================================
+
+Stage 2 (Jammer 0.1) | Iter  1/50 (Tot  16) | Reward:  126.05 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Collisions: 30.2 | PLoss: +0.1426 | VLoss: 14.2217 | Entropy: 1.1570 | Eps:   6 | Time:   1.2s
+Stage 2 (Jammer 0.1) | Iter  2/50 (Tot  17) | Reward:  127.95 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Collisions: 25.5 | PLoss: -0.8219 | VLoss: 15.9081 | Entropy: 1.0982 | Eps:  13 | Time:   2.5s
+Stage 2 (Jammer 0.1) | Iter  3/50 (Tot  18) | Reward:  129.84 | Success:  1.00 (Full: 100.0%) | Streak: 1/5 | Collisions: 26.1 | PLoss: -0.5153 | VLoss: 15.3326 | Entropy: 1.1706 | Eps:  20 | Time:   3.6s
+Stage 2 (Jammer 0.1) | Iter  4/50 (Tot  19) | Reward:  130.68 | Success:  1.00 (Full: 100.0%) | Streak: 2/5 | Collisions: 28.0 | PLoss: +0.0567 | VLoss: 14.3186 | Entropy: 1.1222 | Eps:  27 | Time:   5.0s
+Stage 2 (Jammer 0.1) | Iter  5/50 (Tot  20) | Reward:  128.38 | Success:  1.00 (Full: 100.0%) | Streak: 3/5 | Collisions: 28.2 | PLoss: -0.4256 | VLoss: 15.7378 | Entropy: 0.9852 | Eps:  36 | Time:   6.4s
+Stage 2 (Jammer 0.1) | Iter  6/50 (Tot  21) | Reward:  129.72 | Success:  1.00 (Full: 100.0%) | Streak: 4/5 | Collisions: 23.7 | PLoss: -0.3255 | VLoss: 18.1257 | Entropy: 0.9088 | Eps:  46 | Time:   7.6s
+Stage 2 (Jammer 0.1) | Iter  7/50 (Tot  22) | Reward:  138.52 | Success:  1.00 (Full: 100.0%) | Streak: 5/5 | Collisions: 25.6 | PLoss: -0.6859 | VLoss: 20.7891 | Entropy: 0.8335 | Eps:  56 | Time:   8.8s
+
+>>> STABILITY ACHIEVED in Stage 2 (Jammer 0.1)! Full success >= 70% maintained for 5 consecutive iterations.
+
+================================================================================
+CURRICULUM STAGE COMPLETE: Stage 2/4 (Jammer Intensity 0.1) — STABLE
+Status:            STABLE (Maintained >= 70% full success for 5 consecutive iterations)
+Iterations Used:   7/50
+Final Success:     100.0% full delivery
+Stage Duration:    8.8s (0.15 min)
+Checkpoint Saved:  D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\mappo\seed_1\stage_0.1_stable.pt
+Next Action:       Advancing to Stage 3
+================================================================================
+
+--------------------------------------------------------------------------------
+HARDWARE & RESOURCE MONITORING — POST-STAGE 2 READINGS
+--------------------------------------------------------------------------------
+Stage Duration:        8.8s
+Cumulative Session:    0.44 min
+System RAM Total:      15.32 GB
+System RAM Used:       10.46 GB (68.0%)
+Process Resident RAM:  321.30 MB (Delta from baseline: +0.23 MB)
+Hardware Assessment:   CPU execution nominal, no thermal throttling detected
+--------------------------------------------------------------------------------
+
+[WARM-START] Stage 3 loading checkpoint from Stage 2: D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\mappo\seed_1\stage_0.1_stable.pt
+================================================================================
+STARTING CURRICULUM STAGE 3/4: Jammer Intensity = 0.3
+================================================================================
+Warm start mode:       Warm-started from Stage 2 checkpoint
+Stability target:      Full success >= 70% for 5 consecutive iterations (window=20)
+Stage limits:          Max 50 iterations OR 20.0 min wall-clock
+================================================================================
+
+Stage 3 (Jammer 0.3) | Iter  1/50 (Tot  23) | Reward:  131.14 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Collisions: 31.4 | PLoss: +0.6512 | VLoss: 16.3095 | Entropy: 0.8868 | Eps:   8 | Time:   1.3s
+Stage 3 (Jammer 0.3) | Iter  2/50 (Tot  24) | Reward:  129.37 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Collisions: 31.3 | PLoss: -0.3027 | VLoss: 15.8113 | Entropy: 0.8733 | Eps:  17 | Time:   2.5s
+Stage 3 (Jammer 0.3) | Iter  3/50 (Tot  25) | Reward:  128.74 | Success:  1.00 (Full: 100.0%) | Streak: 1/5 | Collisions: 32.5 | PLoss: -0.3708 | VLoss: 19.9659 | Entropy: 0.7815 | Eps:  27 | Time:   3.7s
+Stage 3 (Jammer 0.3) | Iter  4/50 (Tot  26) | Reward:  132.29 | Success:  1.00 (Full: 100.0%) | Streak: 2/5 | Collisions: 30.2 | PLoss: -0.1910 | VLoss: 18.5539 | Entropy: 0.7480 | Eps:  38 | Time:   5.0s
+Stage 3 (Jammer 0.3) | Iter  5/50 (Tot  27) | Reward:  135.68 | Success:  1.00 (Full: 100.0%) | Streak: 3/5 | Collisions: 31.6 | PLoss: -0.7397 | VLoss: 20.7591 | Entropy: 0.7420 | Eps:  49 | Time:   6.2s
+Stage 3 (Jammer 0.3) | Iter  6/50 (Tot  28) | Reward:  143.76 | Success:  1.00 (Full: 100.0%) | Streak: 4/5 | Collisions: 34.8 | PLoss: -0.5061 | VLoss: 22.8636 | Entropy: 0.6953 | Eps:  59 | Time:   7.4s
+Stage 3 (Jammer 0.3) | Iter  7/50 (Tot  29) | Reward:  149.44 | Success:  1.00 (Full: 100.0%) | Streak: 5/5 | Collisions: 35.9 | PLoss: -0.1941 | VLoss: 21.0764 | Entropy: 0.6833 | Eps:  69 | Time:   8.6s
+
+>>> STABILITY ACHIEVED in Stage 3 (Jammer 0.3)! Full success >= 70% maintained for 5 consecutive iterations.
+
+================================================================================
+CURRICULUM STAGE COMPLETE: Stage 3/4 (Jammer Intensity 0.3) — STABLE
+Status:            STABLE (Maintained >= 70% full success for 5 consecutive iterations)
+Iterations Used:   7/50
+Final Success:     100.0% full delivery
+Stage Duration:    8.6s (0.14 min)
+Checkpoint Saved:  D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\mappo\seed_1\stage_0.3_stable.pt
+Next Action:       Advancing to Stage 4
+================================================================================
+
+--------------------------------------------------------------------------------
+HARDWARE & RESOURCE MONITORING — POST-STAGE 3 READINGS
+--------------------------------------------------------------------------------
+Stage Duration:        8.6s
+Cumulative Session:    0.59 min
+System RAM Total:      15.32 GB
+System RAM Used:       10.34 GB (67.0%)
+Process Resident RAM:  321.31 MB (Delta from baseline: +0.24 MB)
+Hardware Assessment:   CPU execution nominal, no thermal throttling detected
+--------------------------------------------------------------------------------
+
+[WARM-START] Stage 4 loading checkpoint from Stage 3: D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\mappo\seed_1\stage_0.3_stable.pt
+================================================================================
+STARTING CURRICULUM STAGE 4/4: Jammer Intensity = 0.5
+================================================================================
+Warm start mode:       Warm-started from Stage 3 checkpoint
+Stability target:      Full success >= 70% for 5 consecutive iterations (window=20)
+Stage limits:          Max 50 iterations OR 20.0 min wall-clock
+================================================================================
+
+Stage 4 (Jammer 0.5) | Iter  1/50 (Tot  30) | Reward:  140.92 | Success:  1.00 (Full: 100.0%) | Streak: 0/5 | Collisions: 31.4 | PLoss: +0.5200 | VLoss: 19.5586 | Entropy: 0.6694 | Eps:   9 | Time:   1.2s
+Stage 4 (Jammer 0.5) | Iter  2/50 (Tot  31) | Reward:  137.27 | Success:  1.00 (Full: 100.0%) | Streak: 1/5 | Collisions: 30.9 | PLoss: +0.6824 | VLoss: 17.7420 | Entropy: 0.6383 | Eps:  20 | Time:   2.4s
+Stage 4 (Jammer 0.5) | Iter  3/50 (Tot  32) | Reward:  137.91 | Success:  1.00 (Full: 100.0%) | Streak: 2/5 | Collisions: 30.7 | PLoss: +0.1710 | VLoss: 19.4699 | Entropy: 0.6206 | Eps:  30 | Time:   3.6s
+Stage 4 (Jammer 0.5) | Iter  4/50 (Tot  33) | Reward:  144.85 | Success:  1.00 (Full: 100.0%) | Streak: 3/5 | Collisions: 31.0 | PLoss: -0.5762 | VLoss: 19.2254 | Entropy: 0.6364 | Eps:  40 | Time:   4.8s
+Stage 4 (Jammer 0.5) | Iter  5/50 (Tot  34) | Reward:  146.34 | Success:  1.00 (Full: 100.0%) | Streak: 4/5 | Collisions: 30.6 | PLoss: +0.0236 | VLoss: 18.4467 | Entropy: 0.5977 | Eps:  50 | Time:   6.1s
+Stage 4 (Jammer 0.5) | Iter  6/50 (Tot  35) | Reward:  144.61 | Success:  1.00 (Full: 100.0%) | Streak: 5/5 | Collisions: 30.2 | PLoss: -0.4195 | VLoss: 21.5187 | Entropy: 0.6058 | Eps:  61 | Time:   7.3s
+
+>>> STABILITY ACHIEVED in Stage 4 (Jammer 0.5)! Full success >= 70% maintained for 5 consecutive iterations.
+
+================================================================================
+CURRICULUM STAGE COMPLETE: Stage 4/4 (Jammer Intensity 0.5) — STABLE
+Status:            STABLE (Maintained >= 70% full success for 5 consecutive iterations)
+Iterations Used:   6/50
+Final Success:     100.0% full delivery
+Stage Duration:    7.3s (0.12 min)
+Checkpoint Saved:  D:\PROJECTS\constellation\checkpoints\curriculum_ablation\on\mappo\seed_1\stage_0.5_stable.pt
+Next Action:       All 5 stages completed successfully!
+================================================================================
+
+--------------------------------------------------------------------------------
+HARDWARE & RESOURCE MONITORING — POST-STAGE 4 READINGS
+--------------------------------------------------------------------------------
+Stage Duration:        7.3s
+Cumulative Session:    0.71 min
+System RAM Total:      15.32 GB
+System RAM Used:       10.33 GB (67.0%)
+Process Resident RAM:  321.32 MB (Delta from baseline: +0.25 MB)
+Hardware Assessment:   CPU execution nominal, no thermal throttling detected
+--------------------------------------------------------------------------------
+
+Curriculum CSV log successfully written to D:\PROJECTS\constellation\logs\curriculum_ablation_on_mappo_seed_1.csv
+  -> [CURRICULUM MAPPO Seed 1] Stages Completed: 4/4 | Status: STABLE | Total Iters: 35 (S1:15 + S2:7 + S3:7 + S4:6) | Final Stage Train Full Success: 100.0% | Total Time: 42.5s
+
+All 8 training runs finished in 243.7s (4.06 min).
+
+====================================================================================================
+PART C: EVALUATING ALL 8 CHECKPOINTS AT 50% JAMMING (10 EPISODES PER RUN)
+====================================================================================================
+
+Evaluating IPPO Seed 0 [DIRECT (OFF)] at 50% Jamming (10 episodes)...
+  -> Eval Full Success: 70.0% | Collisions: 46.40 | Latency: 157.4 | Energy: 579.6
+Evaluating IPPO Seed 1 [DIRECT (OFF)] at 50% Jamming (10 episodes)...
+  -> Eval Full Success: 20.0% | Collisions: 77.20 | Latency: 229.0 | Energy: 918.5
+Evaluating MAPPO Seed 0 [DIRECT (OFF)] at 50% Jamming (10 episodes)...
+  -> Eval Full Success: 50.0% | Collisions: 65.40 | Latency: 193.3 | Energy: 813.6
+Evaluating MAPPO Seed 1 [DIRECT (OFF)] at 50% Jamming (10 episodes)...
+  -> Eval Full Success: 90.0% | Collisions: 42.70 | Latency: 181.5 | Energy: 696.1
+Evaluating IPPO Seed 0 [CURRICULUM (ON)] at 50% Jamming (10 episodes)...
+  -> Eval Full Success: 10.0% | Collisions: 191.00 | Latency: 230.3 | Energy: 1025.9
+Evaluating IPPO Seed 1 [CURRICULUM (ON)] at 50% Jamming (10 episodes)...
+  -> Eval Full Success: 40.0% | Collisions: 130.10 | Latency: 174.8 | Energy: 767.2
+Evaluating MAPPO Seed 0 [CURRICULUM (ON)] at 50% Jamming (10 episodes)...
+  -> Eval Full Success: 50.0% | Collisions: 124.90 | Latency: 170.0 | Energy: 729.3
+Evaluating MAPPO Seed 1 [CURRICULUM (ON)] at 50% Jamming (10 episodes)...
+  -> Eval Full Success: 80.0% | Collisions: 105.40 | Latency: 141.6 | Energy: 614.0
+
+==================================================================================================================================================================
+CONSTELLATION — SESSION S3.8 CURRICULUM ON/OFF ABLATION COMPARISON TABLE (EVALUATED AT 50% JAMMING)
+==================================================================================================================================================================
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Algo   | Seed  | Mode        | Status   | Stage Breakdown        | Tot Iters  | Train Time  | Train FullSucc  | Eval FullSucc  | Collisions   | Latency    | Energy    
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+IPPO   | 0     | DIRECT      | SOLVED   | Direct: 12 iters       | 12         | 26.8s       | 90.0%           | 70.0%          | 46.40        | 157.4      | 579.6     
+IPPO   | 0     | CURRICULUM  | STABLE   | S1:15 + S2:8 + S3:7 + S4:7 | 37         | 46.5s       | 100.0%          | 10.0%          | 191.00       | 230.3      | 1025.9    
+IPPO   | 1     | DIRECT      | SOLVED   | Direct: 9 iters        | 9          | 12.2s       | 90.0%           | 20.0%          | 77.20        | 229.0      | 918.5     
+IPPO   | 1     | CURRICULUM  | STABLE   | S1:14 + S2:7 + S3:7 + S4:6 | 34         | 44.8s       | 100.0%          | 40.0%          | 130.10       | 174.8      | 767.2     
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+MAPPO  | 0     | DIRECT      | SOLVED   | Direct: 11 iters       | 11         | 12.8s       | 85.0%           | 50.0%          | 65.40        | 193.3      | 813.6     
+MAPPO  | 0     | CURRICULUM  | STABLE   | S1:14 + S2:7 + S3:8 + S4:7 | 36         | 44.1s       | 100.0%          | 50.0%          | 124.90       | 170.0      | 729.3     
+MAPPO  | 1     | DIRECT      | SOLVED   | Direct: 12 iters       | 12         | 14.1s       | 85.0%           | 90.0%          | 42.70        | 181.5      | 696.1     
+MAPPO  | 1     | CURRICULUM  | STABLE   | S1:15 + S2:7 + S3:7 + S4:6 | 35         | 42.5s       | 100.0%          | 80.0%          | 105.40       | 141.6      | 614.0     
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+AGGREGATED GROUP COMPARISONS (MEAN VALUES ACROSS SEEDS)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Group                    | Mean Total Iters  | Mean Train Time  | Mean Eval FullSucc   | Mean Collisions  | Mean Latency   | Mean Energy 
+-----------------------------------------------------------------------------------------------------------------------------------------
+IPPO Direct              | 10.5              | 19.5           s | 45.0%               | 61.80            | 193.2          | 749.0       
+IPPO Curriculum          | 35.5              | 45.6           s | 25.0%               | 160.55           | 202.6          | 896.6       
+MAPPO Direct             | 11.5              | 13.4           s | 70.0%               | 54.05            | 187.4          | 754.9       
+MAPPO Curriculum         | 35.5              | 43.3           s | 65.0%               | 115.15           | 155.8          | 671.6       
+ALL Direct (N=4)         | 11.0              | 16.4           s | 57.5%               | 57.92            | 190.3          | 751.9       
+ALL Curriculum (N=4)     | 35.5              | 44.5           s | 45.0%               | 137.85           | 179.2          | 784.1       
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+HARDWARE & RESOURCE MONITORING — POST-RUN READINGS
+--------------------------------------------------------------------------------
+Timestamp:             2026-10-25 23:40:43
+System RAM Total:      15.32 GB
+System RAM Used:       10.35 GB (67.0%)
+Process Resident RAM:  321.12 MB (Delta: +92.89 MB)
+Zero memory leaks detected. Execution completed within thermal and time budgets.
+--------------------------------------------------------------------------------
+
