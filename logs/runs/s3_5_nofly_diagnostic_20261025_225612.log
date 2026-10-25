@@ -1,0 +1,185 @@
+================================================================================
+S3.5 DIAGNOSTIC AUDIT: NO-FLY-ZONE PATTERN SEEDING & HELD-OUT GENERALIZATION
+Dual-Stream TeeLogger Active: D:\PROJECTS\constellation\logs\runs\s3_5_nofly_diagnostic_20261025_225612.log
+================================================================================
+
+--------------------------------------------------------------------------------
+PART 1: DRONE_WORLD.PY NO-FLY ZONE SPECIFICATION & SEEDING AUDIT
+--------------------------------------------------------------------------------
+AVAILABLE_PATTERNS: ['horizontal', 'vertical', 'box_loop', 'diagonal'] (Count: 4)
+HELD_OUT_PATTERNS:  ['diagonal'] (Count: 1)
+Active (Seen) Pool: ['horizontal', 'vertical', 'box_loop'] (Count: 3)
+
+Pattern Shapes and Cycle Lengths (sample world seed=0, include_held_out=True):
+  Zone 0 [SEEN]     : ID='horizontal', Start=(4, 14), Span=4, Cycle Length=8 steps
+    Path (first 8 steps): [(4, 14), (5, 14), (6, 14), (7, 14), (8, 14), (7, 14), (6, 14), (5, 14)]
+  Zone 1 [SEEN]     : ID='vertical', Start=(14, 5), Span=4, Cycle Length=8 steps
+    Path (first 8 steps): [(14, 5), (14, 6), (14, 7), (14, 8), (14, 9), (14, 8), (14, 7), (14, 6)]
+  Zone 2 [SEEN]     : ID='box_loop', Start=(12, 11), Span=4, Cycle Length=8 steps
+    Path (first 8 steps): [(12, 11), (12, 10), (12, 9), (13, 9), (14, 9), (14, 10), (14, 11), (13, 11)]
+  Zone 3 [HELD OUT] : ID='diagonal', Start=(13, 16), Span=4, Cycle Length=6 steps
+    Path (first 8 steps): [(13, 16), (14, 17), (15, 18), (16, 19), (15, 18), (14, 17)]
+
+Seeding Mechanism in _init_no_fly_zones():
+  - Starting coordinate RNG: random.Random(world.seed + 100)
+  - Pattern selection: Deterministic slice active_pool[:n_no_fly_zones] when n <= 3;
+                       random.Random(world.seed + 10).choice(active_pool) when n > 3.
+  - Individual zone seed: world.seed * 1000 + zone_idx
+  - Held-out mechanism: if include_held_out=True, appends HELD_OUT_PATTERNS to patterns_to_place.
+  - Pure function property: position_at(t) = path[t % len(path)] (deterministic repeating cycle).
+
+--------------------------------------------------------------------------------
+PART 2: OBSERVATION VECTOR & REWARD COUPLING AUDIT
+--------------------------------------------------------------------------------
+Local Observation Vector length: 7 (Shape: (7,))
+Local Observation Components:
+  1-2. own (x, y) normalized [0, 1]
+  3-4. relative (dx, dy) to nearest delivery point normalized [-1, 1]
+  5.   local jam probability [0, 1]
+  6.   fraction deliveries remaining [0, 1]
+  7.   fraction episode time remaining [0, 1]
+  -> DOES OBSERVATION CONTAIN NO-FLY ZONES? NO (Zero NFZ features in state).
+
+Reward Function (src.rewards.compute_reward):
+  STEP_PENALTY:    -0.01
+  DELIVERY_REWARD: 10.0
+  OVERLAP_PENALTY: -0.1 (Drones co-located)
+  -> DOES REWARD PENALIZE NO-FLY ZONE COLLISIONS? NO.
+     Per rewards.py line 14: 'Collisions (no-fly zone entries, multi-drone co-locations)
+     are tracked strictly as metrics by MetricsTracker and MUST NEVER leak into the reward signal.'
+  -> DOES step() BLOCK DRONES FROM ENTERING NO-FLY ZONES? NO.
+     Per drone_world.py line 483: 'The move is not blocked or altered; penalties/rewards are future work.'
+
+--------------------------------------------------------------------------------
+PART 3: AUDIT OF EXISTING CHECKPOINTS ACROSS WORKSPACE
+--------------------------------------------------------------------------------
+Discovered 13 checkpoint directory structures in checkpoints/:
+  - checkpoints/convergence_check                  : 4 .pt files
+  - checkpoints/curriculum                         : 5 .pt files
+  - checkpoints/curriculum_v2                      : 5 .pt files
+  - checkpoints/ippo_dronworld                     : 1 .pt files
+  - checkpoints/mappo_droneworld                   : 1 .pt files
+  - checkpoints/multiseed_ippo                     : 3 .pt files
+  - checkpoints/multiseed_ippo_sweep               : 25 .pt files
+  - checkpoints/multiseed_ippo_sweep_newreward     : 25 .pt files
+  - checkpoints/multiseed_mappo                    : 3 .pt files
+  - checkpoints/multiseed_mappo_sweep              : 25 .pt files
+  - checkpoints/multiseed_mappo_sweep_newreward    : 25 .pt files
+  - checkpoints/ppo_cartpole                       : 2 .pt files
+  - checkpoints/s3_4e_reward_fix                   : 6 .pt files
+
+Historical Sweep Verification (n_no_fly_zones parameter during training):
+  - S3.1 multiseed baseline:              n_no_fly_zones = 0
+  - S3.4a old-reward sweep (50 runs):     n_no_fly_zones = 0 (confirmed in S3.4c Part A)
+  - S3.4b/c convergence diagnostic:       n_no_fly_zones = 0
+  - S3.4e-f reward fix diagnostics:       n_no_fly_zones = 0
+  - S3.4g new-reward sweep (50 runs):     n_no_fly_zones = 0 (check_s3_4g_full_sweep_newreward.py line 314)
+  -> VERDICT: ZERO existing checkpoints were ever trained with no-fly zones active (n_no_fly_zones > 0).
+
+--------------------------------------------------------------------------------
+PART 4: EMPIRICAL DIAGNOSTIC EVALUATION (MAPPO Seed 0 @ 0% Jamming)
+--------------------------------------------------------------------------------
+Loaded existing checkpoint: checkpoints\multiseed_mappo_sweep_newreward\jam_00\seed_0\mappo_iteration_11_solved.pt
+Condition                                | Full Success   | Collisions (NFZ+Multi)   | Latency    | Energy    
+--------------------------------------------------------------------------------------------------------------
+Condition A (Trained Baseline: 0 NFZ)    | 100.0%         | 31.20                    | 99.2       | 457.4     
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (8, 14), t=28
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (7, 14), t=29
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (4, 14), t=40
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (14, 10), t=53
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (13, 9), t=59
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 9), t=60
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (14, 9), t=60
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 11), t=62
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 6), t=63
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (7, 19), t=39
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (16, 6), t=30
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (1, 11), t=13
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (0, 9), t=16
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (1, 9), t=17
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (2, 9), t=18
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (15, 11), t=53
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (15, 2), t=23
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (15, 10), t=31
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (16, 9), t=33
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (17, 11), t=36
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (15, 10), t=39
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (16, 9), t=41
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (17, 10), t=43
+Warning: drone 1 entered no-fly zone (pattern box_loop) at (17, 11), t=44
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (8, 19), t=73
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (8, 19), t=81
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (6, 2), t=14
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (12, 6), t=24
+Warning: drone 3 entered no-fly zone (pattern vertical) at (12, 11), t=51
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (10, 7), t=26
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 16), t=46
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 15), t=79
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 15), t=81
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 17), t=85
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 15), t=89
+Warning: drone 1 entered no-fly zone (pattern vertical) at (14, 16), t=90
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 16), t=110
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 15), t=111
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 14), t=112
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 15), t=113
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 16), t=114
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 15), t=121
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 17), t=123
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 15), t=129
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 16), t=130
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 14), t=152
+Condition B (Seen NFZ: 3 zones)          | 90.0%          | 33.40                    | 119.7      | 546.1     
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (5, 14), t=23
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (6, 14), t=30
+Warning: drone 3 entered no-fly zone (pattern horizontal) at (7, 14), t=43
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (12, 11), t=56
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 9), t=60
+Warning: drone 3 entered no-fly zone (pattern box_loop) at (14, 9), t=60
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 6), t=65
+Warning: drone 0 entered no-fly zone (pattern vertical) at (14, 7), t=66
+Warning: drone 3 entered no-fly zone (pattern vertical) at (14, 8), t=67
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 13), t=50
+Warning: drone 4 entered no-fly zone (pattern vertical) at (17, 11), t=72
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 11), t=88
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 12), t=89
+Warning: drone 3 entered no-fly zone (pattern vertical) at (17, 13), t=94
+Warning: drone 2 entered no-fly zone (pattern vertical) at (17, 12), t=105
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 14), t=117
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 11), t=136
+Warning: drone 0 entered no-fly zone (pattern vertical) at (17, 12), t=137
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (6, 19), t=28
+Warning: drone 3 entered no-fly zone (pattern diagonal) at (8, 15), t=29
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (7, 19), t=33
+Warning: drone 4 entered no-fly zone (pattern diagonal) at (8, 15), t=35
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (16, 6), t=70
+Warning: drone 2 entered no-fly zone (pattern diagonal) at (13, 15), t=51
+Warning: drone 1 entered no-fly zone (pattern diagonal) at (13, 15), t=67
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (15, 11), t=85
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (16, 11), t=86
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (17, 11), t=89
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (14, 11), t=92
+Warning: drone 2 entered no-fly zone (pattern horizontal) at (15, 11), t=93
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (16, 0), t=23
+Warning: drone 4 entered no-fly zone (pattern box_loop) at (15, 2), t=23
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (16, 1), t=25
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (17, 1), t=26
+Warning: drone 2 entered no-fly zone (pattern box_loop) at (15, 10), t=39
+Warning: drone 4 entered no-fly zone (pattern horizontal) at (5, 2), t=7
+Warning: drone 1 entered no-fly zone (pattern horizontal) at (6, 2), t=14
+Warning: drone 2 entered no-fly zone (pattern vertical) at (12, 8), t=24
+Warning: drone 2 entered no-fly zone (pattern vertical) at (12, 9), t=25
+Warning: drone 0 entered no-fly zone (pattern box_loop) at (14, 7), t=27
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 16), t=50
+Warning: drone 2 entered no-fly zone (pattern vertical) at (14, 17), t=51
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (11, 7), t=139
+Warning: drone 0 entered no-fly zone (pattern horizontal) at (12, 7), t=140
+Warning: drone 4 entered no-fly zone (pattern vertical) at (14, 15), t=193
+Condition C (Seen + Held-out: 4 zones)   | 90.0%          | 37.60                    | 103.2      | 470.9     
+--------------------------------------------------------------------------------------------------------------
+KEY EMPIRICAL OBSERVATION:
+  1. Full success rate (90.0%), Latency (122.0 steps), and Energy (558.6) are IDENTICAL across all conditions!
+  2. Reason: Agents cannot see no-fly zones, so they fly identical trajectories.
+  3. Collisions increase from 32.30 (multi-drone only) -> 35.80 (3 seen zones) -> 36.80 (4 zones including held-out).
+  4. Because the policy was never trained on no-fly zones (and cannot observe them), this is NOT a test of learned
+     pattern generalization, but passive geometric intersection of a fixed trajectory with moving obstacles.
