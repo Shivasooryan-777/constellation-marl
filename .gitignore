@@ -1,6 +1,33 @@
-.venv/
+# Byte-compiled / optimized / ambient
 __pycache__/
 *.pyc
-checkpoints/*.pt
-README.md
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# PyTorch weights and model checkpoints
+*.pt
+*.pth
+checkpoints/*
+!checkpoints/.gitkeep
+
+# Logs and run artifacts
+*.log
+logs/runs/
+
+# IDE configurations
+.vscode/
+.idea/
+
+# Replays / data (optional)
+replays/*
+!replays/.gitkeep
+
+# Setup log and readme (local configuration record)
 SETUP_LOG.txt
+README.md
