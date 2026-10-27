@@ -31,3 +31,9 @@ replays/*
 # Setup log and readme (local configuration record)
 SETUP_LOG.txt
 README.md
+
+# Phase 4 exceptions
+!replays/s4_1_sample_mappo_jam50.json
+
+# Session prompt scratch
+prompt.txt
