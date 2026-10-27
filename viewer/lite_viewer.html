@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Constellation Lite Viewer</title>
+<style>
+  :root { --bg:#f4f5f7; --panel:#fff; --ink:#1c2230; --mute:#5b6577; --line:#d6dae2; --accent:#2457d6;
+          --jam:#c2410c; --bad:#c81e1e; --ok:#15803d; --nfz:#111827; --grid:#e5e8ee; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#12151c; --panel:#1b2030; --ink:#e7eaf2; --mute:#98a2b8; --line:#2f3750; --accent:#7aa2ff;
+            --jam:#fb923c; --bad:#f87171; --ok:#4ade80; --nfz:#e5e7eb; --grid:#262d42; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:16px; background:var(--bg); color:var(--ink); font:14px/1.45 system-ui,Segoe UI,sans-serif; }
+  h1 { font-size:18px; margin:0 0 12px; }
+  .wrap { display:grid; grid-template-columns:minmax(300px,1fr) minmax(280px,380px); gap:16px; max-width:1100px; margin:0 auto; }
+  @media (max-width:760px) { .wrap { grid-template-columns:1fr; } }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; }
+  .tag { display:inline-block; font-size:12px; font-weight:600; letter-spacing:.04em; text-transform:uppercase;
+         padding:2px 8px; border-radius:999px; margin-bottom:8px; }
+  .tag.replay { background:var(--accent); color:#fff; }
+  .tag.avg { background:var(--mute); color:#fff; }
+  .sub { color:var(--mute); font-size:12px; margin:0 0 10px; }
+  canvas { width:100%; height:auto; aspect-ratio:1; display:block; border:1px solid var(--line); border-radius:6px; background:var(--panel); }
+  .controls { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:10px; }
+  button, select, input[type=file] { font:inherit; color:var(--ink); background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:5px 10px; }
+  button { cursor:pointer; } button:hover { border-color:var(--accent); }
+  input[type=range] { flex:1 1 160px; min-width:120px; }
+  table { border-collapse:collapse; width:100%; font-variant-numeric:tabular-nums; }
+  td, th { padding:4px 6px; border-bottom:1px solid var(--line); text-align:left; }
+  th { color:var(--mute); font-weight:600; font-size:12px; }
+  td.n { text-align:right; }
+  .modes { display:inline-flex; margin-left:8px; vertical-align:top; }
+  .modes button { border-radius:0; padding:2px 10px; font-size:12px; }
+  .modes button:first-child { border-radius:6px 0 0 6px; } .modes button:last-child { border-radius:0 6px 6px 0; border-left:0; }
+  .modes button.on { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .legend { display:flex; flex-wrap:wrap; gap:4px 14px; font-size:12px; color:var(--mute); margin-top:8px; }
+  .legend i { display:inline-block; width:10px; height:10px; margin-right:4px; vertical-align:-1px; }
+  .note { font-size:12px; color:var(--mute); margin-top:8px; }
+  .warn { color:var(--jam); }
+  h2 { font-size:14px; margin:14px 0 6px; }
+</style>
+</head>
+<body>
+<h1>Constellation &mdash; Lite Viewer</h1>
+<div class="wrap">
+
+  <section class="panel" aria-label="Replay of a single recorded run">
+    <span class="tag replay">Replay (recorded run)</span>
+    <span class="modes" role="group" aria-label="View mode"><button id="modeTop" class="on">Top-down</button><button id="modeIso">Isometric</button></span>
+    <p class="sub" id="replayMeta"></p>
+    <canvas id="cv" width="640" height="640"></canvas>
+    <div class="controls">
+      <button id="play">Play</button>
+      <button id="prev" title="Step back">&#9664;</button>
+      <button id="next" title="Step forward">&#9654;</button>
+      <input type="range" id="scrub" min="0" max="0" value="0" aria-label="Frame scrub">
+      <span id="frameLbl"></span>
+    </div>
+    <div class="controls">
+      <label>Speed <select id="speed"><option value="5">5 steps/s</option><option value="10" selected>10 steps/s</option>
+        <option value="20">20 steps/s</option><option value="30">30 steps/s (max)</option></select></label>
+      <label>Load other replay <input type="file" id="file" accept=".json"></label>
+    </div>
+    <div class="legend">
+      <span><i style="background:#2457d6"></i>drone</span>
+      <span><i style="background:var(--jam)"></i>jammed this step</span>
+      <span><i style="background:var(--bad)"></i>drone collision</span>
+      <span><i style="background:var(--nfz)"></i>no-fly zone</span>
+      <span><i style="background:var(--ok)"></i>delivered point</span>
+      <span><i style="border:2px solid var(--mute)"></i>pending delivery</span>
+      <span><i style="background:rgba(194,65,12,.25)"></i>jammer field</span>
+    </div>
+    <div id="stepInfo" class="note"></div>
+  </section>
+
+  <aside class="panel" aria-label="Averaged results from sweep CSVs">
+    <span class="tag avg">Averaged results (sweep CSV)</span>
+    <p class="sub" id="avgSub"></p>
+    <table id="avgTbl"></table>
+    <p class="note" id="avgNote"></p>
+    <h2>This replay only (one run)</h2>
+    <table id="oneTbl"></table>
+    <p class="note">The table above is read from the existing sweep CSV (mean &plusmn; std over 5 training seeds, 10 eval episodes each). It is
+      <b>not</b> computed from this replay. The table below is this single recorded run and is one sample, not an average.</p>
+  </aside>
+</div>
+
+<script type="application/json" id="replay-data">{"schema_version":1,"meta":{"algo":"mappo","checkpoint":"checkpoints/multiseed_mappo_sweep_newreward/jam_50/seed_0/mappo_iteration_11_solved.pt","created":"2026-10-26 23:54:39","grid_size":20,"n_drones":5,"n_delivery_points":3,"max_steps":250,"jammer_intensity":0.5,"n_no_fly_zones":0,"policy_sampling":"stochastic","torch_seed":0},"actions_legend":{"0":"STAY","1":"UP","2":"DOWN","3":"LEFT","4":"RIGHT"},"episodes":[{"episode_index":0,"world_seed":0,"depot":[0,0],"delivery_points":[[12,13],[18,6],[3,19]],"jammer":{"position":[10,10],"intensity":0.5,"falloff_radius":10.0},"no_fly_zone_meta":[],"summary":{"success":1.0,"no_fly_zone_collisions":0,"multi_drone_collisions":13,"steps_to_last_delivery":61,"total_steps":61,"energy":258},"frames":[{"t":0,"drones":[[0,0],[0,0],[0,0],[0,0],[0,0]],"intended_actions":null,"executed_actions":null,"jammed":null,"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":1,"drones":[[0,1],[0,1],[0,1],[0,1],[0,1]],"intended_actions":[2,2,2,2,2],"executed_actions":[2,2,2,2,2],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[[0,1]],"nfz_collision_drones":[]},{"t":2,"drones":[[0,2],[0,2],[0,1],[0,2],[0,2]],"intended_actions":[2,2,0,2,2],"executed_actions":[2,2,0,2,2],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[[0,2]],"nfz_collision_drones":[]},{"t":3,"drones":[[0,3],[0,3],[0,2],[0,3],[0,3]],"intended_actions":[2,2,2,2,2],"executed_actions":[2,2,2,2,2],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[[0,3]],"nfz_collision_drones":[]},{"t":4,"drones":[[0,4],[0,4],[0,3],[1,3],[0,4]],"intended_actions":[2,2,2,4,2],"executed_actions":[2,2,2,4,2],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[[0,4]],"nfz_collision_drones":[]},{"t":5,"drones":[[0,5],[0,5],[0,4],[1,4],[0,5]],"intended_actions":[2,2,2,2,2],"executed_actions":[2,2,2,2,2],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[[0,5]],"nfz_collision_drones":[]},{"t":6,"drones":[[0,5],[0,6],[1,4],[1,5],[0,6]],"intended_actions":[0,2,4,2,2],"executed_actions":[0,2,4,2,2],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[[0,6]],"nfz_collision_drones":[]},{"t":7,"drones":[[0,6],[0,7],[1,5],[0,5],[0,7]],"intended_actions":[2,2,2,3,2],"executed_actions":[2,2,2,3,2],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[[0,7]],"nfz_collision_drones":[]},{"t":8,"drones":[[0,7],[0,8],[1,6],[0,6],[0,8]],"intended_actions":[2,2,2,2,2],"executed_actions":[2,2,2,2,2],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[[0,8]],"nfz_collision_drones":[]},{"t":9,"drones":[[0,8],[0,9],[1,7],[0,7],[0,9]],"intended_actions":[2,2,2,2,2],"executed_actions":[2,2,2,2,2],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[[0,9]],"nfz_collision_drones":[]},{"t":10,"drones":[[0,9],[1,9],[1,8],[0,8],[0,10]],"intended_actions":[2,4,2,2,2],"executed_actions":[2,4,2,2,2],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":11,"drones":[[0,10],[1,10],[1,9],[0,9],[0,11]],"intended_actions":[2,2,2,2,2],"executed_actions":[2,2,2,2,2],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":12,"drones":[[0,11],[1,11],[1,10],[0,10],[1,11]],"intended_actions":[2,2,2,2,4],"executed_actions":[2,2,2,2,4],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.04999999999999999,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[[1,11]],"nfz_collision_drones":[]},{"t":13,"drones":[[0,12],[2,11],[1,11],[0,11],[1,12]],"intended_actions":[2,4,2,2,2],"executed_actions":[2,4,2,2,2],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.04999999999999999,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":14,"drones":[[0,12],[3,11],[1,12],[0,12],[1,13]],"intended_actions":[3,4,2,2,2],"executed_actions":[3,4,2,2,2],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.04999999999999999,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[[0,12]],"nfz_collision_drones":[]},{"t":15,"drones":[[0,13],[3,12],[1,13],[0,13],[1,14]],"intended_actions":[2,2,2,2,2],"executed_actions":[2,2,2,2,2],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.09999999999999998,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[[0,13]],"nfz_collision_drones":[]},{"t":16,"drones":[[1,13],[3,13],[1,14],[0,14],[2,14]],"intended_actions":[4,2,2,2,4],"executed_actions":[4,2,2,2,4],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.04999999999999999,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":17,"drones":[[2,13],[4,13],[1,15],[0,15],[2,15]],"intended_actions":[4,4,2,2,2],"executed_actions":[4,4,2,2,2],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":18,"drones":[[2,14],[4,14],[1,16],[0,16],[2,16]],"intended_actions":[2,2,2,2,2],"executed_actions":[2,2,2,2,2],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.04999999999999999,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":19,"drones":[[2,13],[4,15],[2,16],[0,17],[2,17]],"intended_actions":[1,2,4,2,2],"executed_actions":[1,2,4,2,2],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":20,"drones":[[3,13],[4,16],[2,17],[0,17],[1,17]],"intended_actions":[4,2,2,0,3],"executed_actions":[4,2,2,0,3],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":21,"drones":[[3,14],[5,16],[2,17],[0,17],[2,17]],"intended_actions":[2,4,0,3,4],"executed_actions":[2,4,0,3,4],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[[2,17]],"nfz_collision_drones":[]},{"t":22,"drones":[[3,15],[4,16],[2,18],[0,17],[3,17]],"intended_actions":[2,3,2,3,4],"executed_actions":[2,3,2,3,4],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":23,"drones":[[3,15],[5,16],[2,19],[1,17],[4,17]],"intended_actions":[0,4,2,4,4],"executed_actions":[0,4,2,4,4],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":24,"drones":[[3,16],[4,16],[2,19],[1,16],[3,17]],"intended_actions":[2,3,2,1,3],"executed_actions":[2,3,2,1,3],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":25,"drones":[[4,16],[4,15],[3,19],[1,17],[3,18]],"intended_actions":[4,1,4,2,2],"executed_actions":[4,1,4,2,2],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[[3,19]],"delivered":[[3,19]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":26,"drones":[[4,16],[5,15],[4,19],[2,17],[3,17]],"intended_actions":[0,4,4,4,1],"executed_actions":[0,4,4,4,1],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":27,"drones":[[5,16],[6,15],[5,19],[3,17],[4,17]],"intended_actions":[4,4,4,4,4],"executed_actions":[4,4,4,4,4],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.0,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":28,"drones":[[6,16],[6,15],[5,18],[3,17],[4,16]],"intended_actions":[4,0,1,0,1],"executed_actions":[4,0,1,0,1],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.04999999999999999,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":29,"drones":[[7,16],[6,15],[6,18],[3,17],[5,16]],"intended_actions":[4,1,4,0,4],"executed_actions":[4,0,4,0,4],"jammed":[false,true,false,false,false],"jam_prob":[0.0,0.04999999999999999,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":30,"drones":[[8,16],[6,15],[7,18],[3,16],[6,16]],"intended_actions":[4,0,4,1,4],"executed_actions":[4,0,4,1,4],"jammed":[false,false,false,false,false],"jam_prob":[0.04999999999999999,0.04999999999999999,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":31,"drones":[[9,16],[7,15],[7,17],[4,16],[7,16]],"intended_actions":[4,4,1,4,4],"executed_actions":[4,4,1,4,4],"jammed":[false,false,false,false,false],"jam_prob":[0.09999999999999998,0.04999999999999999,0.0,0.0,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":32,"drones":[[10,16],[8,15],[8,17],[4,15],[8,16]],"intended_actions":[4,4,4,1,4],"executed_actions":[4,4,4,1,4],"jammed":[false,false,false,false,false],"jam_prob":[0.15000000000000002,0.09999999999999998,0.0,0.0,0.04999999999999999],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":33,"drones":[[11,16],[8,15],[9,17],[5,15],[9,16]],"intended_actions":[4,0,4,4,4],"executed_actions":[4,0,4,4,4],"jammed":[false,false,false,false,false],"jam_prob":[0.2,0.15000000000000002,0.04999999999999999,0.0,0.09999999999999998],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":34,"drones":[[12,16],[9,15],[10,17],[6,15],[9,16]],"intended_actions":[4,4,4,4,1],"executed_actions":[4,4,4,4,0],"jammed":[false,false,false,false,true],"jam_prob":[0.15000000000000002,0.15000000000000002,0.09999999999999998,0.0,0.15000000000000002],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":35,"drones":[[12,15],[10,15],[10,17],[7,15],[10,16]],"intended_actions":[1,4,1,4,4],"executed_actions":[1,4,0,4,4],"jammed":[false,false,true,false,false],"jam_prob":[0.09999999999999998,0.2,0.15000000000000002,0.04999999999999999,0.15000000000000002],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":36,"drones":[[13,15],[11,15],[11,17],[8,15],[11,16]],"intended_actions":[4,4,4,4,4],"executed_actions":[4,4,4,4,4],"jammed":[false,false,false,false,false],"jam_prob":[0.15000000000000002,0.25,0.15000000000000002,0.09999999999999998,0.2],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":37,"drones":[[14,15],[12,15],[11,16],[7,15],[12,16]],"intended_actions":[4,4,1,3,4],"executed_actions":[4,4,1,3,4],"jammed":[false,false,false,false,false],"jam_prob":[0.09999999999999998,0.2,0.09999999999999998,0.15000000000000002,0.15000000000000002],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":38,"drones":[[13,15],[12,15],[11,17],[7,16],[13,16]],"intended_actions":[3,1,2,2,4],"executed_actions":[3,0,2,2,4],"jammed":[false,true,false,false,false],"jam_prob":[0.04999999999999999,0.15000000000000002,0.15000000000000002,0.09999999999999998,0.09999999999999998],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":39,"drones":[[14,15],[12,16],[12,17],[7,16],[14,16]],"intended_actions":[4,2,4,0,4],"executed_actions":[4,2,4,0,4],"jammed":[false,false,false,false,false],"jam_prob":[0.09999999999999998,0.15000000000000002,0.09999999999999998,0.04999999999999999,0.04999999999999999],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":40,"drones":[[14,14],[13,16],[12,16],[8,16],[14,15]],"intended_actions":[1,4,1,4,1],"executed_actions":[1,4,1,4,1],"jammed":[false,false,false,false,false],"jam_prob":[0.04999999999999999,0.09999999999999998,0.04999999999999999,0.04999999999999999,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":41,"drones":[[15,14],[14,16],[12,15],[8,15],[14,14]],"intended_actions":[4,4,1,1,1],"executed_actions":[4,4,1,1,1],"jammed":[false,false,false,false,false],"jam_prob":[0.09999999999999998,0.04999999999999999,0.09999999999999998,0.09999999999999998,0.04999999999999999],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":42,"drones":[[15,15],[14,15],[12,14],[8,14],[14,13]],"intended_actions":[2,1,1,1,1],"executed_actions":[2,1,1,1,1],"jammed":[false,false,false,false,false],"jam_prob":[0.04999999999999999,0.0,0.15000000000000002,0.15000000000000002,0.09999999999999998],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":43,"drones":[[15,16],[14,16],[12,13],[8,13],[14,12]],"intended_actions":[2,2,1,1,1],"executed_actions":[2,2,1,1,1],"jammed":[false,false,false,false,false],"jam_prob":[0.0,0.04999999999999999,0.2,0.2,0.15000000000000002],"no_fly_zones":[],"newly_delivered":[[12,13]],"delivered":[[3,19],[12,13]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":44,"drones":[[16,16],[14,15],[12,13],[9,13],[14,12]],"intended_actions":[4,1,1,4,0],"executed_actions":[4,1,0,4,0],"jammed":[false,false,true,false,false],"jam_prob":[0.0,0.0,0.25,0.25,0.2],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19],[12,13]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":45,"drones":[[15,16],[15,15],[11,13],[9,13],[14,11]],"intended_actions":[3,4,3,1,1],"executed_actions":[3,4,3,0,1],"jammed":[false,false,false,true,false],"jam_prob":[0.0,0.04999999999999999,0.25,0.3,0.2],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19],[12,13]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":46,"drones":[[15,15],[15,14],[11,12],[9,13],[14,11]],"intended_actions":[1,1,1,1,1],"executed_actions":[1,1,1,0,0],"jammed":[false,false,false,true,true],"jam_prob":[0.0,0.0,0.3,0.3,0.25],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19],[12,13]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":47,"drones":[[15,14],[15,13],[11,12],[10,13],[14,11]],"intended_actions":[1,1,1,4,4],"executed_actions":[1,1,0,4,0],"jammed":[false,false,true,false,true],"jam_prob":[0.0,0.04999999999999999,0.35,0.3,0.25],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19],[12,13]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":48,"drones":[[15,13],[15,12],[11,12],[10,13],[14,10]],"intended_actions":[1,1,1,4,1],"executed_actions":[1,1,0,0,1],"jammed":[false,false,true,true,false],"jam_prob":[0.04999999999999999,0.09999999999999998,0.35,0.35,0.25],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19],[12,13]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":49,"drones":[[16,13],[16,12],[11,12],[10,13],[14,9]],"intended_actions":[4,4,4,0,1],"executed_actions":[4,4,0,0,1],"jammed":[false,false,true,false,false],"jam_prob":[0.09999999999999998,0.15000000000000002,0.35,0.35,0.3],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19],[12,13]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":50,"drones":[[16,12],[17,12],[11,12],[10,13],[14,9]],"intended_actions":[1,4,1,2,1],"executed_actions":[1,4,0,0,0],"jammed":[false,false,true,true,true],"jam_prob":[0.04999999999999999,0.09999999999999998,0.35,0.35,0.25],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19],[12,13]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":51,"drones":[[15,12],[17,11],[12,12],[10,14],[14,8]],"intended_actions":[3,1,4,2,1],"executed_actions":[3,1,4,2,1],"jammed":[false,false,false,false,false],"jam_prob":[0.09999999999999998,0.04999999999999999,0.35,0.35,0.25],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19],[12,13]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":52,"drones":[[15,12],[18,11],[11,12],[10,13],[14,7]],"intended_actions":[1,4,3,1,1],"executed_actions":[0,4,3,1,1],"jammed":[true,false,false,false,false],"jam_prob":[0.15000000000000002,0.09999999999999998,0.3,0.3,0.2],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19],[12,13]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":53,"drones":[[15,11],[18,10],[12,12],[10,12],[15,7]],"intended_actions":[1,1,4,1,4],"executed_actions":[1,1,4,1,4],"jammed":[false,false,false,false,false],"jam_prob":[0.15000000000000002,0.04999999999999999,0.35,0.35,0.15000000000000002],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19],[12,13]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":54,"drones":[[16,11],[18,10],[12,12],[10,12],[15,6]],"intended_actions":[4,4,1,4,1],"executed_actions":[4,0,0,0,1],"jammed":[false,true,true,true,false],"jam_prob":[0.2,0.09999999999999998,0.3,0.4,0.09999999999999998],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19],[12,13]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":55,"drones":[[17,11],[18,10],[12,12],[10,12],[16,6]],"intended_actions":[4,0,0,0,4],"executed_actions":[4,0,0,0,4],"jammed":[false,false,false,false,false],"jam_prob":[0.15000000000000002,0.09999999999999998,0.3,0.4,0.04999999999999999],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19],[12,13]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":56,"drones":[[17,10],[19,10],[12,11],[10,11],[17,6]],"intended_actions":[1,4,1,1,4],"executed_actions":[1,4,1,1,4],"jammed":[false,false,false,false,false],"jam_prob":[0.09999999999999998,0.09999999999999998,0.3,0.4,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19],[12,13]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":57,"drones":[[17,9],[18,10],[12,11],[10,11],[17,7]],"intended_actions":[1,3,4,4,2],"executed_actions":[1,3,0,0,2],"jammed":[false,false,true,true,false],"jam_prob":[0.15000000000000002,0.04999999999999999,0.35,0.45,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19],[12,13]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":58,"drones":[[17,9],[18,9],[12,11],[10,11],[17,6]],"intended_actions":[1,1,1,4,1],"executed_actions":[0,1,0,0,1],"jammed":[true,false,true,true,false],"jam_prob":[0.09999999999999998,0.09999999999999998,0.35,0.45,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19],[12,13]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":59,"drones":[[17,9],[18,8],[12,10],[11,11],[17,7]],"intended_actions":[0,1,1,4,2],"executed_actions":[0,1,1,4,2],"jammed":[false,false,false,false,false],"jam_prob":[0.09999999999999998,0.04999999999999999,0.35,0.45,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19],[12,13]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":60,"drones":[[17,8],[18,7],[12,10],[11,11],[17,6]],"intended_actions":[1,1,0,4,1],"executed_actions":[1,1,0,0,1],"jammed":[false,false,false,true,false],"jam_prob":[0.09999999999999998,0.0,0.4,0.4,0.0],"no_fly_zones":[],"newly_delivered":[],"delivered":[[3,19],[12,13]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]},{"t":61,"drones":[[17,7],[18,6],[12,10],[11,11],[17,5]],"intended_actions":[1,1,0,4,1],"executed_actions":[1,1,0,0,1],"jammed":[false,false,false,true,false],"jam_prob":[0.04999999999999999,0.0,0.4,0.4,0.0],"no_fly_zones":[],"newly_delivered":[[18,6]],"delivered":[[3,19],[12,13],[18,6]],"multi_drone_collision_cells":[],"nfz_collision_drones":[]}]}]}</script>
+<script type="application/json" id="sweep-data">{"ippo":[{"jammer_intensity":0.0,"eval_full_success_mean":0.76,"eval_full_success_std":0.2608,"eval_latency_steps_mean":132.74,"eval_latency_steps_std":41.7,"eval_success_fraction_mean":0.8933,"eval_success_fraction_std":0.1278,"eval_collisions_mean":37.44,"eval_collisions_std":10.65,"eval_energy_mean":593.02,"eval_energy_std":179.7,"train_iter_mean":11.4,"train_iter_std":0.55,"train_full_success_mean":0.88,"train_full_success_std":0.057},{"jammer_intensity":0.1,"eval_full_success_mean":0.68,"eval_full_success_std":0.3899,"eval_latency_steps_mean":149.26,"eval_latency_steps_std":57.98,"eval_success_fraction_mean":0.8533,"eval_success_fraction_std":0.1804,"eval_collisions_mean":45.24,"eval_collisions_std":25.85,"eval_energy_mean":655.32,"eval_energy_std":272.01,"train_iter_mean":10.4,"train_iter_std":1.82,"train_full_success_mean":0.86,"train_full_success_std":0.0548},{"jammer_intensity":0.3,"eval_full_success_mean":0.68,"eval_full_success_std":0.1924,"eval_latency_steps_mean":149.3,"eval_latency_steps_std":30.31,"eval_success_fraction_mean":0.8667,"eval_success_fraction_std":0.0972,"eval_collisions_mean":42.44,"eval_collisions_std":15.14,"eval_energy_mean":603.38,"eval_energy_std":131.25,"train_iter_mean":10.4,"train_iter_std":1.34,"train_full_success_mean":0.85,"train_full_success_std":0.05},{"jammer_intensity":0.5,"eval_full_success_mean":0.74,"eval_full_success_std":0.3286,"eval_latency_steps_mean":154.66,"eval_latency_steps_std":45.98,"eval_success_fraction_mean":0.8733,"eval_success_fraction_std":0.164,"eval_collisions_mean":42.68,"eval_collisions_std":20.8,"eval_energy_mean":601.24,"eval_energy_std":190.76,"train_iter_mean":10.4,"train_iter_std":1.52,"train_full_success_mean":0.85,"train_full_success_std":0.05},{"jammer_intensity":0.7,"eval_full_success_mean":0.7,"eval_full_success_std":0.4062,"eval_latency_steps_mean":157.54,"eval_latency_steps_std":54.56,"eval_success_fraction_mean":0.8333,"eval_success_fraction_std":0.2472,"eval_collisions_mean":50.42,"eval_collisions_std":24.86,"eval_energy_mean":589.56,"eval_energy_std":259.75,"train_iter_mean":12.2,"train_iter_std":0.84,"train_full_success_mean":0.88,"train_full_success_std":0.0671}],"mappo":[{"jammer_intensity":0.0,"eval_full_success_mean":0.86,"eval_full_success_std":0.1517,"eval_latency_steps_mean":127.52,"eval_latency_steps_std":21.66,"eval_success_fraction_mean":0.94,"eval_success_fraction_std":0.0723,"eval_collisions_mean":39.18,"eval_collisions_std":7.09,"eval_energy_mean":576.68,"eval_energy_std":93.78,"train_iter_mean":11.2,"train_iter_std":1.3,"train_full_success_mean":0.93,"train_full_success_std":0.0447},{"jammer_intensity":0.1,"eval_full_success_mean":0.72,"eval_full_success_std":0.3114,"eval_latency_steps_mean":142.94,"eval_latency_steps_std":42.67,"eval_success_fraction_mean":0.8867,"eval_success_fraction_std":0.1145,"eval_collisions_mean":42.84,"eval_collisions_std":18.51,"eval_energy_mean":591.8,"eval_energy_std":159.14,"train_iter_mean":10.6,"train_iter_std":1.14,"train_full_success_mean":0.86,"train_full_success_std":0.0652},{"jammer_intensity":0.3,"eval_full_success_mean":0.74,"eval_full_success_std":0.3782,"eval_latency_steps_mean":158.74,"eval_latency_steps_std":45.78,"eval_success_fraction_mean":0.8667,"eval_success_fraction_std":0.2121,"eval_collisions_mean":48.42,"eval_collisions_std":22.57,"eval_energy_mean":657.22,"eval_energy_std":194.67,"train_iter_mean":10.0,"train_iter_std":1.58,"train_full_success_mean":0.85,"train_full_success_std":0.0354},{"jammer_intensity":0.5,"eval_full_success_mean":0.8,"eval_full_success_std":0.2345,"eval_latency_steps_mean":145.64,"eval_latency_steps_std":50.3,"eval_success_fraction_mean":0.9067,"eval_success_fraction_std":0.1188,"eval_collisions_mean":42.42,"eval_collisions_std":15.53,"eval_energy_mean":575.78,"eval_energy_std":213.94,"train_iter_mean":11.2,"train_iter_std":0.84,"train_full_success_mean":0.87,"train_full_success_std":0.0447},{"jammer_intensity":0.7,"eval_full_success_mean":0.6,"eval_full_success_std":0.1871,"eval_latency_steps_mean":177.74,"eval_latency_steps_std":22.28,"eval_success_fraction_mean":0.8067,"eval_success_fraction_std":0.076,"eval_collisions_mean":54.64,"eval_collisions_std":11.47,"eval_energy_mean":621.1,"eval_energy_std":50.26,"train_iter_mean":12.2,"train_iter_std":3.35,"train_full_success_mean":0.83,"train_full_success_std":0.0274}]}</script>
+<script>
+"use strict";
+const MAX_FPS = 30;                       // hard render cap
+const FRAME_MS = 1000 / MAX_FPS;
+const COL = { drone:"#2457d6" };
+const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+const $ = id => document.getElementById(id);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const SWEEP = JSON.parse($("sweep-data").textContent);
+
+let replay = null, ep = null, G = 20, cur = 0, playing = false, stepsPerSec = 10, acc = 0, lastTs = 0, lastDraw = 0;
+
+// Shared text readouts (step label, scrub value, status line): the single implementation used by both draw paths.
+function updateReadouts(f) {
+  $("frameLbl").textContent = `step ${f.t} / ${ep.frames.length - 1}`;
+  $("scrub").value = cur;
+  const jn = f.jammed ? f.jammed.filter(Boolean).length : 0;
+  $("stepInfo").textContent = `Step ${f.t}: deliveries ${f.delivered.length}/${ep.delivery_points.length}` +
+    ` | drones jammed this step: ${jn}` + ` | drone-collision cells: ${f.multi_drone_collision_cells.length}` +
+    ` | NFZ hits: ${f.nfz_collision_drones.length}` + (f.t === ep.frames.length - 1 ? ` | END: ${ep.summary.success >= 1 ? "all deliveries completed" : "episode ended"}` : "");
+}
+
+function load(r) {
+  if (!r || r.schema_version !== 1 || !r.episodes || !r.episodes.length) throw new Error("Not a schema v1 replay file");
+  replay = r; ep = r.episodes[0]; G = r.meta.grid_size; cur = 0; playing = false; $("play").textContent = "Play";
+  $("scrub").max = ep.frames.length - 1; $("scrub").value = 0;
+  const m = r.meta;
+  $("replayMeta").textContent = `${m.algo.toUpperCase()} policy | jammer ${(m.jammer_intensity*100).toFixed(0)}% | ${m.n_no_fly_zones} no-fly zones | ` +
+    `world seed ${ep.world_seed} | stochastic policy | recorded ${m.created}`;
+  renderAvg(); renderOne(); draw();
+}
+
+function renderAvg() {
+  const m = replay.meta, rows = SWEEP[m.algo] || [];
+  const row = rows.find(x => Math.abs(x.jammer_intensity - m.jammer_intensity) < 1e-9);
+  const tbl = $("avgTbl"); tbl.innerHTML = "";
+  if (!row) { $("avgSub").textContent = ""; $("avgNote").innerHTML = '<span class="warn">No sweep row for this algorithm/jamming level.</span>'; return; }
+  $("avgSub").textContent = `${m.algo.toUpperCase()} @ ${(m.jammer_intensity*100).toFixed(0)}% jamming, 0 no-fly zones, 5 seeds (new-reward sweep)`;
+  const f = (k, d, pct) => pct ? `${(row[k+"_mean"]*100).toFixed(0)}% &plusmn; ${(row[k+"_std"]*100).toFixed(0)}%`
+                               : `${row[k+"_mean"].toFixed(d)} &plusmn; ${row[k+"_std"].toFixed(d)}`;
+  const data = [["Full-delivery success", f("eval_full_success",0,true)], ["Delivered fraction", f("eval_success_fraction",0,true)],
+    ["Latency (steps)", f("eval_latency_steps",1)], ["Collisions / episode", f("eval_collisions",1)], ["Energy (moves)", f("eval_energy",0)],
+    ["Iterations to train", f("train_iter",1)]];
+  tbl.innerHTML = '<tr><th>Metric</th><th>mean &plusmn; std</th></tr>' + data.map(d => `<tr><td>${d[0]}</td><td class="n">${d[1]}</td></tr>`).join("");
+  $("avgNote").innerHTML = m.n_no_fly_zones > 0
+    ? '<span class="warn">This replay has no-fly zones; the sweep averages were measured with none, so they are not a like-for-like comparison.</span>' : "";
+}
+
+function renderOne() {
+  const s = ep.summary, last = ep.frames[ep.frames.length-1];
+  $("oneTbl").innerHTML = '<tr><th>Metric</th><th>this run</th></tr>' + [
+    ["Full-delivery success", s.success >= 1 ? "yes" : `no (${(s.success*100).toFixed(0)}% delivered)`],
+    ["Latency (steps)", s.steps_to_last_delivery], ["Drone collisions", s.multi_drone_collisions],
+    ["No-fly-zone collisions", s.no_fly_zone_collisions], ["Energy (moves)", s.energy],
+    ["Deliveries done", `${last.delivered.length} / ${ep.delivery_points.length}`]
+  ].map(d => `<tr><td>${d[0]}</td><td class="n">${d[1]}</td></tr>`).join("");
+}
+
+function draw() {
+  if (!ep) return;
+  const W = cv.width, c = W / G, f = ep.frames[cur];
+  ctx.clearRect(0, 0, W, W);
+  // jammer field (Manhattan falloff diamond), cell shading by jam probability
+  if (ep.jammer) {
+    const j = ep.jammer;
+    for (let x = 0; x < G; x++) for (let y = 0; y < G; y++) {
+      const d = Math.abs(x - j.position[0]) + Math.abs(y - j.position[1]);
+      const p = j.intensity * Math.max(0, 1 - d / j.falloff_radius);
+      if (p > 0) { ctx.fillStyle = `rgba(194,65,12,${(p * 0.55).toFixed(3)})`; ctx.fillRect(x*c, y*c, c, c); }
+    }
+  }
+  ctx.strokeStyle = css("--grid"); ctx.lineWidth = 1; ctx.beginPath();
+  for (let i = 0; i <= G; i++) { ctx.moveTo(i*c, 0); ctx.lineTo(i*c, W); ctx.moveTo(0, i*c); ctx.lineTo(W, i*c); }
+  ctx.stroke();
+  if (ep.jammer) { ctx.strokeStyle = css("--jam"); ctx.lineWidth = 2; const p = ep.jammer.position;
+    ctx.strokeRect(p[0]*c+3, p[1]*c+3, c-6, c-6); ctx.fillStyle = css("--jam"); ctx.font = `bold ${c*0.5}px sans-serif`;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("J", p[0]*c + c/2, p[1]*c + c/2); }
+  // depot
+  ctx.fillStyle = css("--mute"); ctx.font = `bold ${c*0.45}px sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.globalAlpha = .35; ctx.fillRect(ep.depot[0]*c, ep.depot[1]*c, c, c); ctx.globalAlpha = 1;
+  ctx.fillStyle = css("--ink"); ctx.fillText("D", ep.depot[0]*c + c/2, ep.depot[1]*c + c/2);
+  // deliveries
+  const done = new Set(f.delivered.map(p => p.join(",")));
+  ep.delivery_points.forEach(p => {
+    const ok = done.has(p.join(",")); ctx.lineWidth = 3;
+    ctx.strokeStyle = ok ? css("--ok") : css("--mute"); ctx.strokeRect(p[0]*c+3, p[1]*c+3, c-6, c-6);
+    if (ok) { ctx.fillStyle = css("--ok"); ctx.globalAlpha = .35; ctx.fillRect(p[0]*c+3, p[1]*c+3, c-6, c-6); ctx.globalAlpha = 1; }
+    ctx.fillStyle = css("--ink"); ctx.font = `bold ${c*0.45}px sans-serif`; ctx.fillText("P", p[0]*c + c/2, p[1]*c + c/2);
+  });
+  // no-fly zones at this frame
+  f.no_fly_zones.forEach(p => { ctx.fillStyle = css("--nfz"); ctx.fillRect(p[0]*c+2, p[1]*c+2, c-4, c-4);
+    ctx.strokeStyle = css("--bad"); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(p[0]*c+4, p[1]*c+4); ctx.lineTo(p[0]*c+c-4, p[1]*c+c-4);
+    ctx.moveTo(p[0]*c+c-4, p[1]*c+4); ctx.lineTo(p[0]*c+4, p[1]*c+c-4); ctx.stroke(); });
+  // drone-collision cell markers
+  f.multi_drone_collision_cells.forEach(p => { ctx.strokeStyle = css("--bad"); ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(p[0]*c + c/2, p[1]*c + c/2, c*0.46, 0, Math.PI*2); ctx.stroke(); });
+  // drones (stacked drones are offset on a small ring so all remain visible)
+  const stack = {};
+  f.drones.forEach((p, i) => {
+    const k = p.join(","); (stack[k] = stack[k] || []).push(i);
+  });
+  f.drones.forEach((p, i) => {
+    const grp = stack[p.join(",")], n = grp.length, idx = grp.indexOf(i), a = 2*Math.PI*idx/n;
+    const off = n > 1 ? c*0.2 : 0, cx = p[0]*c + c/2 + Math.cos(a)*off, cy = p[1]*c + c/2 + Math.sin(a)*off;
+    const jammed = f.jammed && f.jammed[i], nfz = f.nfz_collision_drones.includes(i);
+    ctx.beginPath(); ctx.arc(cx, cy, c*0.24, 0, Math.PI*2);
+    ctx.fillStyle = jammed ? css("--jam") : COL.drone; ctx.fill();
+    ctx.lineWidth = 2; ctx.strokeStyle = nfz ? css("--bad") : "#fff"; ctx.stroke();
+    ctx.fillStyle = "#fff"; ctx.font = `bold ${c*0.3}px sans-serif`; ctx.fillText(i, cx, cy + 1);
+  });
+  // labels
+  updateReadouts(f);
+}
+
+// ---------------------------------------------------------------------------------------------
+// Isometric mode (S4.2). Additive: the Top-down draw() above is untouched and is kept as drawTop.
+// draw() is re-pointed to a dispatcher, so the playback loop, scrub, step buttons, speed selector,
+// spacebar and file loader all keep calling draw() exactly as before (no duplicated control logic).
+// Uses only schema v1 frame fields; the grid->screen mapping is a pure transform. Heights below are
+// constant visual styling (e.g. a drone always hovers the same px above its shadow), not replay data.
+// ---------------------------------------------------------------------------------------------
+let mode = "top";
+const drawTop = draw;
+draw = function () { return mode === "iso" ? drawIso() : drawTop(); };
+
+const ISO_H = 410;                                   // iso canvas height; width stays 640
+function setMode(m) {
+  mode = m;
+  $("modeTop").classList.toggle("on", m === "top"); $("modeIso").classList.toggle("on", m === "iso");
+  if (m === "iso") { cv.height = ISO_H; cv.style.aspectRatio = `${cv.width} / ${ISO_H}`; }
+  else { cv.height = 640; cv.style.aspectRatio = ""; }          // restore the exact Top-down canvas
+  draw();
+}
+$("modeTop").onclick = () => setMode("top");
+$("modeIso").onclick = () => setMode("iso");
+
+function shade(hex, f) {                              // darken a #rrggbb colour by factor f
+  const n = parseInt(hex.replace("#", "").padEnd(6, "0").slice(0, 6), 16);
+  const r = Math.round((n >> 16 & 255) * f), g = Math.round((n >> 8 & 255) * f), b = Math.round((n & 255) * f);
+  return `rgb(${r},${g},${b})`;
+}
+
+function drawIso() {
+  const f = ep.frames[cur], W = cv.width, TW = W / G, TH = TW / 2, ox = W / 2, oy = 46;
+  // Isometric transform: grid (gx,gy) -> screen. Rotate the grid 45deg and squash vertically 2:1.
+  //   sx = ox + (gx - gy) * TW/2        sy = oy + (gx + gy) * TH/2 - z      (z = height in px)
+  const P = (gx, gy, z = 0) => [ox + (gx - gy) * TW / 2, oy + (gx + gy) * TH / 2 - z];
+  const poly = (pts, fill, stroke, lw) => { ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath();
+    if (fill) { ctx.fillStyle = fill; ctx.fill(); } if (stroke) { ctx.lineWidth = lw || 1; ctx.strokeStyle = stroke; ctx.stroke(); } };
+  const tile = (gx, gy, fill, stroke, lw) => poly([P(gx, gy), P(gx + 1, gy), P(gx + 1, gy + 1), P(gx, gy + 1)], fill, stroke, lw);
+  function box(gx, gy, s, h, color, alpha) {          // cuboid on cell (gx,gy), footprint fraction s, height h px
+    const x0 = gx + (1 - s) / 2, x1 = x0 + s, y0 = gy + (1 - s) / 2, y1 = y0 + s;
+    ctx.globalAlpha = alpha == null ? 1 : alpha;
+    poly([P(x0, y1), P(x1, y1), P(x1, y1, h), P(x0, y1, h)], shade(color, 0.78), "rgba(0,0,0,.25)", 1);   // front-left face
+    poly([P(x1, y0), P(x1, y1), P(x1, y1, h), P(x1, y0, h)], shade(color, 0.60), "rgba(0,0,0,.25)", 1);   // front-right face
+    poly([P(x0, y0, h), P(x1, y0, h), P(x1, y1, h), P(x0, y1, h)], color, "rgba(0,0,0,.25)", 1);          // top face
+    ctx.globalAlpha = 1;
+    return P(gx + 0.5, gy + 0.5, h);                   // centre of top face, for labels
+  }
+  const label = (txt, p, size, color) => { ctx.fillStyle = color; ctx.font = `bold ${size}px sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(txt, p[0], p[1]); };
+
+  ctx.clearRect(0, 0, W, cv.height);
+  // 1. floor tiles, with the jammer field shaded by jam probability (same formula as Top-down)
+  for (let gx = 0; gx < G; gx++) for (let gy = 0; gy < G; gy++) {
+    tile(gx, gy, (gx + gy) % 2 ? css("--panel") : css("--bg"), css("--grid"), 1);
+    if (ep.jammer) { const j = ep.jammer, d = Math.abs(gx - j.position[0]) + Math.abs(gy - j.position[1]);
+      const p = j.intensity * Math.max(0, 1 - d / j.falloff_radius);
+      if (p > 0) tile(gx, gy, `rgba(194,65,12,${(p * 0.55).toFixed(3)})`); }
+  }
+  // 2. ground markers: collision rings (cells where >=2 drones share a cell this step)
+  f.multi_drone_collision_cells.forEach(p => { const c = P(p[0] + 0.5, p[1] + 0.5);
+    ctx.beginPath(); ctx.ellipse(c[0], c[1], TW * 0.40, TH * 0.40, 0, 0, Math.PI * 2); ctx.strokeStyle = css("--bad"); ctx.lineWidth = 3; ctx.stroke(); });
+  // 3. depth-sorted objects (painter's algorithm: larger gx+gy = nearer the viewer = drawn later)
+  const items = [];
+  const done = new Set(f.delivered.map(p => p.join(",")));
+  items.push({ d: ep.depot[0] + ep.depot[1], fn: () => { const t = box(ep.depot[0], ep.depot[1], 0.95, 4, css("--mute")); label("D", t, TH * 0.9, css("--ink")); } });
+  ep.delivery_points.forEach(p => items.push({ d: p[0] + p[1], fn: () => { const ok = done.has(p.join(","));
+    const t = box(p[0], p[1], 0.7, 10, ok ? css("--ok") : css("--mute")); label("P", t, TH * 0.9, ok ? "#fff" : css("--ink")); } }));
+  if (ep.jammer) items.push({ d: ep.jammer.position[0] + ep.jammer.position[1], fn: () => { const jp = ep.jammer.position;
+    const t = box(jp[0], jp[1], 0.28, 34, css("--jam")); ctx.beginPath(); ctx.arc(t[0], t[1] - 4, TH * 0.7, 0, Math.PI * 2); ctx.fillStyle = css("--jam"); ctx.fill();
+    label("J", [t[0], t[1] - 4], TH * 0.9, "#fff"); } });
+  f.no_fly_zones.forEach(p => items.push({ d: p[0] + p[1], fn: () => { const t = box(p[0], p[1], 0.9, 22, css("--nfz"), 0.88);
+    const a = P(p[0] + 0.2, p[1] + 0.2, 22), b = P(p[0] + 0.8, p[1] + 0.8, 22), c2 = P(p[0] + 0.8, p[1] + 0.2, 22), d2 = P(p[0] + 0.2, p[1] + 0.8, 22);
+    ctx.strokeStyle = css("--bad"); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.moveTo(c2[0], c2[1]); ctx.lineTo(d2[0], d2[1]); ctx.stroke(); } }));
+  const stack = {}; f.drones.forEach((p, i) => { const k = p.join(","); (stack[k] = stack[k] || []).push(i); });
+  f.drones.forEach((p, i) => {
+    const grp = stack[p.join(",")], n = grp.length, idx = grp.indexOf(i), a = 2 * Math.PI * idx / n, off = n > 1 ? 0.22 : 0;
+    const gx = p[0] + 0.5 + Math.cos(a) * off, gy = p[1] + 0.5 + Math.sin(a) * off;
+    const jammed = f.jammed && f.jammed[i], nfz = f.nfz_collision_drones.includes(i);
+    items.push({ d: gx + gy, fn: () => {
+      const g = P(gx, gy), h = P(gx, gy, 16);                         // shadow on the floor, body hovering 16px above it
+      ctx.beginPath(); ctx.ellipse(g[0], g[1], TW * 0.2, TH * 0.2, 0, 0, Math.PI * 2); ctx.fillStyle = "rgba(0,0,0,.28)"; ctx.fill();
+      ctx.beginPath(); ctx.moveTo(g[0], g[1]); ctx.lineTo(h[0], h[1]); ctx.strokeStyle = "rgba(0,0,0,.25)"; ctx.lineWidth = 1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(h[0], h[1], TW * 0.24, 0, Math.PI * 2); ctx.fillStyle = jammed ? css("--jam") : COL.drone; ctx.fill();
+      ctx.lineWidth = 2; ctx.strokeStyle = nfz ? css("--bad") : "#fff"; ctx.stroke();
+      label(String(i), h, TW * 0.3, "#fff"); } });
+  });
+  items.sort((u, v) => u.d - v.d).forEach(it => it.fn());
+
+  updateReadouts(f);                                  // shared with Top-down
+}
+
+// Playback loop: rAF drives it, but drawing/advancing is throttled so we never exceed MAX_FPS.
+function loop(ts) {
+  requestAnimationFrame(loop);
+  if (ts - lastDraw < FRAME_MS - 1) return;     // 30 fps cap
+  const dt = lastDraw ? ts - lastDraw : FRAME_MS; lastDraw = ts;
+  if (playing && ep) {
+    acc += dt * stepsPerSec / 1000;             // stepsPerSec <= 30, so at most one sim step per rendered frame
+    while (acc >= 1) { acc -= 1; if (cur < ep.frames.length - 1) cur++; else { playing = false; $("play").textContent = "Replay"; break; } }
+    draw();
+  }
+}
+requestAnimationFrame(loop);
+
+$("play").onclick = () => {
+  if (!ep) return;
+  if (!playing && cur >= ep.frames.length - 1) cur = 0;
+  playing = !playing; acc = 0; $("play").textContent = playing ? "Pause" : "Play"; draw();
+};
+$("prev").onclick = () => { playing = false; $("play").textContent = "Play"; cur = Math.max(0, cur - 1); draw(); };
+$("next").onclick = () => { playing = false; $("play").textContent = "Play"; cur = Math.min(ep.frames.length - 1, cur + 1); draw(); };
+$("scrub").oninput = e => { cur = +e.target.value; draw(); };
+$("speed").onchange = e => { stepsPerSec = Math.min(MAX_FPS, +e.target.value); };
+$("file").onchange = e => {
+  const fl = e.target.files[0]; if (!fl) return;
+  fl.text().then(t => load(JSON.parse(t))).catch(err => { alert("Could not load replay: " + err.message); });
+};
+document.addEventListener("keydown", e => { if (e.code === "Space" && e.target === document.body) { e.preventDefault(); $("play").click(); } });
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", draw);
+
+load(JSON.parse($("replay-data").textContent));
+if (location.hash === "#iso") setMode("iso");      // optional deep link; default stays Top-down
+</script>
+</body>
+</html>
