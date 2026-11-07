@@ -1,0 +1,22 @@
+section,item,metric,value,source_log
+curriculum_ablation_S3.8,IPPO seed0 DIRECT,total_iters / train_time_s / eval_full_success_pct / collisions,12 / 26.8 / 70.0 / 46.40,logs/runs/s3_8_curriculum_ablation_20261025_233611.log
+curriculum_ablation_S3.8,IPPO seed0 CURRICULUM,total_iters / train_time_s / eval_full_success_pct / collisions,37 / 46.5 / 10.0 / 191.00,logs/runs/s3_8_curriculum_ablation_20261025_233611.log
+curriculum_ablation_S3.8,IPPO seed1 DIRECT,total_iters / train_time_s / eval_full_success_pct / collisions,9 / 12.2 / 20.0 / 77.20,logs/runs/s3_8_curriculum_ablation_20261025_233611.log
+curriculum_ablation_S3.8,IPPO seed1 CURRICULUM,total_iters / train_time_s / eval_full_success_pct / collisions,34 / 44.8 / 40.0 / 130.10,logs/runs/s3_8_curriculum_ablation_20261025_233611.log
+curriculum_ablation_S3.8,MAPPO seed0 DIRECT,total_iters / train_time_s / eval_full_success_pct / collisions,11 / 12.8 / 50.0 / 65.40,logs/runs/s3_8_curriculum_ablation_20261025_233611.log
+curriculum_ablation_S3.8,MAPPO seed0 CURRICULUM,total_iters / train_time_s / eval_full_success_pct / collisions,36 / 44.1 / 50.0 / 124.90,logs/runs/s3_8_curriculum_ablation_20261025_233611.log
+curriculum_ablation_S3.8,MAPPO seed1 DIRECT,total_iters / train_time_s / eval_full_success_pct / collisions,12 / 14.1 / 90.0 / 42.70,logs/runs/s3_8_curriculum_ablation_20261025_233611.log
+curriculum_ablation_S3.8,MAPPO seed1 CURRICULUM,total_iters / train_time_s / eval_full_success_pct / collisions,35 / 42.5 / 80.0 / 105.40,logs/runs/s3_8_curriculum_ablation_20261025_233611.log
+curriculum_ablation_S3.8,ALL DIRECT (N=4),mean total_iters / train_time_s / eval_full_success_pct / collisions,11.0 / 16.4 / 57.5 / 57.92,logs/runs/s3_8_curriculum_ablation_20261025_233611.log
+curriculum_ablation_S3.8,ALL CURRICULUM (N=4),mean total_iters / train_time_s / eval_full_success_pct / collisions,35.5 / 44.5 / 45.0 / 137.85,logs/runs/s3_8_curriculum_ablation_20261025_233611.log
+overlap_penalty_fix_S3.4e,IPPO seed0 50% jamming before fix (S3.4d iter 11),eval_full_success_pct (10 eps),40.0,logs/runs/s3_4e_reward_fix_20261025_001249.log
+overlap_penalty_fix_S3.4e,IPPO seed0 50% jamming before fix (S3.4d iter 50),eval_full_success_pct (10 eps),10.0,logs/runs/s3_4e_reward_fix_20261025_001249.log
+overlap_penalty_fix_S3.4e,IPPO seed0 50% jamming after fix (S3.4e),eval_full_success_pct (10 eps),70.0,logs/runs/s3_4e_reward_fix_20261025_001249.log
+overlap_penalty_fix_S3.4e,MAPPO seed0 50% jamming before fix (S3.4c),eval_full_success_pct (10 eps),20.0,logs/runs/s3_4e_reward_fix_20261025_001249.log
+overlap_penalty_fix_S3.4e,MAPPO seed0 50% jamming after fix (S3.4e),eval_full_success_pct (10 eps),50.0,logs/runs/s3_4e_reward_fix_20261025_001249.log
+shaping_ablation_S3.9,pooled OFF-ON eval full success,mean delta pct over 10 pairs,-17.0,logs/runs/s3_9_shaping_extra_seeds_20261026_233125.log
+shaping_ablation_S3.9,pairs where shaping ON better / OFF better / ties,count,6 / 4 / 0,logs/runs/s3_9_shaping_extra_seeds_20261026_233125.log
+shaping_ablation_S3.9,exact paired sign-flip permutation test,two-sided p,0.2793 (verdict MIXED / INCONCLUSIVE),logs/runs/s3_9_shaping_extra_seeds_20261026_233125.log
+full_sweep_S3.4g,50-run newreward sweep wall-clock,seconds / minutes,1040.16 / 17.34,logs/runs/s3_4g_full_sweep_newreward_20261025_003312.log
+seed1_scan_S3.9,IPPO seed 1 runs with train full success >=80% and eval <=20%,collapsed / scanned runs; mean eval full success pct,4 / 9; 34,output of scripts/analyze_s3_9_seed1_anomaly.py (reads logs/runs/s3_7 and s3_8 logs)
+seed1_scan_S3.9,MAPPO seed 1 runs with train full success >=80% and eval <=20%,collapsed / scanned runs; mean eval full success pct,2 / 9; 62,output of scripts/analyze_s3_9_seed1_anomaly.py (reads logs/runs/s3_7 and s3_8 logs)

@@ -1,0 +1,7 @@
+# Versions as recorded in SETUP_LOG.txt (S0.1). Python 3.13.14.
+# torch was installed as the CPU-only build (2.14.1+cpu); to match, install it first with:
+#   pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
+torch==2.14.1
+numpy==2.5.4
+matplotlib==3.11.2
+gymnasium==1.4.0
